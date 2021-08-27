@@ -42,16 +42,15 @@ class HomeModel:
     def clearCache(self):
         pass
 
-    def workerCAM(self, d):
+    def workerCAM(self, lproxy):
         # printing process id
         #print("ID of process running worker1: {}".format(os.getpid()))
         print("Hola")
-        print(d)
-        d['2'] = 5
+        print("killAll = ", str(lproxy))
   
-    def workerReviewScreenshots(self, d):
+    def workerReviewScreenshots(self, lproxy):
         # printing process id
         #print("ID of process running worker2: {}".format(os.getpid()))
         time.sleep(10)
         print("Mundo")
-        print(d)
+        print("killAll = ", str(lproxy))
