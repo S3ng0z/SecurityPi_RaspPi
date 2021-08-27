@@ -48,11 +48,7 @@ class HomeController(Controller):
             # creating a list in server process memory
             #parameters = manager.list([('killAll', 1)])
             lproxy = manager.list()
-            lproxy.append({'a':0})
-            # now mutate the dictionary
-            d = lproxy[0]
-            d['a'] = 1
-            d['b'] = 2
+            lproxy.append({'killAll':0})
 
             # printing main program process id
             print("ID of main process: {}".format(os.getpid()))
