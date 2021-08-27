@@ -66,5 +66,7 @@ class HomeController(Controller):
             # wait until processes are finished
             for process in processes:
                 process.join()
+
+            print(lproxy)
             
             gc.collect()
