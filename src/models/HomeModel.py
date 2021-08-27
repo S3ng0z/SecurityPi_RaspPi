@@ -43,8 +43,10 @@ class HomeModel:
 
     def worker1(self):
         # printing process id
-        print("ID of process running worker1: {}".format(os.getpid()))
+        #print("ID of process running worker1: {}".format(os.getpid()))
+        print("Hola")
   
     def worker2(self):
         # printing process id
-        print("ID of process running worker2: {}".format(os.getpid()))
+        #print("ID of process running worker2: {}".format(os.getpid()))
+        print("Mundo")
