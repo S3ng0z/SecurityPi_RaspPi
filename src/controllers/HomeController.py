@@ -45,8 +45,8 @@ class HomeController(Controller):
         # printing main program process id
         print("ID of main process: {}".format(os.getpid()))
         # creating processes
-        p1 = multiprocessing.Process(target=self.homeModel.worker1)
-        p2 = multiprocessing.Process(target=self.homeModel.worker2)
+        p1 = multiprocessing.Process(target=self.homeModel.worker1())
+        p2 = multiprocessing.Process(target=self.homeModel.worker2())
     
         # starting processes
         p1.start()

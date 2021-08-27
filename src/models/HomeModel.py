@@ -41,10 +41,10 @@ class HomeModel:
     def clearCache(self):
         pass
 
-    def worker1():
+    def worker1(self):
         # printing process id
         print("ID of process running worker1: {}".format(os.getpid()))
   
-    def worker2():
+    def worker2(self):
         # printing process id
         print("ID of process running worker2: {}".format(os.getpid()))
