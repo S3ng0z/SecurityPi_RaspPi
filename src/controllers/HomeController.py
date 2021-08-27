@@ -45,7 +45,10 @@ class HomeController(Controller):
         processes = []
         with multiprocessing.Manager() as manager:
             # creating a list in server process memory
-            parameters = manager.list([('killAll', 1)])
+            #parameters = manager.list([('killAll', 1)])
+            parameters = manager.dict()
+            parameters["killAll"] = 1
+
             # printing main program process id
             print("ID of main process: {}".format(os.getpid()))
             # creating processes
