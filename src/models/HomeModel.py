@@ -47,7 +47,7 @@ class HomeModel:
         #print("ID of process running worker1: {}".format(os.getpid()))
         print("Hola")
         print("killAll = ", str(lproxy.get('killAll').value))
-        lproxy['killAll'] = 5
+        lproxy['killAll'].value = 5
   
     def workerReviewScreenshots(self, lproxy):
         # printing process id
