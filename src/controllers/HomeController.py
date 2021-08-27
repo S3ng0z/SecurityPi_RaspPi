@@ -48,7 +48,7 @@ class HomeController(Controller):
             # creating a list in server process memory
             #parameters = manager.list([('killAll', 1)])
             lproxy = manager.list()
-            lproxy.append({})
+            lproxy.append({'a':0})
             # now mutate the dictionary
             d = lproxy[0]
             d['a'] = 1
