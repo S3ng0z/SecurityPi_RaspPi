@@ -42,16 +42,16 @@ class HomeModel:
     def clearCache(self):
         pass
 
-    def workerCAM(self, parameters):
+    def workerCAM(self, d):
         # printing process id
         #print("ID of process running worker1: {}".format(os.getpid()))
         print("Hola")
-        print("killAll = ", parameters[0])
-        parameters['killAll'] = 0
+        print("killAll = ", str(d['2']))
+        d['2'] = 5
   
-    def workerReviewScreenshots(self, parameters):
+    def workerReviewScreenshots(self, d):
         # printing process id
         #print("ID of process running worker2: {}".format(os.getpid()))
         time.sleep(10)
         print("Mundo")
-        print("killAll = ", parameters[0])
+        print("killAll = ", str(d['2']))

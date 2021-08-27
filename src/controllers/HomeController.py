@@ -46,16 +46,17 @@ class HomeController(Controller):
         with multiprocessing.Manager() as manager:
             # creating a list in server process memory
             #parameters = manager.list([('killAll', 1)])
-            parameters = manager.dict()
-            parameters["killAll"] = 1
+            d = manager.dict()
+            d[1] = '1'
+            d['2'] = 2
 
             # printing main program process id
             print("ID of main process: {}".format(os.getpid()))
             # creating processes
-            cam = multiprocessing.Process(target=self.homeModel.workerCAM, args=(parameters))
+            cam = multiprocessing.Process(target=self.homeModel.workerCAM, args=(d))
             processes.append(cam)
 
-            reviewScreenshots = multiprocessing.Process(target=self.homeModel.workerReviewScreenshots, args=(parameters))
+            reviewScreenshots = multiprocessing.Process(target=self.homeModel.workerReviewScreenshots, args=(d))
             processes.append(reviewScreenshots)
 
             # starting processes
