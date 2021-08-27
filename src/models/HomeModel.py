@@ -46,7 +46,7 @@ class HomeModel:
         # printing process id
         #print("ID of process running worker1: {}".format(os.getpid()))
         print("Hola")
-        print("killAll = ", str(d['2']))
+        print(d)
         d['2'] = 5
   
     def workerReviewScreenshots(self, d):
@@ -54,4 +54,4 @@ class HomeModel:
         #print("ID of process running worker2: {}".format(os.getpid()))
         time.sleep(10)
         print("Mundo")
-        print("killAll = ", str(d['2']))
+        print(d)

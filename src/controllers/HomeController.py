@@ -3,6 +3,7 @@ from core.Controller import Controller
 import gc
 import os
 import multiprocessing
+from multiprocessing import Manager
 
 
 
@@ -43,7 +44,7 @@ class HomeController(Controller):
     """
     def mainloop(self):
         processes = []
-        with multiprocessing.Manager() as manager:
+        with Manager() as manager:
             # creating a list in server process memory
             #parameters = manager.list([('killAll', 1)])
             d = manager.dict()
