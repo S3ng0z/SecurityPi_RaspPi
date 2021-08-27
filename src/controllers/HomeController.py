@@ -43,66 +43,24 @@ class HomeController(Controller):
     """
     def mainloop(self):
         processes = []
-        # printing main program process id
-        print("ID of main process: {}".format(os.getpid()))
-        # creating processes
-        p1 = multiprocessing.Process(target=self.homeModel.worker1())
-        processes.append(p1)
-        p2 = multiprocessing.Process(target=self.homeModel.worker2())
-        processes.append(p2)
-    
-        for process in processes:
-            process.start()
-        # starting processes
-        #p1.start()
-        #p2.start()
-    
-        # process IDs
-        print("ID of process p1: {}".format(p1.pid))
-        print("ID of process p2: {}".format(p2.pid))
-    
-        for process in processes:
-            process.join()
-        # wait until processes are finished
-        #p1.join()
-        #p2.join()
-    
-        # both processes finished
-        print("Both processes finished execution!")
-    
-        # check if processes are alive
-        print("Process p1 is alive: {}".format(p1.is_alive()))
-        print("Process p2 is alive: {}".format(p2.is_alive()))
-        #self.homeView.main()
-         #opc = input('Enter a option: ')
-        #while(self.checkOption(int(input('Enter a option: '))) != 0):
-            #self.homeView.main()
-        gc.collect()
+        with multiprocessing.Manager() as manager:
+            # creating a list in server process memory
+            parameters = manager.list([('killAll', 1)])
+            # printing main program process id
+            print("ID of main process: {}".format(os.getpid()))
+            # creating processes
+            cam = multiprocessing.Process(target=self.homeModel.workerCAM(), args=(parameters))
+            processes.append(cam)
 
-    def checkOption(self, option):
-        option = self.options(option)
-        if(option == 'INVALID OPTION'):
-            self.homeView.invalidOption()
-        elif(option == 0):
-            return 0
-        self.homeModel.log(option)
-        return 1
-    
-    def options(self, argument):
-        default = 'INVALID OPTION'
-        return getattr(self, 'opc'+str(argument), lambda:default)()
+            reviewScreenshots = multiprocessing.Process(target=self.homeModel.workerReviewScreenshots(), args=(parameters))
+            processes.append(reviewScreenshots)
 
-    def opc0(self):
-        return 0
-
-    def opc1(self):
-        #return self.homeModel.loadExtractPersons('ExtractPersons').execute()
-        pass
-
-    def opc2(self):
-        #return self.homeModel.loadRecognizer('Recognizer').execute()
-        pass
-
-    def opc3(self):
-        #return self.homeModel.loadDetectPersons('DetectPersons').execute()
-        pass
+            # starting processes
+            for process in processes:
+                process.start()
+        
+            # wait until processes are finished
+            for process in processes:
+                process.join()
+            
+            gc.collect()

@@ -2,6 +2,7 @@ from datetime import datetime, date
 from config import APP_PATH
 import importlib
 import os
+import time
 #import git
 
 path = ''
@@ -41,12 +42,16 @@ class HomeModel:
     def clearCache(self):
         pass
 
-    def worker1(self):
+    def workerCAM(self, parameters):
         # printing process id
         #print("ID of process running worker1: {}".format(os.getpid()))
         print("Hola")
+        print("killAll = ", str(parameters['killAll']))
+        parameters['killAll'] = 0
   
-    def worker2(self):
+    def workerReviewScreenshots(self, parameters):
         # printing process id
         #print("ID of process running worker2: {}".format(os.getpid()))
+        time.sleep(10)
         print("Mundo")
+        print("killAll = ", str(parameters['killAll']))
