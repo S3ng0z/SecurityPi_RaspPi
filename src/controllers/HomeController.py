@@ -42,23 +42,30 @@ class HomeController(Controller):
         @author Andrés Gómez
     """
     def mainloop(self):
+        processes = []
         # printing main program process id
         print("ID of main process: {}".format(os.getpid()))
         # creating processes
         p1 = multiprocessing.Process(target=self.homeModel.worker1())
+        processes.append(p1)
         p2 = multiprocessing.Process(target=self.homeModel.worker2())
+        processes.append(p2)
     
+        for process in processes:
+            process.start()
         # starting processes
-        p1.start()
-        p2.start()
+        #p1.start()
+        #p2.start()
     
         # process IDs
         print("ID of process p1: {}".format(p1.pid))
         print("ID of process p2: {}".format(p2.pid))
     
+        for process in processes:
+            process.join()
         # wait until processes are finished
-        p1.join()
-        p2.join()
+        #p1.join()
+        #p2.join()
     
         # both processes finished
         print("Both processes finished execution!")
