@@ -72,8 +72,8 @@ class HomeModel:
                         data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                         # "Decode" the image from the array, preserving colour
                         image = cv2.imdecode(data, 1)
-                        cv2.imshow('frame', image)
-                        
+                        imS = cv2.resize(image, (960, 540))                # Resize image
+                        cv2.imshow("output", imS)
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         
