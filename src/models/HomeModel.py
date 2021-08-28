@@ -49,7 +49,8 @@ class HomeModel:
 
     def workerCAM(self, lproxy):
         if(lproxy.get('killAll') != 0):
-            socket = Connection.connect()
+            aux = Connection()
+            socket = aux.connect()
             conn = socket.makefile('wb')
             try:
 
