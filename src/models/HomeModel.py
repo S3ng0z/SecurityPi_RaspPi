@@ -84,5 +84,10 @@ class HomeModel:
         pass
   
     def workerReviewScreenshots(self, lproxy):
-        number = input('Enter a option: ')
-        lproxy['killAll'] = number
+        try:
+            
+            lproxy['killAll'] = int(input())
+            
+        except EOFError as e:
+            print(e)
+        
