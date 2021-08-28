@@ -7,6 +7,7 @@ import struct
 import sys
 import picamera
 from .Connection import Connection
+import cv2
 
 #import git
 
@@ -62,10 +63,12 @@ class HomeModel:
                 time.sleep(2)
 
                 stream = io.BytesIO()
-                for foo in camera.capture_continuous(stream, 'jpeg'):
+                for frame in camera.capture_continuous(stream, 'jpeg'):
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
+                        image = frame
+                        cv2.imshow("Fram", image)
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         
