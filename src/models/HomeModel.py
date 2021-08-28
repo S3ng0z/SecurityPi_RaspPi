@@ -68,7 +68,8 @@ class HomeModel:
                         break
                     else:
                         image = frame.array
-                        cv2.imshow("Fram", image)
+                        # show the frame
+                        cv2.imshow("Frame", image)
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         
