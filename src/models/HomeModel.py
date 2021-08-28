@@ -1,8 +1,12 @@
 from datetime import datetime, date
 from config import APP_PATH
-import importlib
 import os
 import time
+import io
+import struct
+import picamera
+
+from socket.Connection import Connection
 #import git
 
 path = ''
@@ -43,18 +47,40 @@ class HomeModel:
         pass
 
     def workerCAM(self, lproxy):
-        # printing process id
-        #print("ID of process running worker1: {}".format(os.getpid()))
-        print("Hola")
-        print(lproxy)
-        print("killAll = ", lproxy.get('killAll'))
-        lproxy['killAll'] = 5
-        #print("killAll = ", lproxy.get('killAll'))
+        if(lproxy.get('killAll') != 0):
+            socket = Connection.connect()
+            conn = socket.makefile('wb')
+            try:
+
+                camera = picamera.PiCamera()
+                camera.vflip = True
+                camera.resolution = (1280, 720)
+                # Start a preview and let the camera warm up for 2 seconds
+                camera.start_preview()
+                time.sleep(2)
+
+                stream = io.BytesIO()
+                for foo in camera.capture_continuous(stream, 'jpeg'):
+                    if(lproxy.get('killAll') == 0):
+                        break
+                    else:
+                        conn.write(struct.pack('<L', stream.tell()))
+                        conn.flush()
+                        
+                        stream.seek(0)
+                        conn.write(stream.read())
+                        
+                        stream.seek(0)
+                        stream.truncate()
+                
+                # Write a length of zero to the stream to signal we're done
+                conn.write(struct.pack('<L', 0))
+
+            finally:
+                conn.close()
+                Connection.closeConn(socket)
+        pass
   
     def workerReviewScreenshots(self, lproxy):
-        # printing process id
-        #print("ID of process running worker2: {}".format(os.getpid()))
-        time.sleep(10)
-        print("Mundo")
-        print(lproxy)
-        #print("killAll = ", lproxy.get('killAll'))
+        while(lproxy.get('killAll') != 0):
+            lproxy['killAll'] = int(input('Enter a option: '))
