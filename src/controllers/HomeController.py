@@ -50,8 +50,7 @@ class HomeController(Controller):
             #lproxy = manager.list()
             #lproxy.append({'killAll':0})
             lproxy = manager.dict()
-            lproxy[1] = '1'
-            lproxy['2'] = 2
+            lproxy['killAll'] = 0
 
             # printing main program process id
             print("ID of main process: {}".format(os.getpid()))
