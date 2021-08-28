@@ -47,6 +47,7 @@ class HomeModel:
         pass
 
     def workerCAM(self, lproxy):
+        '''
         if(lproxy.get('killAll') != 0):
             socket = Connection.connect()
             conn = socket.makefile('wb')
@@ -79,6 +80,7 @@ class HomeModel:
             finally:
                 conn.close()
                 Connection.closeConn(socket)
+        '''
         pass
   
     def workerReviewScreenshots(self, lproxy):
