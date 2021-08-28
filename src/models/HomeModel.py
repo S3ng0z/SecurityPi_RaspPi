@@ -5,6 +5,7 @@ import time
 import io
 import struct
 import picamera
+import sys
 from .Connection import Connection
 
 #import git
@@ -84,6 +85,7 @@ class HomeModel:
         pass
   
     def workerReviewScreenshots(self, lproxy):
+        sys.stdin = open(0)
         try:
             
             n = input("What is your name? ")
