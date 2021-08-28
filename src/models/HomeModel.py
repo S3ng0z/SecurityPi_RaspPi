@@ -47,7 +47,6 @@ class HomeModel:
         #print("ID of process running worker1: {}".format(os.getpid()))
         print("Hola")
         print(lproxy)
-        lproxy.append({'killAll2':6})
         #print("killAll = ", lproxy.get('killAll'))
         #lproxy['killAll'] = 5
         #print("killAll = ", lproxy.get('killAll'))
@@ -58,5 +57,4 @@ class HomeModel:
         time.sleep(10)
         print("Mundo")
         print(lproxy)
-        lproxy.append({'killAll3':6})
         #print("killAll = ", lproxy.get('killAll'))

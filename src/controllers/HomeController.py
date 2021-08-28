@@ -47,8 +47,11 @@ class HomeController(Controller):
         with Manager() as manager:
             # creating a list in server process memory
             #parameters = manager.list([('killAll', 1)])
-            lproxy = manager.list()
+            #lproxy = manager.list()
             #lproxy.append({'killAll':0})
+            lproxy = manager.dict()
+            lproxy[1] = '1'
+            lproxy['2'] = 2
 
             # printing main program process id
             print("ID of main process: {}".format(os.getpid()))
