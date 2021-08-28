@@ -58,6 +58,6 @@ class HomeModel:
         #print("ID of process running worker2: {}".format(os.getpid()))
         print("Mundo")
         print (type(data), data.value, name)
-        data.value += 1
+        data.value += 5
         #print(lproxy)
         #print("killAll = ", lproxy.get('killAll'))
