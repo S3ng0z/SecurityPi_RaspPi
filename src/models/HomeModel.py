@@ -82,5 +82,4 @@ class HomeModel:
         pass
   
     def workerReviewScreenshots(self, lproxy):
-        while(lproxy.get('killAll') != 0):
-            lproxy['killAll'] = int(input('Enter a option: '))
+        lproxy['killAll'] = input('Enter a option: ')
