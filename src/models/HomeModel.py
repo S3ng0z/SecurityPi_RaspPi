@@ -4,8 +4,8 @@ import os
 import time
 import io
 import struct
-import picamera
 import sys
+import picamera
 from .Connection import Connection
 
 #import git
@@ -48,7 +48,6 @@ class HomeModel:
         pass
 
     def workerCAM(self, lproxy):
-        '''
         if(lproxy.get('killAll') != 0):
             socket = Connection.connect()
             conn = socket.makefile('wb')
@@ -81,14 +80,12 @@ class HomeModel:
             finally:
                 conn.close()
                 Connection.closeConn(socket)
-        '''
         pass
   
     def workerReviewScreenshots(self, lproxy):
         sys.stdin = open(0)
         try:
-            
-            n = input("What is your name? ")
+            lproxy['killAll'] = int(input())
             
         except EOFError as e:
             print(e)
