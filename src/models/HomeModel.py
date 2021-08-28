@@ -86,7 +86,7 @@ class HomeModel:
     def workerReviewScreenshots(self, lproxy):
         try:
             
-            n = raw_input("What is your name? ")
+            n = input("What is your name? ")
             
         except EOFError as e:
             print(e)
