@@ -56,10 +56,10 @@ class HomeController(Controller):
             # printing main program process id
             print("ID of main process: {}".format(os.getpid()))
             # creating processes
-            cam = multiprocessing.Process(target=self.homeModel.workerCAM, args=(lproxy))
+            cam = multiprocessing.Process(target=self.homeModel.workerCAM, args=(lproxy,))
             processes.append(cam)
 
-            reviewScreenshots = multiprocessing.Process(target=self.homeModel.workerReviewScreenshots, args=(lproxy))
+            reviewScreenshots = multiprocessing.Process(target=self.homeModel.workerReviewScreenshots, args=(lproxy,))
             processes.append(reviewScreenshots)
 
             # starting processes
