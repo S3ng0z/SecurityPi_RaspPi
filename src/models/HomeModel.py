@@ -5,7 +5,7 @@ import time
 import io
 import struct
 import picamera
-from socket.Connection import Connection
+from Connection import Connection
 
 #import git
 
