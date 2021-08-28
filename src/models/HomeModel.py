@@ -48,9 +48,9 @@ class HomeModel:
         print("Hola")
         print(lproxy)
         lproxy.append({'killAll2':6})
-        print("killAll = ", lproxy.get('killAll'))
-        lproxy['killAll'] = 5
-        print("killAll = ", lproxy.get('killAll'))
+        #print("killAll = ", lproxy.get('killAll'))
+        #lproxy['killAll'] = 5
+        #print("killAll = ", lproxy.get('killAll'))
   
     def workerReviewScreenshots(self, lproxy):
         # printing process id
@@ -59,4 +59,4 @@ class HomeModel:
         print("Mundo")
         print(lproxy)
         lproxy.append({'killAll3':6})
-        print("killAll = ", lproxy.get('killAll'))
+        #print("killAll = ", lproxy.get('killAll'))
