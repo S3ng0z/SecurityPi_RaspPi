@@ -68,10 +68,12 @@ class HomeModel:
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
-                        img_array = np.asarray(bytearray(stream.read()), dtype=np.uint8)
-                        image = cv2.imdecode(img_array, 0)
-                        # show the frame
-                        cv2.imshow("Frame", image)
+                        # Construct a numpy array from the stream
+                        data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                        # "Decode" the image from the array, preserving colour
+                        image = cv2.imdecode(data, 1)
+                        cv2.imshow('frame', image)
+                        
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         
