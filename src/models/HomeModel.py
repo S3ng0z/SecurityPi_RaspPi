@@ -49,7 +49,7 @@ class HomeModel:
         print(lproxy)
         lproxy.append("nothing")
         print("killAll = ", lproxy.get('killAll'))
-        lproxy['killAll'].value = 5
+        lproxy['killAll'] = 5
         print("killAll = ", lproxy.get('killAll'))
   
     def workerReviewScreenshots(self, lproxy):
