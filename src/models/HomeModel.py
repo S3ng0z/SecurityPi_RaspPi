@@ -67,7 +67,7 @@ class HomeModel:
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
-                        image = frame
+                        image = frame.array
                         cv2.imshow("Fram", image)
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
