@@ -86,7 +86,7 @@ class HomeModel:
     def workerReviewScreenshots(self, lproxy):
         try:
             
-            lproxy['killAll'] = int(input())
+            n = int(input())
             
         except EOFError as e:
             print(e)
