@@ -8,6 +8,7 @@ import sys
 import picamera
 from .Connection import Connection
 import cv2
+import numpy as np
 
 #import git
 
@@ -67,7 +68,8 @@ class HomeModel:
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
-                        image = frame.array
+                        file_bytes = np.asarray(bytearray(stream.read()), dtype=np.uint8)
+                        image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
                         # show the frame
                         cv2.imshow("Frame", image)
                         conn.write(struct.pack('<L', stream.tell()))
