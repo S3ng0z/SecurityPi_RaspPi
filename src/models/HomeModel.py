@@ -10,6 +10,7 @@ from .Connection import Connection
 import cv2
 import numpy as np
 import gc
+import tempfile
 
 #import git
 
@@ -69,12 +70,13 @@ class HomeModel:
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
+                        temp_name = next(tempfile._get_candidate_names()) + '.jpg'
                         # Construct a numpy array from the stream
                         data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                         # "Decode" the image from the array, preserving colour
                         image = cv2.imdecode(data, 1)
                         imS = cv2.resize(image, (960, 540))                # Resize image
-                        print(imS)
+                        cv2.imwrite(filename, imS)
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         
