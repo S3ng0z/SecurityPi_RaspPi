@@ -10,6 +10,7 @@ from .Connection import Connection
 import cv2
 import numpy as np
 import gc
+import keyboard
 
 #import git
 
@@ -83,8 +84,9 @@ class HomeModel:
                         
                         stream.seek(0)
                         stream.truncate()
-                        if cv2.waitKey(1) == ord('q'):
-                            break
+                        if keyboard.is_pressed('Esc'):
+                            print("\nyou pressed Esc, so exiting...")
+                            sys.exit(0)
                 
                 # Write a length of zero to the stream to signal we're done
                 conn.write(struct.pack('<L', 0))
