@@ -44,6 +44,7 @@ class HomeController(Controller):
     """
     def mainloop(self):
         processes = []
+        gc.collect()
         with Manager() as manager:
             # creating a list in server process memory
             #parameters = manager.list([('killAll', 1)])
