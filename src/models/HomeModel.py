@@ -84,9 +84,6 @@ class HomeModel:
                         
                         stream.seek(0)
                         stream.truncate()
-                        if keyboard.is_pressed('Esc'):
-                            print("\nyou pressed Esc, so exiting...")
-                            sys.exit(0)
                 
                 # Write a length of zero to the stream to signal we're done
                 conn.write(struct.pack('<L', 0))
