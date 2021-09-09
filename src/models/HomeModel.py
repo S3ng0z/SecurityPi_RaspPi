@@ -55,7 +55,7 @@ class HomeModel:
             socket = aux.connect()
             conn = socket.makefile('wb')
             try:
-
+                print('Hola Mundo')
                 camera = picamera.PiCamera()
                 camera.vflip = True
                 camera.resolution = (1280, 720)
