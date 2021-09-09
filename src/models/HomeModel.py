@@ -9,7 +9,6 @@ import picamera
 from .Connection import Connection
 import cv2
 import numpy as np
-import tempfile
 
 #import git
 
@@ -56,6 +55,7 @@ class HomeModel:
             socket = aux.connect()
             conn = socket.makefile('wb')
             try:
+
                 camera = picamera.PiCamera()
                 camera.vflip = True
                 camera.resolution = (1280, 720)
@@ -65,7 +65,6 @@ class HomeModel:
 
                 stream = io.BytesIO()
                 for frame in camera.capture_continuous(stream, 'jpeg'):
-                    temp_name = next(tempfile._get_candidate_names()) + '.jpg'
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
@@ -74,6 +73,8 @@ class HomeModel:
                         # "Decode" the image from the array, preserving colour
                         image = cv2.imdecode(data, 1)
                         imS = cv2.resize(image, (960, 540))                # Resize image
+                        print(imS)
+                        cv2.imshow("output", imS)
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         
@@ -82,7 +83,6 @@ class HomeModel:
                         
                         stream.seek(0)
                         stream.truncate()
-                        #cv2.imwrite(temp_name, imS)
                 
                 # Write a length of zero to the stream to signal we're done
                 conn.write(struct.pack('<L', 0))
