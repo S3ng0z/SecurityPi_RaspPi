@@ -83,6 +83,9 @@ class HomeModel:
                         
                         stream.seek(0)
                         stream.truncate()
+                        if cv2.waitKey(1) == ord('q'):
+                            print('Paso por aquí')
+                            break
                 
                 # Write a length of zero to the stream to signal we're done
                 conn.write(struct.pack('<L', 0))
