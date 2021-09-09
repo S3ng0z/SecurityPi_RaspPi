@@ -65,7 +65,7 @@ class HomeModel:
 
                 stream = io.BytesIO()
                 for frame in camera.capture_continuous(stream, 'jpeg'):
-                    temp_name = next(tempfile._get_candidate_names())
+                    temp_name = next(tempfile._get_candidate_names()) + '.jpg'
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
