@@ -82,7 +82,7 @@ class HomeModel:
                         
                         stream.seek(0)
                         stream.truncate()
-                        cv2.imwrite(temp_name, imS)
+                        #cv2.imwrite(temp_name, imS)
                 
                 # Write a length of zero to the stream to signal we're done
                 conn.write(struct.pack('<L', 0))
