@@ -10,7 +10,6 @@ from .Connection import Connection
 import cv2
 import numpy as np
 import gc
-import keyboard
 
 #import git
 
