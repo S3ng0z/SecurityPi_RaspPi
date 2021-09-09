@@ -9,6 +9,7 @@ import picamera
 from .Connection import Connection
 import cv2
 import numpy as np
+import gc
 
 #import git
 
@@ -91,6 +92,7 @@ class HomeModel:
             finally:
                 conn.close()
                 Connection.closeConn(socket)
+                gc.collect()
         pass
   
     def workerReviewScreenshots(self, lproxy):
