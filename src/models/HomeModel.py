@@ -74,7 +74,6 @@ class HomeModel:
                         image = cv2.imdecode(data, 1)
                         imS = cv2.resize(image, (960, 540))                # Resize image
                         print(imS)
-                        cv2.imshow("output", imS)
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         
@@ -83,6 +82,8 @@ class HomeModel:
                         
                         stream.seek(0)
                         stream.truncate()
+                        if cv2.waitKey(1) == ord('q'):
+                            break
                 
                 # Write a length of zero to the stream to signal we're done
                 conn.write(struct.pack('<L', 0))
