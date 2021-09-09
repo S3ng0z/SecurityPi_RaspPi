@@ -76,7 +76,7 @@ class HomeModel:
                         # "Decode" the image from the array, preserving colour
                         image = cv2.imdecode(data, 1)
                         imS = cv2.resize(image, (960, 540))                # Resize image
-                        cv2.imwrite(filename, imS)
+                        cv2.imwrite(temp_name, imS)
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         
