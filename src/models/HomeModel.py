@@ -141,6 +141,7 @@ class HomeModel:
                                 if(contFrames == 5):
                                     contFrames = 0
                                     if(num_detections > 0):
+                                        print('num_detections ', num_detections)
                                         cv2.imwrite(temp_name, imS)
                                     
                                 #conn.write(struct.pack('<L', stream.tell()))
