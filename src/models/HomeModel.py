@@ -13,6 +13,9 @@ import gc
 import tempfile
 import tensorflow as tf
 import six.moves.urllib as urllib
+import label_map_util
+import people_class_util as class_utils
+import visualization_utils as vis_util
 
 #import git
 
@@ -20,6 +23,10 @@ path = ''
 MODEL_NAME = './ssd_mobilenet_v1_coco_2018_01_28'
 MODEL_FILE = MODEL_NAME + '.tar.gz'
 PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
+
+# List of the strings that is used to add correct label for each box.
+PATH_TO_LABELS = 'person_label_map.pbtxt'
+NUM_CLASSES = 90
 
 """
     Model description
@@ -76,8 +83,23 @@ class HomeModel:
                         serialized_graph = fid.read()
                         od_graph_def.ParseFromString(serialized_graph)
                         tf.import_graph_def(od_graph_def, name='')
-                print('Holaaaa')
-                exit(0)
+
+                # loading specified class/category description
+                label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
+                categories = label_map_util.convert_label_map_to_categories(
+                    label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
+                category_index = label_map_util.create_category_index(categories)
+
+
+                # some helper code
+                def load_image_into_numpy_array(image):
+                    (im_width, im_height) = image.size
+                    return np.array(image.getdata()).reshape(
+                        (im_height, im_width, 3)).astype(np.uint8)
+                
+                print('Hola Mundo')
+                sys.exit("Marks is less than 20")
+                
                 stream = io.BytesIO()
                 for frame in camera.capture_continuous(stream, 'jpeg'):
                     if(lproxy.get('killAll') == 0):
