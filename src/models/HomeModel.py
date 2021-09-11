@@ -13,6 +13,7 @@ import gc
 import tempfile
 import tensorflow as tf
 import six.moves.urllib as urllib
+import collections
 
 #import git
 
@@ -62,9 +63,9 @@ class HomeModel:
 
     def workerCAM(self, lproxy):
         if(lproxy.get('killAll') != 0):
-            aux = Connection()
-            socket = aux.connect()
-            conn = socket.makefile('wb')
+            #aux = Connection()
+            #socket = aux.connect()
+            #conn = socket.makefile('wb')
             try:
 
                 camera = picamera.PiCamera()
@@ -121,12 +122,12 @@ class HomeModel:
                                 (boxes, scores, classes, num_detections) = sess.run(
                                     [boxes, scores, classes, num_detections],
                                     feed_dict={image_tensor: image_np_expanded})
-                                break
-                                conn.write(struct.pack('<L', stream.tell()))
-                                conn.flush()
+
+                                #conn.write(struct.pack('<L', stream.tell()))
+                                #conn.flush()
                                 
                                 stream.seek(0)
-                                conn.write(stream.read())
+                                #conn.write(stream.read())
                                 
                                 stream.seek(0)
                                 stream.truncate()
@@ -135,11 +136,11 @@ class HomeModel:
                                     break
                 
                         # Write a length of zero to the stream to signal we're done
-                        conn.write(struct.pack('<L', 0))
+                        #conn.write(struct.pack('<L', 0))
 
             finally:
-                conn.close()
-                Connection.closeConn(socket)
+                #conn.close()
+                #Connection.closeConn(socket)
                 gc.collect()
         pass
   
@@ -150,4 +151,24 @@ class HomeModel:
             
         except EOFError as e:
             print(e)
-        
+    
+    def visualize_boxes_and_labels_on_image_array(image,
+                                              boxes,
+                                              classes,
+                                              scores,
+                                              category_index,
+                                              instance_masks=None,
+                                              keypoints=None,
+                                              use_normalized_coordinates=False,
+                                              max_boxes_to_draw=20,
+                                              min_score_thresh=.5,
+                                              agnostic_mode=False,
+                                              line_thickness=4):
+        box_to_display_str_map = collections.defaultdict(list)
+        box_to_color_map = collections.defaultdict(str)
+        box_to_instance_masks_map = {}
+        box_to_keypoints_map = collections.defaultdict(list)
+        if not max_boxes_to_draw:
+            max_boxes_to_draw = boxes.shape[0]
+        for i in range(min(max_boxes_to_draw, boxes.shape[0])):
+            print('Hola Mundo')
