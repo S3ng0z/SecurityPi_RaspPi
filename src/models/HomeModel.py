@@ -95,38 +95,43 @@ class HomeModel:
                 #detection of video
                 with detection_graph.as_default():
                     with tf.Session(graph=detection_graph) as sess:
-                        print('Holaaaaa')
+                        stream = io.BytesIO()
+                        for frame in camera.capture_continuous(stream, 'jpeg'):
+                            if(lproxy.get('killAll') == 0):
+                                break
+                            else:
+                                temp_name = next(tempfile._get_candidate_names()) + '.jpg'
+                                # Construct a numpy array from the stream
+                                data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                                # "Decode" the image from the array, preserving colour
+                                image = cv2.imdecode(data, 1)
+                                imS = cv2.resize(image, (960, 540))                # Resize image
+                                #cv2.imwrite(temp_name, imS)
+                                # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
+                                image_np_expanded = np.expand_dims(imS, axis=0)
+                                image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
+                                # Each box represents a part of the image where a particular object was detected.
+                                boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
+                                # Each score represent how level of confidence for each of the objects.
+                                # Score is shown on the result image, together with the class label.
+                                scores = detection_graph.get_tensor_by_name('detection_scores:0')
+                                classes = detection_graph.get_tensor_by_name('detection_classes:0')
+                                num_detections = detection_graph.get_tensor_by_name('num_detections:0')
+                                break
+                                conn.write(struct.pack('<L', stream.tell()))
+                                conn.flush()
+                                
+                                stream.seek(0)
+                                conn.write(stream.read())
+                                
+                                stream.seek(0)
+                                stream.truncate()
+                                if cv2.waitKey(1) == ord('q'):
+                                    print('Paso por aquí')
+                                    break
                 
-                print('Hola Mundo')
-                sys.exit("Marks is less than 20")
-
-                stream = io.BytesIO()
-                for frame in camera.capture_continuous(stream, 'jpeg'):
-                    if(lproxy.get('killAll') == 0):
-                        break
-                    else:
-                        temp_name = next(tempfile._get_candidate_names()) + '.jpg'
-                        # Construct a numpy array from the stream
-                        data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                        # "Decode" the image from the array, preserving colour
-                        image = cv2.imdecode(data, 1)
-                        imS = cv2.resize(image, (960, 540))                # Resize image
-                        #cv2.imwrite(temp_name, imS)
-
-                        conn.write(struct.pack('<L', stream.tell()))
-                        conn.flush()
-                        
-                        stream.seek(0)
-                        conn.write(stream.read())
-                        
-                        stream.seek(0)
-                        stream.truncate()
-                        if cv2.waitKey(1) == ord('q'):
-                            print('Paso por aquí')
-                            break
-                
-                # Write a length of zero to the stream to signal we're done
-                conn.write(struct.pack('<L', 0))
+                        # Write a length of zero to the stream to signal we're done
+                        conn.write(struct.pack('<L', 0))
 
             finally:
                 conn.close()
