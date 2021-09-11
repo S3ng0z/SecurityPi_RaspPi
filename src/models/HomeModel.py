@@ -217,4 +217,4 @@ class HomeModel:
                         box_to_color_map[box] = STANDARD_COLORS[
                             classes[i] % len(STANDARD_COLORS)]
 
-        print('-->'+box_to_color_map.items())
+        print('-->'+str(box_to_color_map.items()))
