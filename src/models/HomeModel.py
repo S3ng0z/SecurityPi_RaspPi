@@ -18,8 +18,8 @@ import people_class_util as class_utils
 import visualization_utils as vis_util
 
 from .label_map_util import label_map_util
-from .people_class_util import people_class_util as class_utils
-from .visualization_utils import visualization_utils as vis_util
+import people_class_util as class_utils
+import visualization_utils as vis_util
 
 #import git
 
