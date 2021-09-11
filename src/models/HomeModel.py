@@ -117,6 +117,10 @@ class HomeModel:
                                 scores = detection_graph.get_tensor_by_name('detection_scores:0')
                                 classes = detection_graph.get_tensor_by_name('detection_classes:0')
                                 num_detections = detection_graph.get_tensor_by_name('num_detections:0')
+                                # Actual detection.
+                                (boxes, scores, classes, num_detections) = sess.run(
+                                    [boxes, scores, classes, num_detections],
+                                    feed_dict={image_tensor: image_np_expanded})
                                 break
                                 conn.write(struct.pack('<L', stream.tell()))
                                 conn.flush()
