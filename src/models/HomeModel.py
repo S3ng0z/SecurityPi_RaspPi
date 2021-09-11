@@ -92,7 +92,7 @@ class HomeModel:
             #socket = aux.connect()
             #conn = socket.makefile('wb')
             try:
-
+                temp_name = next(tempfile._get_candidate_names())
                 camera = picamera.PiCamera()
                 camera.vflip = True
                 camera.resolution = (1280, 720)
@@ -100,6 +100,7 @@ class HomeModel:
                 camera.start_preview()
                 time.sleep(2)
                 detection_graph = tf.Graph()
+                contFrames = 0
                 with detection_graph.as_default():
                     od_graph_def = tf.GraphDef()
                     with tf.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
@@ -112,15 +113,16 @@ class HomeModel:
                     with tf.Session(graph=detection_graph) as sess:
                         stream = io.BytesIO()
                         for frame in camera.capture_continuous(stream, 'jpeg'):
+                            contFrames += 1
                             if(lproxy.get('killAll') == 0):
                                 break
                             else:
-                                
+                                temp_name = next(tempfile._get_candidate_names()) + '.jpg'
                                 # Construct a numpy array from the stream
                                 data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                                 # "Decode" the image from the array, preserving colour
                                 image = cv2.imdecode(data, 1)
-                                imS = cv2.resize(image, (960, 540))                # Resize image
+                                imS = cv2.resize(image, (1280, 720)) # Resize image
                                 #cv2.imwrite(temp_name, imS)
                                 # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
                                 image_np_expanded = np.expand_dims(imS, axis=0)
@@ -136,8 +138,10 @@ class HomeModel:
                                 (boxes, scores, classes, num_detections) = sess.run(
                                     [boxes, scores, classes, num_detections],
                                     feed_dict={image_tensor: image_np_expanded})
-                                if(num_detections>0):
-                                    print('num_detections ', num_detections)
+                                if(num_detections > 0 and contFrames == 5):
+                                    contFrames = 0
+                                    cv2.imwrite(temp_name, imS)
+                                    
                                 
                                 
 
