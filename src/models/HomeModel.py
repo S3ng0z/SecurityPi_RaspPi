@@ -13,13 +13,6 @@ import gc
 import tempfile
 import tensorflow as tf
 import six.moves.urllib as urllib
-import label_map_util
-import people_class_util as class_utils
-import visualization_utils as vis_util
-
-from .label_map_util import label_map_util
-import people_class_util as class_utils
-import visualization_utils as vis_util
 
 #import git
 
@@ -88,18 +81,21 @@ class HomeModel:
                         od_graph_def.ParseFromString(serialized_graph)
                         tf.import_graph_def(od_graph_def, name='')
 
-                # loading specified class/category description
-                label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
-                categories = label_map_util.convert_label_map_to_categories(
-                    label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
-                category_index = label_map_util.create_category_index(categories)
-
 
                 # some helper code
                 def load_image_into_numpy_array(image):
                     (im_width, im_height) = image.size
                     return np.array(image.getdata()).reshape(
                         (im_height, im_width, 3)).astype(np.uint8)
+                
+                # Size, in inches, of the output images.
+                IMAGE_SIZE = (12, 8)
+                i = 0
+                success = True
+                #detection of video
+                with detection_graph.as_default():
+                    with tf.Session(graph=detection_graph) as sess:
+                        print('Holaaaaa')
                 
                 print('Hola Mundo')
                 sys.exit("Marks is less than 20")
