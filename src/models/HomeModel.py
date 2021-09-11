@@ -148,12 +148,7 @@ class HomeModel:
                                     [boxes, scores, classes, num_detections],
                                     feed_dict={image_tensor: image_np_expanded})
 
-                                self.visualize_boxes_and_labels_on_image_array(imS,
-                                                                            np.squeeze(boxes),
-                                                                            np.squeeze(classes).astype(np.int32),
-                                                                            np.squeeze(scores),
-                                                                            use_normalized_coordinates=True,
-                                                                            line_thickness=8)
+                                print('boxes ',boxes, ' scores ', scores, ' classes ', classes, ' num_detections ', num_detections)
 
                                 #conn.write(struct.pack('<L', stream.tell()))
                                 #conn.flush()
