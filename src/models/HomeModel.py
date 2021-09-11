@@ -218,6 +218,3 @@ class HomeModel:
                             classes[i] % len(STANDARD_COLORS)]
 
         print('-->'+str(box_to_color_map.items()))
-        print('')
-        print('-->' +str(box_to_display_str_map))
-        print('')
