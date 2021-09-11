@@ -217,10 +217,7 @@ class HomeModel:
                         box_to_color_map[box] = STANDARD_COLORS[
                             classes[i] % len(STANDARD_COLORS)]
 
-            # Draw all boxes onto image.
-        for box, color in box_to_color_map.items():
-            ymin, xmin, ymax, xmax = box
-            print('-->'+str('***', box, ' ',color))
-            print('')
-            print('-->' +str(box_to_display_str_map[box]))
-            print('')
+        print('-->'+str(box_to_color_map.items()))
+        print('')
+        print('-->' +str(box_to_display_str_map))
+        print('')
