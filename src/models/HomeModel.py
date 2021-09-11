@@ -107,17 +107,6 @@ class HomeModel:
                         od_graph_def.ParseFromString(serialized_graph)
                         tf.import_graph_def(od_graph_def, name='')
 
-
-                # some helper code
-                def load_image_into_numpy_array(image):
-                    (im_width, im_height) = image.size
-                    return np.array(image.getdata()).reshape(
-                        (im_height, im_width, 3)).astype(np.uint8)
-                
-                # Size, in inches, of the output images.
-                IMAGE_SIZE = (12, 8)
-                i = 0
-                success = True
                 #detection of video
                 with detection_graph.as_default():
                     with tf.Session(graph=detection_graph) as sess:
@@ -147,8 +136,10 @@ class HomeModel:
                                 (boxes, scores, classes, num_detections) = sess.run(
                                     [boxes, scores, classes, num_detections],
                                     feed_dict={image_tensor: image_np_expanded})
-
-                                print('boxes ',boxes, ' scores ', scores, ' classes ', classes, ' num_detections ', num_detections)
+                                if(num_detections>0):
+                                    print('num_detections ', num_detections)
+                                
+                                
 
                                 #conn.write(struct.pack('<L', stream.tell()))
                                 #conn.flush()
