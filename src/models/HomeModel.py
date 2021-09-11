@@ -101,7 +101,7 @@ class HomeModel:
                             if(lproxy.get('killAll') == 0):
                                 break
                             else:
-                                temp_name = next(tempfile._get_candidate_names()) + '.jpg'
+                                
                                 # Construct a numpy array from the stream
                                 data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                                 # "Decode" the image from the array, preserving colour
@@ -161,7 +161,10 @@ class HomeModel:
         box_to_color_map = collections.defaultdict(str)
         box_to_instance_masks_map = {}
         box_to_keypoints_map = collections.defaultdict(list)
+        temp_name = next(tempfile._get_candidate_names()) + '.jpg'
+        cv2.imwrite(temp_name, image)
+        print(range(min(max_boxes_to_draw, boxes.shape[0])))
         if not max_boxes_to_draw:
             max_boxes_to_draw = boxes.shape[0]
-        for i in range(min(max_boxes_to_draw, boxes.shape[0])):
-            print('Hola Mundo')
+        #for i in range(min(max_boxes_to_draw, boxes.shape[0])):
+            #print('Hola Mundo')
