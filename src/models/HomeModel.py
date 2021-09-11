@@ -218,3 +218,20 @@ class HomeModel:
                             classes[i] % len(STANDARD_COLORS)]
 
         print('-->'+str(box_to_color_map.items()))
+        print('')
+        print('-->' +str(box_to_display_str_map[box]))
+        print('')
+
+            # Draw all boxes onto image.
+    for box, color in box_to_color_map.items():
+        ymin, xmin, ymax, xmax = box
+        draw_bounding_box_on_image_array(
+            image,
+            ymin,
+            xmin,
+            ymax,
+            xmax,
+            color=color,
+            thickness=line_thickness,
+            display_str_list=box_to_display_str_map[box],
+            use_normalized_coordinates=use_normalized_coordinates)
