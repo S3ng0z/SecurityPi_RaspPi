@@ -123,7 +123,12 @@ class HomeModel:
                                     [boxes, scores, classes, num_detections],
                                     feed_dict={image_tensor: image_np_expanded})
 
-                                self.visualize_boxes_and_labels_on_image_array(imS, np.squeeze(boxes))
+                                self.visualize_boxes_and_labels_on_image_array(imS,
+                                                                            np.squeeze(boxes),
+                                                                            np.squeeze(classes).astype(np.int32),
+                                                                            np.squeeze(scores),
+                                                                            use_normalized_coordinates=True,
+                                                                            line_thickness=8)
 
                                 #conn.write(struct.pack('<L', stream.tell()))
                                 #conn.flush()
@@ -156,7 +161,15 @@ class HomeModel:
     
     def visualize_boxes_and_labels_on_image_array(self, image,
                                               boxes,
-                                              max_boxes_to_draw=20):
+                                              classes,
+                                              scores,
+                                              instance_masks=None,
+                                              keypoints=None,
+                                              use_normalized_coordinates=False,
+                                              max_boxes_to_draw=20,
+                                              min_score_thresh=.5,
+                                              agnostic_mode=False,
+                                              line_thickness=4):
         box_to_display_str_map = collections.defaultdict(list)
         box_to_color_map = collections.defaultdict(str)
         box_to_instance_masks_map = {}
@@ -166,5 +179,15 @@ class HomeModel:
         print(range(min(max_boxes_to_draw, boxes.shape[0])))
         if not max_boxes_to_draw:
             max_boxes_to_draw = boxes.shape[0]
-        #for i in range(min(max_boxes_to_draw, boxes.shape[0])):
-            #print('Hola Mundo')
+        for i in range(min(max_boxes_to_draw, boxes.shape[0])):
+            if scores is None or scores[i] > min_score_thresh:
+                box = tuple(boxes[i].tolist())
+            if instance_masks is not None:
+                box_to_instance_masks_map[box] = instance_masks[i]
+            if keypoints is not None:
+                box_to_keypoints_map[box].extend(keypoints[i])
+            if scores is None:
+                #box_to_color_map[box] = 'black'
+                print('No hay nadie')
+            else:
+                print('hay personas')
