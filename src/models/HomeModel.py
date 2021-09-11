@@ -25,6 +25,31 @@ PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 # List of the strings that is used to add correct label for each box.
 PATH_TO_LABELS = 'person_label_map.pbtxt'
 NUM_CLASSES = 90
+STANDARD_COLORS = [
+    'AliceBlue', 'Chartreuse', 'Aqua', 'Aquamarine', 'Azure', 'Beige', 'Bisque',
+    'BlanchedAlmond', 'BlueViolet', 'BurlyWood', 'CadetBlue', 'AntiqueWhite',
+    'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson', 'Cyan',
+    'DarkCyan', 'DarkGoldenRod', 'DarkGrey', 'DarkKhaki', 'DarkOrange',
+    'DarkOrchid', 'DarkSalmon', 'DarkSeaGreen', 'DarkTurquoise', 'DarkViolet',
+    'DeepPink', 'DeepSkyBlue', 'DodgerBlue', 'FireBrick', 'FloralWhite',
+    'ForestGreen', 'Fuchsia', 'Gainsboro', 'GhostWhite', 'Gold', 'GoldenRod',
+    'Salmon', 'Tan', 'HoneyDew', 'HotPink', 'IndianRed', 'Ivory', 'Khaki',
+    'Lavender', 'LavenderBlush', 'LawnGreen', 'LemonChiffon', 'LightBlue',
+    'LightCoral', 'LightCyan', 'LightGoldenRodYellow', 'LightGray', 'LightGrey',
+    'LightGreen', 'LightPink', 'LightSalmon', 'LightSeaGreen', 'LightSkyBlue',
+    'LightSlateGray', 'LightSlateGrey', 'LightSteelBlue', 'LightYellow', 'Lime',
+    'LimeGreen', 'Linen', 'Magenta', 'MediumAquaMarine', 'MediumOrchid',
+    'MediumPurple', 'MediumSeaGreen', 'MediumSlateBlue', 'MediumSpringGreen',
+    'MediumTurquoise', 'MediumVioletRed', 'MintCream', 'MistyRose', 'Moccasin',
+    'NavajoWhite', 'OldLace', 'Olive', 'OliveDrab', 'Orange', 'OrangeRed',
+    'Orchid', 'PaleGoldenRod', 'PaleGreen', 'PaleTurquoise', 'PaleVioletRed',
+    'PapayaWhip', 'PeachPuff', 'Peru', 'Pink', 'Plum', 'PowderBlue', 'Purple',
+    'Red', 'RosyBrown', 'RoyalBlue', 'SaddleBrown', 'Green', 'SandyBrown',
+    'SeaGreen', 'SeaShell', 'Sienna', 'Silver', 'SkyBlue', 'SlateBlue',
+    'SlateGray', 'SlateGrey', 'Snow', 'SpringGreen', 'SteelBlue', 'GreenYellow',
+    'Teal', 'Thistle', 'Tomato', 'Turquoise', 'Violet', 'Wheat', 'White',
+    'WhiteSmoke', 'Yellow', 'YellowGreen'
+]
 
 """
     Model description
@@ -174,20 +199,22 @@ class HomeModel:
         box_to_color_map = collections.defaultdict(str)
         box_to_instance_masks_map = {}
         box_to_keypoints_map = collections.defaultdict(list)
-        temp_name = next(tempfile._get_candidate_names()) + '.jpg'
-        cv2.imwrite(temp_name, image)
-        print(range(min(max_boxes_to_draw, boxes.shape[0])))
         if not max_boxes_to_draw:
             max_boxes_to_draw = boxes.shape[0]
         for i in range(min(max_boxes_to_draw, boxes.shape[0])):
             if scores is None or scores[i] > min_score_thresh:
                 box = tuple(boxes[i].tolist())
-            if instance_masks is not None:
-                box_to_instance_masks_map[box] = instance_masks[i]
-            if keypoints is not None:
-                box_to_keypoints_map[box].extend(keypoints[i])
-            if scores is None:
-                #box_to_color_map[box] = 'black'
-                print('No hay nadie')
-            else:
-                print('hay personas')
+                if instance_masks is not None:
+                    box_to_instance_masks_map[box] = instance_masks[i]
+                if keypoints is not None:
+                    box_to_keypoints_map[box].extend(keypoints[i])
+                if scores is None:
+                    box_to_color_map[box] = 'black'
+                else:
+                    if agnostic_mode:
+                        box_to_color_map[box] = 'DarkOrange'
+                    else:
+                        box_to_color_map[box] = STANDARD_COLORS[
+                            classes[i] % len(STANDARD_COLORS)]
+
+        print('-->'+box_to_color_map.items())
