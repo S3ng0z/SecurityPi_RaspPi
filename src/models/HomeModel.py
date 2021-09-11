@@ -113,7 +113,6 @@ class HomeModel:
                     with tf.Session(graph=detection_graph) as sess:
                         stream = io.BytesIO()
                         for frame in camera.capture_continuous(stream, 'jpeg'):
-                            contFrames += 1
                             if(lproxy.get('killAll') == 0):
                                 break
                             else:
@@ -138,11 +137,9 @@ class HomeModel:
                                 (boxes, scores, classes, num_detections) = sess.run(
                                     [boxes, scores, classes, num_detections],
                                     feed_dict={image_tensor: image_np_expanded})
-                                if(contFrames == 5):
-                                    contFrames = 0
-                                    if(num_detections > 0):
-                                        print('num_detections ', num_detections)
-                                        cv2.imwrite(temp_name, imS)
+                                if(num_detections > 0):
+                                    print('num_detections ', num_detections)
+                                    cv2.imwrite(temp_name, imS)
                                     
                                 #conn.write(struct.pack('<L', stream.tell()))
                                 #conn.flush()
