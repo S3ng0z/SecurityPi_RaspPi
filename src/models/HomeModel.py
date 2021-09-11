@@ -138,13 +138,11 @@ class HomeModel:
                                 (boxes, scores, classes, num_detections) = sess.run(
                                     [boxes, scores, classes, num_detections],
                                     feed_dict={image_tensor: image_np_expanded})
-                                if(num_detections > 0 and contFrames == 5):
+                                if(contFrames == 5):
                                     contFrames = 0
-                                    cv2.imwrite(temp_name, imS)
+                                    if(num_detections > 0):
+                                        cv2.imwrite(temp_name, imS)
                                     
-                                
-                                
-
                                 #conn.write(struct.pack('<L', stream.tell()))
                                 #conn.flush()
                                 
