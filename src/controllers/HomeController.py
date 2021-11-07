@@ -59,6 +59,9 @@ class HomeController(Controller):
 
             reviewScreenshots = multiprocessing.Process(target=self.homeModel.workerReviewScreenshots, args=(lproxy,))
             processes.append(reviewScreenshots)
+
+            sendScreenShoot = multiprocessing.Process(target=self.homeModel.workerSendScreenshots, args=(lproxy,))
+            processes.append(sendScreenShoot)
             
             cam = multiprocessing.Process(target=self.homeModel.workerCAM, args=(lproxy,))
             processes.append(cam)

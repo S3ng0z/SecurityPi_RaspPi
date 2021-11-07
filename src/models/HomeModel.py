@@ -139,7 +139,9 @@ class HomeModel:
                                     feed_dict={image_tensor: image_np_expanded})
                                 if(num_detections > 0):
                                     print('num_detections ', num_detections)
-                                    cv2.imwrite(temp_name, imS)
+                                    if not os.path.isdir(APP_PATH+'/store'):
+                                        os.mkdir(APP_PATH+'/store')
+                                    cv2.imwrite((APP_PATH+'/store/'+temp_name), imS)
                                     
                                 #conn.write(struct.pack('<L', stream.tell()))
                                 #conn.flush()
@@ -163,44 +165,49 @@ class HomeModel:
         pass
   
     def workerReviewScreenshots(self, lproxy):
-        sys.stdin = open(0)
-        try:
-            lproxy['killAll'] = int(input())
-            
-        except EOFError as e:
-            print(e)
-    
-    def visualize_boxes_and_labels_on_image_array(self, image,
-                                              boxes,
-                                              classes,
-                                              scores,
-                                              instance_masks=None,
-                                              keypoints=None,
-                                              use_normalized_coordinates=False,
-                                              max_boxes_to_draw=20,
-                                              min_score_thresh=.5,
-                                              agnostic_mode=False,
-                                              line_thickness=4):
-        box_to_display_str_map = collections.defaultdict(list)
-        box_to_color_map = collections.defaultdict(str)
-        box_to_instance_masks_map = {}
-        box_to_keypoints_map = collections.defaultdict(list)
-        if not max_boxes_to_draw:
-            max_boxes_to_draw = boxes.shape[0]
-        for i in range(min(max_boxes_to_draw, boxes.shape[0])):
-            if scores is None or scores[i] > min_score_thresh:
-                box = tuple(boxes[i].tolist())
-                if instance_masks is not None:
-                    box_to_instance_masks_map[box] = instance_masks[i]
-                if keypoints is not None:
-                    box_to_keypoints_map[box].extend(keypoints[i])
-                if scores is None:
-                    box_to_color_map[box] = 'black'
-                else:
-                    if agnostic_mode:
-                        box_to_color_map[box] = 'DarkOrange'
-                    else:
-                        box_to_color_map[box] = STANDARD_COLORS[
-                            classes[i] % len(STANDARD_COLORS)]
+        pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_alt2.xml';
+        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
+        if not os.path.isdir(APP_PATH+'/store'):
+            os.mkdir(APP_PATH+'/store')
+        
+        if not os.path.isdir(APP_PATH+'/sender'):
+            os.mkdir(APP_PATH+'/sender')
+        
+        while lproxy.get('killAll') != 0:
+            path, dirs, files = next(os.walk(APP_PATH+'/store'))
+            file_count = len(files)
+            if(file_count > 0):
+                for filename in os.listdir('./store'):
+                    if filename.endswith(".jpg") or filename.endswith(".png"):
+                        image = cv2.imread(os.path.join('./store', filename))
+                        grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                        facesContainer = faceCascade.detectMultiScale(grayScale, scaleFactor = 1.1, minNeighbors = 15, minSize = (70, 70))
+                        for(x, y, w, h) in facesContainer:
+                            cv2.rectangle(grayScale, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                            roiColor = cv2.resize(grayScale[y:(y + h), x:(x + h)], (w, h), interpolation = cv2.INTER_AREA)
+                            if not os.path.isdir(APP_PATH+'/store/facesContainer'):
+                                os.mkdir(APP_PATH+'/store/facesContainer')
+                            
+                            tempName = next(tempfile._get_candidate_names())
+                            img = cv2.GaussianBlur(roiColor, (3,3), 0)
+                            
+                            #self.homeModel.log('[INFO] ' + tempName + ' only GB: ' + str(img) + ' GB+LP: ' + str(self.varianceLaplacian(img)) + ' LP: ' + str(self.varianceLaplacian(roiColor)))
+                            print('[INFO] ' + tempName + ' LP: ' + str(self.varianceLaplacian(img)) + ' LP: ' + str(self.varianceLaplacian(roiColor)))
+                            cv2.imwrite((APP_PATH+'/store/facesContainer/'+str(tempName)+'.jpg'), roiColor)
+                    cv2.imwrite((APP_PATH+'/sender/'+str(filename)+'.jpg'), image)
+                    os.remove(os.path.join('./store', filename))
 
-        print('-->'+str(box_to_color_map.items()))
+
+    def workerSendScreenshots(self, lproxy):
+        pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_alt2.xml';
+        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
+        if not os.path.isdir(APP_PATH+'/store'):
+            os.mkdir(APP_PATH+'/store')
+        
+        while lproxy.get('killAll') != 0:
+            path, dirs, files = next(os.walk(APP_PATH+'/store'))
+            file_count = len(files)
+            if(file_count > 0):
+                for filename in os.listdir('./store'):
+                    if filename.endswith(".jpg") or filename.endswith(".png"):
+                        print('Hola Mundo')
