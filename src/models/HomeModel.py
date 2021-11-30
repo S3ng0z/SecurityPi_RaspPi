@@ -17,6 +17,7 @@ import tensorflow as tf
 import six.moves.urllib as urllib
 import collections
 import imutils
+from imutils.video import VideoStream
 #import git
 
 path = ''
@@ -95,12 +96,13 @@ class HomeModel:
             conn = socket.makefile('wb')
             try:
                 temp_name = next(tempfile._get_candidate_names())
-                camera = picamera.PiCamera()
-                camera.vflip = True
+                #camera = picamera.PiCamera()
+                camera = VideoStream(usePiCamera=1).start()
+                #camera.vflip = True
                 #camera.resolution = (1280, 720)
-                camera.resolution = (1280, 720)
+                #camera.resolution = (1280, 720)
                 # Start a preview and let the camera warm up for 2 seconds
-                camera.start_preview()
+                #camera.start_preview()
                 time.sleep(2)
                 '''
                 detection_graph = tf.Graph()
@@ -120,17 +122,18 @@ class HomeModel:
                 #rawCapture = PiRGBArray(camera, size=(640, 480))
                 md = SingleMotionDetector(accumWeight=0.1)
                 total = 0
-                for frame in camera.capture_continuous(stream, 'jpeg'):
+                #for frame in camera.capture_continuous(stream, 'jpeg'):
                 #for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+                while True:
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
-                        data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                        image = cv2.imdecode(data, 1)
-                        frame = imutils.resize(image, width=720)
+                        #data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                        #image = cv2.imdecode(data, 1)
+                        frame = camera.read()
+                        frame = imutils.resize(frame, width=720)
                         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                         gray = cv2.GaussianBlur(gray, (7, 7), 0)
-                        print(image)
                         # grab the current timestamp and draw it on the frame
                         timestamp = datetime.now()
                         cv2.putText(frame, timestamp.strftime(
@@ -158,6 +161,7 @@ class HomeModel:
                         #stream.seek(0)
                         #conn.write(stream.read())
 
+'''
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
 
@@ -169,7 +173,7 @@ class HomeModel:
                         if cv2.waitKey(1) == ord('q'):
                             print('Paso por aquí')
                             break
-
+'''
                         # Write a length of zero to the stream to signal we're done
                         conn.write(struct.pack('<L', 0))
                         
