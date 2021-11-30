@@ -162,7 +162,7 @@ class HomeModel:
                         #rawCapture.truncate(0)
                         #stream.seek(0)
                         #conn.write(stream.read())
-                        conn.write(struct.pack('<L', stream.tell()))
+                        #conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
                         conn.write(img_str)
                         if cv2.waitKey(1) == ord('q'):
@@ -183,7 +183,7 @@ class HomeModel:
                             break
                         '''
                         # Write a length of zero to the stream to signal we're done
-                        conn.write(struct.pack('<L', 0))
+                        #conn.write(struct.pack('<L', 0))
                         
                         
                         '''
