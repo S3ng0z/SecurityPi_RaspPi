@@ -3,7 +3,7 @@ import socket
 
 class Connection:
 
-    URL = '192.168.0.59'
+    URL = '192.168.0.30'
     PORT = 8000
 
     def __init__(self):
