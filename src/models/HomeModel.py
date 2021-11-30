@@ -97,7 +97,7 @@ class HomeModel:
             temp_name = next(tempfile._get_candidate_names())
             camera = picamera.PiCamera()
             camera.vflip = True
-            camera.resolution = (1280, 720)
+            camera.resolution = (640, 480)
             # Start a preview and let the camera warm up for 2 seconds
             camera.start_preview()
             time.sleep(2)
@@ -116,7 +116,7 @@ class HomeModel:
             with detection_graph.as_default():
                 with tf.Session(graph=detection_graph) as sess'''
             #stream = io.BytesIO()
-            rawCapture = PiRGBArray(camera, size=(640, 400))
+            rawCapture = PiRGBArray(camera, size=(640, 480))
             md = SingleMotionDetector(accumWeight=0.1)
             total = 0
             #for frame in camera.capture_continuous(stream, 'jpeg'):
@@ -125,7 +125,7 @@ class HomeModel:
                     break
                 else:
                     image = frame.array
-                    frame = imutils.resize(image, width=400)
+                    frame = imutils.resize(image, width=480)
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     gray = cv2.GaussianBlur(gray, (7, 7), 0)
                 
