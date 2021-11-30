@@ -122,101 +122,101 @@ class HomeModel:
                 total = 0
                 for frame in camera.capture_continuous(stream, 'jpeg'):
                 #for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-                    '''if(lproxy.get('killAll') == 0):
+                    if(lproxy.get('killAll') == 0):
                         break
-                    else:'''
-                    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                    image = cv2.imdecode(data, 1)
-                    frame = imutils.resize(image, width=720)
-                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                    gray = cv2.GaussianBlur(gray, (7, 7), 0)
-                    print(image)
-                    # grab the current timestamp and draw it on the frame
-                    timestamp = datetime.now()
-                    cv2.putText(frame, timestamp.strftime(
-                        "%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
-                    # update the background model and increment the total number
-                    # of frames read thus far
-                    md.update(gray)
-                    if(total%10 == 0):
-                        # detect motion in the image
-                        motion = md.detect(gray)
+                    else:
+                        data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                        image = cv2.imdecode(data, 1)
+                        frame = imutils.resize(image, width=720)
+                        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                        gray = cv2.GaussianBlur(gray, (7, 7), 0)
+                        print(image)
+                        # grab the current timestamp and draw it on the frame
+                        timestamp = datetime.now()
+                        cv2.putText(frame, timestamp.strftime(
+                            "%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+                        # update the background model and increment the total number
+                        # of frames read thus far
+                        md.update(gray)
+                        if(total%10 == 0):
+                            # detect motion in the image
+                            motion = md.detect(gray)
 
-                        # cehck to see if motion was found in the frame
-                        if motion is not None:
-                            # unpack the tuple and draw the box surrounding the
-                            # "motion area" on the output frame
-                            (thresh, (minX, minY, maxX, maxY)) = motion
-                            cv2.rectangle(frame, (minX, minY), (maxX, maxY),
-                                                (0, 0, 255), 2)
+                            # cehck to see if motion was found in the frame
+                            if motion is not None:
+                                # unpack the tuple and draw the box surrounding the
+                                # "motion area" on the output frame
+                                (thresh, (minX, minY, maxX, maxY)) = motion
+                                cv2.rectangle(frame, (minX, minY), (maxX, maxY),
+                                                    (0, 0, 255), 2)
+                            
                         
-                    
-                    total += 1
-                    # clear the stream in preparation for the next frame
-                    #rawCapture.truncate(0)
-                    #stream.seek(0)
-                    #conn.write(stream.read())
+                        total += 1
+                        # clear the stream in preparation for the next frame
+                        #rawCapture.truncate(0)
+                        #stream.seek(0)
+                        #conn.write(stream.read())
 
-                    conn.write(struct.pack('<L', stream.tell()))
-                    conn.flush()
+                        conn.write(struct.pack('<L', stream.tell()))
+                        conn.flush()
 
-                    stream.seek(0)
-                    conn.write(stream.read())
+                        stream.seek(0)
+                        conn.write(stream.read())
 
-                    stream.seek(0)
-                    stream.truncate()
-                    if cv2.waitKey(1) == ord('q'):
-                        print('Paso por aquí')
-                        break
+                        stream.seek(0)
+                        stream.truncate()
+                        if cv2.waitKey(1) == ord('q'):
+                            print('Paso por aquí')
+                            break
 
-                    # Write a length of zero to the stream to signal we're done
-                    conn.write(struct.pack('<L', 0))
-                    
-                    
-                    '''
-                    temp_name = next(tempfile._get_candidate_names()) + '.jpg'
-                    # Construct a numpy array from the stream
-                    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                    # "Decode" the image from the array, preserving colour
-                    image = cv2.imdecode(data, 1)
-                    imS = cv2.resize(image, (1280, 720)) # Resize image
-                    #cv2.imwrite(temp_name, imS)
-                    # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
-                    image_np_expanded = np.expand_dims(imS, axis=0)
-                    image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
-                    # Each box represents a part of the image where a particular object was detected.
-                    boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
-                    # Each score represent how level of confidence for each of the objects.
-                    # Score is shown on the result image, together with the class label.
-                    scores = detection_graph.get_tensor_by_name('detection_scores:0')
-                    classes = detection_graph.get_tensor_by_name('detection_classes:0')
-                    num_detections = detection_graph.get_tensor_by_name('num_detections:0')
-                    # Actual detection.
-                    (boxes, scores, classes, num_detections) = sess.run(
-                        [boxes, scores, classes, num_detections],
-                        feed_dict={image_tensor: image_np_expanded})
-                    if(num_detections > 0):
-                        print('num_detections ', num_detections)
-                        if not os.path.isdir(APP_PATH+'/store'):
-                            os.mkdir(APP_PATH+'/store')
-                        cv2.imwrite((APP_PATH+'/store/'+temp_name), imS)
+                        # Write a length of zero to the stream to signal we're done
+                        conn.write(struct.pack('<L', 0))
                         
-                    #conn.write(struct.pack('<L', stream.tell()))
-                    #conn.flush()
-                    
-                    stream.seek(0)
-                    #conn.write(stream.read())
-                    
-                    stream.seek(0)
-                    stream.truncate()
-                    if cv2.waitKey(1) == ord('q'):
-                        print('Paso por aquí')
-                        break
-            
-                    # Write a length of zero to the stream to signal we're done
-                    #conn.write(struct.pack('<L', 0))
-                    '''
+                        
+                        '''
+                        temp_name = next(tempfile._get_candidate_names()) + '.jpg'
+                        # Construct a numpy array from the stream
+                        data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                        # "Decode" the image from the array, preserving colour
+                        image = cv2.imdecode(data, 1)
+                        imS = cv2.resize(image, (1280, 720)) # Resize image
+                        #cv2.imwrite(temp_name, imS)
+                        # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
+                        image_np_expanded = np.expand_dims(imS, axis=0)
+                        image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
+                        # Each box represents a part of the image where a particular object was detected.
+                        boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
+                        # Each score represent how level of confidence for each of the objects.
+                        # Score is shown on the result image, together with the class label.
+                        scores = detection_graph.get_tensor_by_name('detection_scores:0')
+                        classes = detection_graph.get_tensor_by_name('detection_classes:0')
+                        num_detections = detection_graph.get_tensor_by_name('num_detections:0')
+                        # Actual detection.
+                        (boxes, scores, classes, num_detections) = sess.run(
+                            [boxes, scores, classes, num_detections],
+                            feed_dict={image_tensor: image_np_expanded})
+                        if(num_detections > 0):
+                            print('num_detections ', num_detections)
+                            if not os.path.isdir(APP_PATH+'/store'):
+                                os.mkdir(APP_PATH+'/store')
+                            cv2.imwrite((APP_PATH+'/store/'+temp_name), imS)
+                            
+                        #conn.write(struct.pack('<L', stream.tell()))
+                        #conn.flush()
+                        
+                        stream.seek(0)
+                        #conn.write(stream.read())
+                        
+                        stream.seek(0)
+                        stream.truncate()
+                        if cv2.waitKey(1) == ord('q'):
+                            print('Paso por aquí')
+                            break
+                
+                        # Write a length of zero to the stream to signal we're done
+                        #conn.write(struct.pack('<L', 0))
+                        '''
             finally:
                 conn.close()
                 aux.closeConn(socket)
