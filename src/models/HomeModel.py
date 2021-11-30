@@ -135,6 +135,7 @@ class HomeModel:
                         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                         gray = cv2.GaussianBlur(gray, (7, 7), 0)
                         # grab the current timestamp and draw it on the frame
+                        img_str = cv2.imencode('.jpg', frame)[1].tostring()
                         timestamp = datetime.now()
                         cv2.putText(frame, timestamp.strftime(
                             "%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0] - 10),
@@ -156,11 +157,12 @@ class HomeModel:
                             
                         
                         total += 1
+
                         # clear the stream in preparation for the next frame
                         #rawCapture.truncate(0)
                         #stream.seek(0)
                         #conn.write(stream.read())
-
+                        conn.write(img_str)
                         '''
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
