@@ -97,6 +97,7 @@ class HomeModel:
             temp_name = next(tempfile._get_candidate_names())
             camera = picamera.PiCamera()
             camera.vflip = True
+            #camera.resolution = (1280, 720)
             camera.resolution = (640, 480)
             # Start a preview and let the camera warm up for 2 seconds
             camera.start_preview()
@@ -131,7 +132,7 @@ class HomeModel:
                 
                     # grab the current timestamp and draw it on the frame
                     timestamp = datetime.now()
-                    cv2.putText(imS, timestamp.strftime(
+                    cv2.putText(frame, timestamp.strftime(
                         "%A %d %B %Y %I:%M:%S%p"), (10, imS.shape[0] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
                     
