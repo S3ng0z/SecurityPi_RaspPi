@@ -122,6 +122,7 @@ class HomeModel:
                 total = 0
                 for frame in camera.capture_continuous(stream, 'jpeg'):
                 #for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+                    print(frame)
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
