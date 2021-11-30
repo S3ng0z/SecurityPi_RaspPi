@@ -98,7 +98,7 @@ class HomeModel:
                 camera = picamera.PiCamera()
                 camera.vflip = True
                 #camera.resolution = (1280, 720)
-                camera.resolution = (640, 480)
+                camera.resolution = (1280, 720)
                 # Start a preview and let the camera warm up for 2 seconds
                 camera.start_preview()
                 time.sleep(2)
@@ -122,13 +122,12 @@ class HomeModel:
                 total = 0
                 for frame in camera.capture_continuous(stream, 'jpeg'):
                 #for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-                    print(frame)
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
                         data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                         image = cv2.imdecode(data, 1)
-                        frame = imutils.resize(image, width=480)
+                        frame = imutils.resize(image, width=720)
                         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                         gray = cv2.GaussianBlur(gray, (7, 7), 0)
                         print(image)
