@@ -6,6 +6,7 @@ import io
 import struct
 import sys
 from models.singlemotiondetector import SingleMotionDetector
+from picamera.array import PiRGBArray
 import picamera
 from .Connection import Connection
 import cv2
@@ -114,14 +115,17 @@ class HomeModel:
             '''
             with detection_graph.as_default():
                 with tf.Session(graph=detection_graph) as sess'''
-            stream = io.BytesIO()
+            #stream = io.BytesIO()
+            rawCapture = PiRGBArray(camera, size=(640, 400))
             md = SingleMotionDetector(accumWeight=0.1)
             total = 0
-            for frame in camera.capture_continuous(stream, 'jpeg'):
+            #for frame in camera.capture_continuous(stream, 'jpeg'):
+            for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
                 if(lproxy.get('killAll') == 0):
                     break
                 else:
-                    frame = imutils.resize(frame, width=400)
+                    image = frame.array
+                    frame = imutils.resize(image, width=400)
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     gray = cv2.GaussianBlur(gray, (7, 7), 0)
                 
