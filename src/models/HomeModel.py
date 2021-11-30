@@ -161,7 +161,7 @@ class HomeModel:
                         #stream.seek(0)
                         #conn.write(stream.read())
 
-'''
+                        '''
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
 
@@ -173,7 +173,7 @@ class HomeModel:
                         if cv2.waitKey(1) == ord('q'):
                             print('Paso por aquí')
                             break
-'''
+                        '''
                         # Write a length of zero to the stream to signal we're done
                         conn.write(struct.pack('<L', 0))
                         
