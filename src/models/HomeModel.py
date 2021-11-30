@@ -125,7 +125,9 @@ class HomeModel:
                     if(lproxy.get('killAll') == 0):
                         break
                     else:
-                        image = frame.array
+                        data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                        image = cv2.imdecode(data, 1)
+                        image = image.array
                         frame = imutils.resize(image, width=480)
                         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                         gray = cv2.GaussianBlur(gray, (7, 7), 0)
