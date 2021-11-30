@@ -162,7 +162,13 @@ class HomeModel:
                         #rawCapture.truncate(0)
                         #stream.seek(0)
                         #conn.write(stream.read())
+                        conn.write(struct.pack('<L', stream.tell()))
+                        conn.flush()
                         conn.write(img_str)
+                        if cv2.waitKey(1) == ord('q'):
+                            print('Paso por aquí')
+                            break
+                        
                         '''
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
