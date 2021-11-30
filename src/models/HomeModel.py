@@ -152,6 +152,8 @@ class HomeModel:
                         
                     
                     total += 1
+                    # clear the stream in preparation for the next frame
+                    rawCapture.truncate(0)
                     
                     
                     '''
