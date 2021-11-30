@@ -162,11 +162,7 @@ class HomeModel:
                     conn.flush()
 
                     stream.seek(0)
-                    try:
-                        conn.write(stream.read())
-                    except:
-                        pass
-                    
+                    conn.write(stream.read())
 
                     stream.seek(0)
                     stream.truncate()
