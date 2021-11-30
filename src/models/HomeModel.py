@@ -15,6 +15,7 @@ import tempfile
 import tensorflow as tf
 import six.moves.urllib as urllib
 import collections
+import imutils
 #import git
 
 path = ''
@@ -124,7 +125,7 @@ class HomeModel:
                     data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                     # "Decode" the image from the array, preserving colour
                     image = cv2.imdecode(data, 1)
-                    imS = cv2.resize(image, (1280, 720))  # Resize image
+                    imS = imutils.resize(image, width=400)  # Resize image
                     gray = cv2.cvtColor(imS, cv2.COLOR_BGR2GRAY)
                     gray = cv2.GaussianBlur(gray, (7, 7), 0)
                 
