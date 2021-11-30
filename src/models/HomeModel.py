@@ -121,12 +121,8 @@ class HomeModel:
                 if(lproxy.get('killAll') == 0):
                     break
                 else:
-                    # Construct a numpy array from the stream
-                    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                    # "Decode" the image from the array, preserving colour
-                    image = cv2.imdecode(data, 1)
-                    imS = imutils.resize(image, width=400)  # Resize image
-                    gray = cv2.cvtColor(imS, cv2.COLOR_BGR2GRAY)
+                    frame = imutils.resize(frame, width=400)
+                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     gray = cv2.GaussianBlur(gray, (7, 7), 0)
                 
                     # grab the current timestamp and draw it on the frame
