@@ -130,7 +130,7 @@ class HomeModel:
                         frame = imutils.resize(image, width=480)
                         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                         gray = cv2.GaussianBlur(gray, (7, 7), 0)
-                    
+                        print(image)
                         # grab the current timestamp and draw it on the frame
                         timestamp = datetime.now()
                         cv2.putText(frame, timestamp.strftime(
