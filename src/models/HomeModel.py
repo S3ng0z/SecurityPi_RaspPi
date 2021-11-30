@@ -219,7 +219,6 @@ class HomeModel:
             finally:
                 conn.close()
                 aux.closeConn(socket)
-                camera.stop_preview()
                 gc.collect()
         pass
   
