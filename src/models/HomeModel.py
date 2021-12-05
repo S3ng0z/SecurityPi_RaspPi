@@ -18,6 +18,7 @@ import six.moves.urllib as urllib
 import collections
 import imutils
 from imutils.video import VideoStream
+import pickle
 #import git
 
 path = ''
@@ -97,12 +98,18 @@ class HomeModel:
             try:
                 temp_name = next(tempfile._get_candidate_names())
                 #camera = picamera.PiCamera()
-                camera = VideoStream(usePiCamera=1).start()
+                #camera = VideoStream(usePiCamera=1).start()
                 #camera.vflip = True
                 #camera.resolution = (1280, 720)
                 #camera.resolution = (1280, 720)
                 # Start a preview and let the camera warm up for 2 seconds
                 #camera.start_preview()
+                
+                cap = cv2.VideoCapture(0)
+                cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+                cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+                cap.set(cv2.CAP_PROP_FPS, 40)
+                
                 time.sleep(2)
                 '''
                 detection_graph = tf.Graph()
@@ -122,6 +129,8 @@ class HomeModel:
                 #rawCapture = PiRGBArray(camera, size=(640, 480))
                 md = SingleMotionDetector(accumWeight=0.1)
                 total = 0
+                encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+                img_counter = 0
                 #for frame in camera.capture_continuous(stream, 'jpeg'):
                 #for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
                 while True:
@@ -130,7 +139,8 @@ class HomeModel:
                     else:
                         #data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                         #image = cv2.imdecode(data, 1)
-                        frame = camera.read()
+                        '''
+                        frame = cap.read()
                         frame = imutils.resize(frame, width=720)
                         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                         gray = cv2.GaussianBlur(gray, (7, 7), 0)
@@ -157,18 +167,18 @@ class HomeModel:
                             
                         
                         total += 1
-
-                        # clear the stream in preparation for the next frame
-                        #rawCapture.truncate(0)
-                        #stream.seek(0)
-                        #conn.write(stream.read())
-                        #conn.write(struct.pack('<L', stream.tell()))
-                        conn.flush()
-                        conn.write(img_str)
-                        if cv2.waitKey(1) == ord('q'):
-                            print('Paso por aquí')
-                            break
                         
+                        result, frame = cv2.imencode('.jpg', frame, encode_param)
+                        '''
+                        ret, frame = cap.read()
+                        result, frame = cv2.imencode('.jpg', frame, encode_param)
+                    #    data = zlib.compress(pickle.dumps(frame, 0))
+                        data = pickle.dumps(frame, 0)
+                        size = len(data)
+
+                        print("{}: {}".format(img_counter, size))
+                        socket.sendall(struct.pack(">L", size) + data)
+                        img_counter += 1
                         '''
                         conn.write(struct.pack('<L', stream.tell()))
                         conn.flush()
