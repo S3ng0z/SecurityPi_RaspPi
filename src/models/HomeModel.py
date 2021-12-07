@@ -97,8 +97,8 @@ class HomeModel:
         client_socket.connect(('192.168.228.31', 8000))
         connection = client_socket.makefile('wb')
         
-        pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_alt2.xml'
-        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
+        faceCascade = cv2.CascadeClassifier(
+            cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
         #cam = cv2.VideoCapture(0)
         #cam = cv2.VideoCapture(-1, cv2.CAP_V4L)
@@ -186,8 +186,9 @@ class HomeModel:
         pass
   
     def workerReviewScreenshots(self, lproxy):
-        pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_alt2.xml';
-        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
+        #pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_alt2.xml';
+        #faceCascade = cv2.CascadeClassifier(pathHaarcascade)
+        faceCascade = cv2.CascadeClassifier( cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         if not os.path.isdir(APP_PATH+'/store'):
             os.mkdir(APP_PATH+'/store')
         
