@@ -94,10 +94,11 @@ class HomeModel:
     def workerCAM(self, lproxy):
 
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(('192.168.228.31', 8485))
+        client_socket.connect(('192.168.228.31', 8000))
         connection = client_socket.makefile('wb')
 
-        cam = cv2.VideoCapture(0)
+        #cam = cv2.VideoCapture(0)
+        cam = cv2.VideoCapture(-1, cv2.CAP_V4L)
 
         cam.set(3, 320);
         cam.set(4, 240);
