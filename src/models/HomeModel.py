@@ -106,11 +106,39 @@ class HomeModel:
         img_counter = 0
 
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+        md = SingleMotionDetector(accumWeight=0.1)
 
         while True:
             ret, frame = cam.read()
+            frame = imutils.resize(frame, width=400)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            gray = cv2.GaussianBlur(gray, (7, 7), 0)
+
+            # grab the current timestamp and draw it on the frame
+            timestamp = datetime.datetime.now()
+            cv2.putText(frame, timestamp.strftime(
+                    "%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0] - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+
+            # if the total number of frames has reached a sufficient
+            # number to construct a reasonable background model, then
+            # continue to process the frame
+            # detect motion in the image
+            motion = md.detect(gray)
+
+            # cehck to see if motion was found in the frame
+            if motion is not None:
+                # unpack the tuple and draw the box surrounding the
+                # "motion area" on the output frame
+                (thresh, (minX, minY, maxX, maxY)) = motion
+                cv2.rectangle(frame, (minX, minY), (maxX, maxY),
+                                    (0, 0, 255), 2)
+
+            # update the background model and increment the total number
+            # of frames read thus far
+            md.update(gray)
             result, frame = cv2.imencode('.jpg', frame, encode_param)
-        #    data = zlib.compress(pickle.dumps(frame, 0))
+            #data = zlib.compress(pickle.dumps(frame, 0))
             data = pickle.dumps(frame, 0)
             size = len(data)
 
