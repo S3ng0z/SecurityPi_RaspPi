@@ -138,7 +138,7 @@ class HomeModel:
                     image = cv2.imdecode(data, 1)
                     # Resize image
                     imS = cv2.resize(image, (720, 680))
-                    if total % 60 == 0:
+                    if total % 10 == 0:
                         total = 0;
                         image_np_expanded = np.expand_dims(imS, axis=0)
                         image_tensor = detection_graph.get_tensor_by_name(
