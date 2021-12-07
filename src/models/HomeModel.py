@@ -97,7 +97,7 @@ class HomeModel:
         client_socket.connect(('192.168.228.31', 8000))
         connection = client_socket.makefile('wb')
         
-        faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+        faceCascade = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")
 
         #cam = cv2.VideoCapture(0)
         #cam = cv2.VideoCapture(-1, cv2.CAP_V4L)
