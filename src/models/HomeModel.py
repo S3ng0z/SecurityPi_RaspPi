@@ -120,15 +120,15 @@ class HomeModel:
         total = 0
         
         with detection_graph.as_default():
-            od_graph_def = tf.GraphDef()
-            with tf.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
+            od_graph_def = tf.compat.v1.GraphDef()
+            with tf.io.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
                 serialized_graph = fid.read()
                 od_graph_def.ParseFromString(serialized_graph)
                 tf.import_graph_def(od_graph_def, name='')
 
         #detection of video
         with detection_graph.as_default():
-            with tf.Session(graph=detection_graph) as sess:
+            with tf.compat.v1.Session(graph=detection_graph) as sess:
                 stream = io.BytesIO()
                 #while True:
                 for frame in camera.capture_continuous(stream, 'jpeg'):
@@ -138,7 +138,7 @@ class HomeModel:
                     image = cv2.imdecode(data, 1)
                     # Resize image
                     imS = cv2.resize(image, (720, 680))
-                    if total % 30 == 0:
+                    if total % 60 == 0:
                         image_np_expanded = np.expand_dims(imS, axis=0)
                         image_tensor = detection_graph.get_tensor_by_name(
                             'image_tensor:0')
