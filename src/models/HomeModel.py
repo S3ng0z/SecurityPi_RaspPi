@@ -100,8 +100,8 @@ class HomeModel:
         #cam = cv2.VideoCapture(0)
         cam = cv2.VideoCapture(-1, cv2.CAP_V4L)
 
-        cam.set(3, 320);
-        cam.set(4, 240);
+        cam.set(3, 720);
+        cam.set(4, 720);
 
         img_counter = 0
 
@@ -110,7 +110,7 @@ class HomeModel:
 
         while True:
             ret, frame = cam.read()
-            frame = imutils.resize(frame, width=400)
+            frame = imutils.resize(frame, width=720)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
