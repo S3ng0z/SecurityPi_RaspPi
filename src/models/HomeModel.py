@@ -98,10 +98,18 @@ class HomeModel:
         connection = client_socket.makefile('wb')
 
         #cam = cv2.VideoCapture(0)
-        cam = cv2.VideoCapture(-1, cv2.CAP_V4L)
+        #cam = cv2.VideoCapture(-1, cv2.CAP_V4L)
 
-        cam.set(3, 720);
-        cam.set(4, 720);
+        #cam.set(3, 720);
+        #cam.set(4, 720);
+        
+        # initialize the camera and grab a reference to the raw camera capture
+        camera = PiCamera()
+        camera.resolution = (640, 480)
+        camera.framerate = 32
+        rawCapture = PiRGBArray(camera, size=(640, 480))
+        # allow the camera to warmup
+        time.sleep(0.1)
 
         img_counter = 0
 
@@ -118,8 +126,9 @@ class HomeModel:
         #detection of video
         with detection_graph.as_default():
             with tf.Session(graph=detection_graph) as sess:
-                while True:
-                    ret, frame = cam.read()
+                #while True:
+                for frame in camera.capture_continuous(rawCapture, format="jpeg", use_video_port=True):
+                    frame = frame.array
                     
                     image_np_expanded = np.expand_dims(frame, axis=0)
                     image_tensor = detection_graph.get_tensor_by_name(
