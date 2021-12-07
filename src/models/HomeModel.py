@@ -98,54 +98,58 @@ class HomeModel:
         connection = client_socket.makefile('wb')
 
         #cam = cv2.VideoCapture(0)
-        #cam = cv2.VideoCapture(-1, cv2.CAP_V4L)
-        cam = VideoStream(src=0).start()
+        cam = cv2.VideoCapture(-1, cv2.CAP_V4L)
 
-        #cam.set(3, 720);
-        #cam.set(4, 720);
+        cam.set(3, 720);
+        cam.set(4, 720);
 
         img_counter = 0
 
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-        md = SingleMotionDetector(accumWeight=0.1)
+        detection_graph = tf.Graph()
+        contFrames = 0
+        with detection_graph.as_default():
+            od_graph_def = tf.GraphDef()
+            with tf.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
+                serialized_graph = fid.read()
+                od_graph_def.ParseFromString(serialized_graph)
+                tf.import_graph_def(od_graph_def, name='')
 
-        while True:
-            frame = cam.read()
-            frame = imutils.resize(frame, width=400)
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            gray = cv2.GaussianBlur(gray, (7, 7), 0)
+        #detection of video
+        with detection_graph.as_default():
+            with tf.Session(graph=detection_graph) as sess:
+                while True:
+                    ret, frame = cam.read()
+                    
+                    image_np_expanded = np.expand_dims(frame, axis=0)
+                    image_tensor = detection_graph.get_tensor_by_name(
+                        'image_tensor:0')
+                    # Each box represents a part of the image where a particular object was detected.
+                    boxes = detection_graph.get_tensor_by_name(
+                            'detection_boxes:0')
+                        # Each score represent how level of confidence for each of the objects.
+                        # Score is shown on the result image, together with the class label.
+                    scores = detection_graph.get_tensor_by_name(
+                            'detection_scores:0')
+                    classes = detection_graph.get_tensor_by_name(
+                            'detection_classes:0')
+                    num_detections = detection_graph.get_tensor_by_name(
+                            'num_detections:0')
+                        # Actual detection.
+                    (boxes, scores, classes, num_detections) = sess.run(
+                                [boxes, scores, classes, num_detections],
+                                feed_dict={image_tensor: image_np_expanded})
+                    if(num_detections > 0):
+                        print('num_detections ', num_detections)
+                    
+                    result, frame = cv2.imencode('.jpg', frame, encode_param)
+                    #data = zlib.compress(pickle.dumps(frame, 0))
+                    data = pickle.dumps(frame, 0)
+                    size = len(data)
 
-            # grab the current timestamp and draw it on the frame
-            timestamp = datetime.now()
-            cv2.putText(frame, timestamp.strftime(
-                    "%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0] - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
-
-            # if the total number of frames has reached a sufficient
-            # number to construct a reasonable background model, then
-            # continue to process the frame
-            # detect motion in the image
-            motion = md.detect(gray)
-
-            # cehck to see if motion was found in the frame
-            if motion is not None:
-                # unpack the tuple and draw the box surrounding the
-                # "motion area" on the output frame
-                (thresh, (minX, minY, maxX, maxY)) = motion
-                cv2.rectangle(frame, (minX, minY), (maxX, maxY),
-                                    (0, 0, 255), 2)
-
-            # update the background model and increment the total number
-            # of frames read thus far
-            md.update(gray)
-            result, frame = cv2.imencode('.jpg', frame, encode_param)
-            #data = zlib.compress(pickle.dumps(frame, 0))
-            data = pickle.dumps(frame, 0)
-            size = len(data)
-
-            print("{}: {}".format(img_counter, size))
-            client_socket.sendall(struct.pack(">L", size) + data)
-            img_counter += 1
+                    #print("{}: {}".format(img_counter, size))
+                    client_socket.sendall(struct.pack(">L", size) + data)
+                    img_counter += 1
 
         cam.release()
         pass
