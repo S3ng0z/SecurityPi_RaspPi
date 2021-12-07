@@ -97,7 +97,7 @@ class HomeModel:
         client_socket.connect(('192.168.228.31', 8000))
         connection = client_socket.makefile('wb')
         print('@@Test' + APP_PATH)
-        pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_default.xml'
+        pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
         faceCascade = cv2.CascadeClassifier(pathHaarcascade)
 
         #cam = cv2.VideoCapture(0)
