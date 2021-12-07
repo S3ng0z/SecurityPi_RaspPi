@@ -104,7 +104,7 @@ class HomeModel:
         #cam.set(4, 720);
         
         # initialize the camera and grab a reference to the raw camera capture
-        camera = PiCamera()
+        camera = picamera.PiCamera()
         camera.resolution = (640, 480)
         camera.framerate = 32
         rawCapture = PiRGBArray(camera, size=(640, 480))
