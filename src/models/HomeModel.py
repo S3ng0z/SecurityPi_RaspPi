@@ -165,7 +165,8 @@ class HomeModel:
                     #data = zlib.compress(pickle.dumps(frame, 0))
                     data = pickle.dumps(frame, 0)
                     size = len(data)
-
+                    stream.seek(0)
+                    stream.truncate()
                     #print("{}: {}".format(img_counter, size))
                     client_socket.sendall(struct.pack(">L", size) + data)
                     img_counter += 1
