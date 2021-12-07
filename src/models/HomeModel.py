@@ -121,7 +121,7 @@ class HomeModel:
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         detection_graph = tf.Graph()
         total = 0
-        
+        '''
         with detection_graph.as_default():
             od_graph_def = tf.compat.v1.GraphDef()
             with tf.io.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
@@ -131,56 +131,56 @@ class HomeModel:
 
         #detection of video
         with detection_graph.as_default():
-            with tf.compat.v1.Session(graph=detection_graph) as sess:
-                stream = io.BytesIO()
-                #while True:
-                for frame in camera.capture_continuous(stream, 'jpeg'):
-                    # Construct a numpy array from the stream
-                    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                    # "Decode" the image from the array, preserving colour
-                    image = cv2.imdecode(data, 1)
-                    # Resize image
-                    imS = cv2.resize(image, (720, 680))
-                    grayScale = cv2.cvtColor(imS, cv2.COLOR_BGR2GRAY)
-                    facesContainer = faceCascade.detectMultiScale( grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(70, 70))
-                    for(x, y, w, h) in facesContainer:
-                        cv2.rectangle(grayScale, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                    '''
-                    if total % 10 == 0:
-                        total = 0;
-                        image_np_expanded = np.expand_dims(imS, axis=0)
-                        image_tensor = detection_graph.get_tensor_by_name(
-                            'image_tensor:0')
-                        # Each box represents a part of the image where a particular object was detected.
-                        boxes = detection_graph.get_tensor_by_name(
-                                'detection_boxes:0')
-                            # Each score represent how level of confidence for each of the objects.
-                            # Score is shown on the result image, together with the class label.
-                        scores = detection_graph.get_tensor_by_name(
-                                'detection_scores:0')
-                        classes = detection_graph.get_tensor_by_name(
-                                'detection_classes:0')
-                        num_detections = detection_graph.get_tensor_by_name(
-                                'num_detections:0')
-                            # Actual detection.
-                        (boxes, scores, classes, num_detections) = sess.run(
-                                    [boxes, scores, classes, num_detections],
-                                    feed_dict={image_tensor: image_np_expanded})
-                        if(num_detections > 0):
-                            print('num_detections ', num_detections)
-                    
-                    total += 1
-                    '''
-                    result, frame = cv2.imencode(
-                        '.jpg', grayScale, encode_param)
-                    #data = zlib.compress(pickle.dumps(frame, 0))
-                    data = pickle.dumps(frame, 0)
-                    size = len(data)
-                    stream.seek(0)
-                    stream.truncate()
-                    #print("{}: {}".format(img_counter, size))
-                    client_socket.sendall(struct.pack(">L", size) + data)
-                    img_counter += 1
+            with tf.compat.v1.Session(graph=detection_graph) as sess:'''
+        stream = io.BytesIO()
+        #while True:
+        for frame in camera.capture_continuous(stream, 'jpeg'):
+            # Construct a numpy array from the stream
+            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+            # "Decode" the image from the array, preserving colour
+            image = cv2.imdecode(data, 1)
+            # Resize image
+            imS = cv2.resize(image, (720, 680))
+            grayScale = cv2.cvtColor(imS, cv2.COLOR_BGR2GRAY)
+            facesContainer = faceCascade.detectMultiScale( grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(70, 70))
+            for(x, y, w, h) in facesContainer:
+                cv2.rectangle(grayScale, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            '''
+            if total % 10 == 0:
+                total = 0;
+                image_np_expanded = np.expand_dims(imS, axis=0)
+                image_tensor = detection_graph.get_tensor_by_name(
+                    'image_tensor:0')
+                # Each box represents a part of the image where a particular object was detected.
+                boxes = detection_graph.get_tensor_by_name(
+                        'detection_boxes:0')
+                    # Each score represent how level of confidence for each of the objects.
+                    # Score is shown on the result image, together with the class label.
+                scores = detection_graph.get_tensor_by_name(
+                        'detection_scores:0')
+                classes = detection_graph.get_tensor_by_name(
+                        'detection_classes:0')
+                num_detections = detection_graph.get_tensor_by_name(
+                        'num_detections:0')
+                    # Actual detection.
+                (boxes, scores, classes, num_detections) = sess.run(
+                            [boxes, scores, classes, num_detections],
+                            feed_dict={image_tensor: image_np_expanded})
+                if(num_detections > 0):
+                    print('num_detections ', num_detections)
+            
+            total += 1
+            '''
+            result, frame = cv2.imencode(
+                '.jpg', grayScale, encode_param)
+            #data = zlib.compress(pickle.dumps(frame, 0))
+            data = pickle.dumps(frame, 0)
+            size = len(data)
+            stream.seek(0)
+            stream.truncate()
+            #print("{}: {}".format(img_counter, size))
+            client_socket.sendall(struct.pack(">L", size) + data)
+            img_counter += 1
 
         cam.release()
         pass
