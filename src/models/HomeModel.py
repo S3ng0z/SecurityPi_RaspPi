@@ -105,9 +105,11 @@ class HomeModel:
         
         # initialize the camera and grab a reference to the raw camera capture
         camera = picamera.PiCamera()
-        camera.resolution = (640, 480)
-        camera.framerate = 32
-        rawCapture = PiRGBArray(camera, size=(640, 480))
+        camera.vflip = True
+        camera.resolution = (720, 680)
+        # Start a preview and let the camera warm up for 2 seconds
+        camera.start_preview()
+        time.sleep(2)
         # allow the camera to warmup
         time.sleep(0.1)
 
@@ -126,11 +128,17 @@ class HomeModel:
         #detection of video
         with detection_graph.as_default():
             with tf.Session(graph=detection_graph) as sess:
+                stream = io.BytesIO()
                 #while True:
-                for frame in camera.capture_continuous(rawCapture, format="jpeg", use_video_port=True):
-                    frame = frame.array
+                for frame in camera.capture_continuous(stream, 'jpeg'):
+                    # Construct a numpy array from the stream
+                    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                    # "Decode" the image from the array, preserving colour
+                    image = cv2.imdecode(data, 1)
+                    # Resize image
+                    imS = cv2.resize(image, (720, 680))
                     
-                    image_np_expanded = np.expand_dims(frame, axis=0)
+                    image_np_expanded = np.expand_dims(imS, axis=0)
                     image_tensor = detection_graph.get_tensor_by_name(
                         'image_tensor:0')
                     # Each box represents a part of the image where a particular object was detected.
@@ -151,7 +159,7 @@ class HomeModel:
                     if(num_detections > 0):
                         print('num_detections ', num_detections)
                     
-                    result, frame = cv2.imencode('.jpg', frame, encode_param)
+                    result, frame = cv2.imencode('.jpg', imS, encode_param)
                     #data = zlib.compress(pickle.dumps(frame, 0))
                     data = pickle.dumps(frame, 0)
                     size = len(data)
