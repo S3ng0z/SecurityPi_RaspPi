@@ -117,7 +117,8 @@ class HomeModel:
 
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         detection_graph = tf.Graph()
-        contFrames = 0
+        total = 0
+        
         with detection_graph.as_default():
             od_graph_def = tf.GraphDef()
             with tf.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
@@ -137,28 +138,29 @@ class HomeModel:
                     image = cv2.imdecode(data, 1)
                     # Resize image
                     imS = cv2.resize(image, (720, 680))
+                    if total % 30 == 0:
+                        image_np_expanded = np.expand_dims(imS, axis=0)
+                        image_tensor = detection_graph.get_tensor_by_name(
+                            'image_tensor:0')
+                        # Each box represents a part of the image where a particular object was detected.
+                        boxes = detection_graph.get_tensor_by_name(
+                                'detection_boxes:0')
+                            # Each score represent how level of confidence for each of the objects.
+                            # Score is shown on the result image, together with the class label.
+                        scores = detection_graph.get_tensor_by_name(
+                                'detection_scores:0')
+                        classes = detection_graph.get_tensor_by_name(
+                                'detection_classes:0')
+                        num_detections = detection_graph.get_tensor_by_name(
+                                'num_detections:0')
+                            # Actual detection.
+                        (boxes, scores, classes, num_detections) = sess.run(
+                                    [boxes, scores, classes, num_detections],
+                                    feed_dict={image_tensor: image_np_expanded})
+                        if(num_detections > 0):
+                            print('num_detections ', num_detections)
                     
-                    image_np_expanded = np.expand_dims(imS, axis=0)
-                    image_tensor = detection_graph.get_tensor_by_name(
-                        'image_tensor:0')
-                    # Each box represents a part of the image where a particular object was detected.
-                    boxes = detection_graph.get_tensor_by_name(
-                            'detection_boxes:0')
-                        # Each score represent how level of confidence for each of the objects.
-                        # Score is shown on the result image, together with the class label.
-                    scores = detection_graph.get_tensor_by_name(
-                            'detection_scores:0')
-                    classes = detection_graph.get_tensor_by_name(
-                            'detection_classes:0')
-                    num_detections = detection_graph.get_tensor_by_name(
-                            'num_detections:0')
-                        # Actual detection.
-                    (boxes, scores, classes, num_detections) = sess.run(
-                                [boxes, scores, classes, num_detections],
-                                feed_dict={image_tensor: image_np_expanded})
-                    if(num_detections > 0):
-                        print('num_detections ', num_detections)
-                    
+                    total += 1
                     result, frame = cv2.imencode('.jpg', imS, encode_param)
                     #data = zlib.compress(pickle.dumps(frame, 0))
                     data = pickle.dumps(frame, 0)
