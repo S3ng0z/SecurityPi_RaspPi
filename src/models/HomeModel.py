@@ -110,7 +110,7 @@ class HomeModel:
         md = SingleMotionDetector(accumWeight=0.1)
 
         while True:
-            ret, frame = cam.read()
+            frame = cam.read()
             frame = imutils.resize(frame, width=400)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.GaussianBlur(gray, (7, 7), 0)
