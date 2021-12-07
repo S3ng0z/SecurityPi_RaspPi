@@ -97,7 +97,7 @@ class HomeModel:
         client_socket.connect(('192.168.228.31', 8000))
         connection = client_socket.makefile('wb')
         
-        pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_alt2.xml'
+        pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_default.xml'
         faceCascade = cv2.CascadeClassifier(pathHaarcascade)
 
         #cam = cv2.VideoCapture(0)
@@ -141,7 +141,13 @@ class HomeModel:
                     image = cv2.imdecode(data, 1)
                     # Resize image
                     imS = cv2.resize(image, (720, 680))
-                    
+                    grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    facesContainer = faceCascade.detectMultiScale(
+                        grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(70, 70))
+                    for(x, y, w, h) in facesContainer:
+                        cv2.rectangle(grayScale, (x, y),
+                                      (x + w, y + h), (0, 255, 0), 2)
+                    '''
                     if total % 5 == 0:
                         total = 0;
                         image_np_expanded = np.expand_dims(imS, axis=0)
@@ -166,7 +172,9 @@ class HomeModel:
                             print('num_detections ', num_detections)
                     
                     total += 1
-                    result, frame = cv2.imencode('.jpg', imS, encode_param)
+                    '''
+                    result, frame = cv2.imencode(
+                        '.jpg', grayScale, encode_param)
                     #data = zlib.compress(pickle.dumps(frame, 0))
                     data = pickle.dumps(frame, 0)
                     size = len(data)
