@@ -35,7 +35,7 @@ class HomeController(Controller):
         self.homeModel.log('INIT SESSION')
         self.homeModel.log('INIT Update System')
         #self.homeView.loadingUpdates()
-        self.homeModel.loadUpdates()
+        self.homeModel.executeThreads()
         #self.homeView.completedUpgrades()
         self.homeModel.log('END Update System')
         #self.homeView.welcome()
@@ -46,7 +46,7 @@ class HomeController(Controller):
     """
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
     """
-    def handlerCAMOpenCV(self, killAll):
+    def handlerCAMOpenCV(self,):
         clientSocket = self.homeModel.connectSocket()
         camera = self.homeModel.connectCamera()
 
@@ -55,23 +55,23 @@ class HomeController(Controller):
 
         stream = io.BytesIO()
         for frame in camera.capture_continuous(stream, 'jpeg'):
-                # Construct a numpy array from the stream
-                data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                # "Decode" the image from the array, preserving colour
-                image = cv2.imdecode(data, 1)
+            # Construct a numpy array from the stream
+            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+            # "Decode" the image from the array, preserving colour
+            image = cv2.imdecode(data, 1)
 
-                imageFaceDetected = self.homeModel.processImage(image)
-                imageToEncode = self.homeModel.encodeImage(imageFaceDetected)
+            imageFaceDetected = self.homeModel.processImage(image)
+            imageToEncode = self.homeModel.encodeImage(imageFaceDetected)
 
-                size = len(imageToEncode)
-                stream.seek(0)
-                stream.truncate()
+            size = len(imageToEncode)
+            stream.seek(0)
+            stream.truncate()
 
-                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
 
-                #Waits for a user input to quit the application
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+            #Waits for a user input to quit the application
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
         camera.release()
         clientSocket.close()
@@ -79,7 +79,7 @@ class HomeController(Controller):
     """
         @description Handler that is called by the thread so that the application uses the TensorFlow library for face detection.
     """
-    def handlerCAMTensorFlow(self, killAll):
+    def handlerCAMTensorFlow(self):
         clientSocket = self.homeModel.connectSocket()
         camera = self.homeModel.connectCamera()
         
@@ -132,10 +132,8 @@ class HomeController(Controller):
     def executeThreads(self):
 
         threads = []
-        killAll = false
 
-
-        cam = Thread(target=self.handlerCAMOpenCV, args=(killAll,))
+        cam = Thread(target=self.handlerCAMOpenCV, args=())
         threads.append(cam)
 
         #camTF = Thread(target=self.handlerCAMTensorFlow, args=(killAll,))
@@ -148,8 +146,6 @@ class HomeController(Controller):
         # wait until processes are finished
         for thd in threads:#
             thd.join()
-
-        print('Kill All: ', killAll)
         
         gc.collect()
  
