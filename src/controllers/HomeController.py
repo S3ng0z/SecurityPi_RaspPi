@@ -55,7 +55,6 @@ class HomeController(Controller):
 
         stream = io.BytesIO()
         for frame in camera.capture_continuous(stream, 'jpeg'):
-            if !killAll:
                 # Construct a numpy array from the stream
                 data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                 # "Decode" the image from the array, preserving colour
