@@ -46,7 +46,7 @@ class HomeController(Controller):
     """
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
     """
-    def handlerCAMOpenCV(self,):
+    def handlerCAMOpenCV(self):
         clientSocket = self.homeModel.connectSocket()
         camera = self.homeModel.connectCamera()
 
