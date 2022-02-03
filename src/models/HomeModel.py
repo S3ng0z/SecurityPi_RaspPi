@@ -105,7 +105,7 @@ class HomeModel:
         @description Method that establishes socket connection.
     """
     def connectSocket(self):
-        return Connection.connect()
+        return Connection.connect(self)
     
     """
         @description Method that activates the camera for the use of the application.
