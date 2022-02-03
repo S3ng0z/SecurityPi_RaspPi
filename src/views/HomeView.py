@@ -1,5 +1,6 @@
 from pyfiglet import Figlet
 from views.View import View
+import cv2
 
 TEXT = Figlet(font='slant')
 
@@ -18,9 +19,6 @@ class Color:
 """
     View associated with HomeController. It will be responsible for program's 
     main screen view.
-    
-    Author: Andrés Gómez
-    Versión 1.0
 """
 class HomeView(View):
     
@@ -39,25 +37,36 @@ class HomeView(View):
     #-----------------------------------------------------------------------
     #        Methods
     #-----------------------------------------------------------------------
+
+    """
+        @description Draws a box around the faces in the image and displays it on the screen
+        @param image - Matrix containing the image where the objects are detected.
+        @param faces - Positioning of detected faces rect(x, y, w, h)
+
+    """
+    def displayInageDetection(self, image, faces):
+        # Draw the rectangle around each face
+        for (x, y, w, h) in faces:
+            cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
+        # Display
+        cv2.imshow('img', image)
+
+
     """
         @description Displays the application welcome
-        @author Andrés Gómez
     """
     def welcome(self):
         print(TEXT.renderText('Security Pi'))
 
     """
         @description Method to display the aplication options menu.
-        @author Andrés Gómez
     """
     def options(self):
-        print('1-. Process video')
-        print('2-. Recognizer')
+        print('1-. Recognizer')
         print('0-. Exit')
 
     """
         @description Method shows that an option is invalid.
-        @author Andrés Gómez
     """
     def invalidOption(self):
         print(Color.YELLOW, 'Option not valid, try again!', Color.END)
@@ -69,25 +78,41 @@ class HomeView(View):
         print('Enter a option: ')
 
     """
-    @Overrite
+        @description Method called by the controller at the start of the application or after finishing a task, which displays a menu with options.
     """
     def main(self):
         self.options()
+        self.optionRequest()
 
     """
-    @Overrite
+        @description Method called when closing the application
     """
     def close(self):
         print(TEXT.renderText('See you again!'))
+
+    """
+        @description Method called at the start of the system update.
+    """
 
     def loadingUpdates(selft):
         print('\n-------------------------------')
         print(Color.YELLOW, 'Do not turn off the power while the system is upgrading!', Color.END)
         print('-------------------------------\n')
         
-    
+    """
+        @descripcion Notifies that the system has been updated.
+    """
     def completedUpgrades(self):
         print('\n-------------------------------')
         print(Color.GREEN, 'Upgraded system!', Color.END)
         print('-------------------------------\n')
+
+    """
+    @description Method to display the aplication options menu.
+    @author Andrés Gómez
+    """
+    def options(self):
+        print('1-. Process video')
+        print('2-. Recognizer')
+        print('0-. Exit')
         

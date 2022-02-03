@@ -1,6 +1,5 @@
 import abc
 
-
 """
     Responsible for the program interface.
 """

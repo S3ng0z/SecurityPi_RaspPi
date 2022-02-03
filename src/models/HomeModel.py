@@ -60,10 +60,13 @@ STANDARD_COLORS = [
     Model description
 """
 class HomeModel:
+    
     def __init__(self, controller):
         self.homeController = controller
         pass
-
+    """
+        @description This method is called when the application is opened and its purpose is to open a text file where the history of the application execution will be stored.
+    """
     def openLogging(self):
         global path
         
@@ -75,6 +78,9 @@ class HomeModel:
         path = os.path.join(APP_PATH + "/logs/", filename)
         open(path, 'a+')
 
+    """
+        @description Method that writes into the history file a row of information about an action on the application.
+    """
     def log(self, info):
         global path
         
@@ -84,12 +90,73 @@ class HomeModel:
         
         file.write(line)
         file.close()
+
     
+    """
+        @description Method used to update the system. Used each time the application is initialised.
+    """
     def loadUpdates(self):
         os.system('../scripts/executeUpdates.sh')
 
     def clearCache(self):
         pass
+
+    """
+        @description Method that establishes socket connection.
+    """
+    def connectSocket(self):
+        return Connection.connect()
+    
+    """
+        @description Method that activates the camera for the use of the application.
+    """
+    def connectCamera(self):
+        camera = picamera.PiCamera()
+        camera.vflip = True
+        camera.resolution = (720, 680)
+        return camera
+
+    def processImage(self, image):
+        pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
+        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
+
+        grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        facesContainer = faceCascade.detectMultiScale(
+            grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(70, 70))
+
+        for(x, y, w, h) in facesContainer:
+            cv2.rectangle(grayScale, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        
+        return grayScale
+    
+    def encodeImage(self, image):
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+        result, frame = cv2.imencode('.jpg', image, encode_param)
+        data = pickle.dumps(frame, 0)
+        return data
+
+    def getPathToCKPT(self):
+        return PATH_TO_CKPT
+    
+    def processImagenTF(self, detection_graph, imS, sess):
+        # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
+        image_np_expanded = np.expand_dims(imS, axis=0)
+        # Extract image tensor
+        image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
+        # Each box represents a part of the image where a particular object was detected.
+        boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
+        # Each score represent how level of confidence for each of the objects.
+        # Score is shown on the result image, together with the class label.
+        scores = detection_graph.get_tensor_by_name('detection_scores:0')
+        classes = detection_graph.get_tensor_by_name('detection_classes:0')
+        num_detections = detection_graph.get_tensor_by_name('num_detections:0')
+        # Actual detection.
+        (boxes, scores, classes, num_detections) = sess.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
+        
+        if(num_detections > 0):
+            print('num_detections ', num_detections)
+
+        return imS
 
     def workerCAM(self, lproxy):
 

@@ -9,12 +9,21 @@ class Connection:
     def __init__(self):
         pass
 
+    """
+        @description Method that establishes the communication channel with the socket.
+    """
     def connect(self):
-
-        clientSocket = socket.socket()
+        #clientSocket = socket.socket()
+        #clientSocket.connect((self.URL, self.PORT))
+        #clientSocket.connect(('192.168.228.31', 8000))
+        clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         clientSocket.connect((self.URL, self.PORT))
+        clientSocket.makefile('wb')
 
         return clientSocket
 
+    """
+        @description Method that closes the socket communication channel.
+    """
     def closeConn(self, clientSocket):
         clientSocket.close()

@@ -1,7 +1,7 @@
 import os
 import importlib
 from config import APP_PATH
-import abc
+import abc #Module provides the infrastructure for defining abstract base classes
 
 
 """
