@@ -35,7 +35,7 @@ class HomeController(Controller):
         self.homeModel.log('INIT SESSION')
         self.homeModel.log('INIT Update System')
         #self.homeView.loadingUpdates()
-        self.homeModel.executeThreads()
+        self.homeModel.loadUpdates()
         #self.homeView.completedUpgrades()
         self.homeModel.log('END Update System')
         #self.homeView.welcome()
@@ -132,6 +132,7 @@ class HomeController(Controller):
     def executeThreads(self):
 
         threads = []
+
 
         cam = Thread(target=self.handlerCAMOpenCV, args=())
         threads.append(cam)
