@@ -6,6 +6,7 @@ import os
 import io
 import struct
 import time
+import cv2
 import numpy as np
 import tensorflow as tf
 from threading import Thread, Event
