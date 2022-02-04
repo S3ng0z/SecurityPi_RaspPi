@@ -12,7 +12,7 @@ class Connection:
     """
         @description Method that establishes the communication channel with the socket.
     """
-    def connect(self):
+    def connect():
         #clientSocket = socket.socket()
         #clientSocket.connect((self.URL, self.PORT))
         #clientSocket.connect(('192.168.228.31', 8000))
@@ -25,5 +25,5 @@ class Connection:
     """
         @description Method that closes the socket communication channel.
     """
-    def closeConn(self, clientSocket):
+    def closeConn(clientSocket):
         clientSocket.close()
