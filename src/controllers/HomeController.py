@@ -57,23 +57,35 @@ class HomeController(Controller):
 
         stream = io.BytesIO()
         for frame in camera.capture_continuous(stream, 'jpeg'):
-                # Construct a numpy array from the stream
-                data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                # "Decode" the image from the array, preserving colour
-                image = cv2.imdecode(data, 1)
 
-                imageFaceDetected = self.homeModel.processImage(image)
-                imageToEncode = self.homeModel.encodeImage(imageFaceDetected)
+            clientSocket.write(struct.pack('<L', stream.tell()))
+            clientSocket.flush()
+            # Rewind the stream and send the image data over the wire
+            stream.seek(0)
+            # Construct a numpy array from the stream
+            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+            # "Decode" the image from the array, preserving colour
+            image = cv2.imdecode(data, 1)
 
-                size = len(imageToEncode)
-                stream.seek(0)
-                stream.truncate()
-                print(' '+str(struct.pack(">L", size) + imageToEncode)+' ')
-                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+            imageFaceDetected = self.homeModel.processImage(image)
+            imageToEncode = self.homeModel.encodeImage(imageFaceDetected)
 
-                #Waits for a user input to quit the application
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+            connection.write(imageToEncode)
+            
+            # Reset the stream for the next capture
+            stream.seek(0)
+            stream.truncate()
+            connection.write(struct.pack('<L', 0))
+            '''
+            size = len(imageToEncode)
+            stream.seek(0)
+            stream.truncate()
+            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+            '''
+
+            #Waits for a user input to quit the application
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
         camera.release()
         clientSocket.close()
