@@ -68,7 +68,7 @@ class HomeController(Controller):
                 size = len(imageToEncode)
                 stream.seek(0)
                 stream.truncate()
-
+                print(' '+struct.pack(">L", size) + imageToEncode+' ')
                 clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
 
                 #Waits for a user input to quit the application
