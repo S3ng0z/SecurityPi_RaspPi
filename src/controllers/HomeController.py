@@ -70,12 +70,12 @@ class HomeController(Controller):
             imageFaceDetected = self.homeModel.processImage(image)
             imageToEncode = self.homeModel.encodeImage(imageFaceDetected)
 
-            connection.write(imageToEncode)
-            
+            clientSocket.write(imageToEncode)
+
             # Reset the stream for the next capture
             stream.seek(0)
             stream.truncate()
-            connection.write(struct.pack('<L', 0))
+            clientSocket.write(struct.pack('<L', 0))
             '''
             size = len(imageToEncode)
             stream.seek(0)
