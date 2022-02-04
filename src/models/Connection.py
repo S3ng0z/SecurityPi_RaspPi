@@ -17,7 +17,7 @@ class Connection:
         #clientSocket.connect((self.URL, self.PORT))
         #clientSocket.connect(('192.168.228.31', 8000))
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        clientSocket.connect((self.URL, self.PORT))
+        clientSocket.connect((URL, PORT))
         clientSocket.makefile('wb')
 
         return clientSocket
