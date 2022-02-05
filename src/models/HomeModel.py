@@ -109,7 +109,7 @@ class HomeModel:
         # initialize the camera and grab a reference to the raw camera capture
         camera = picamera.PiCamera()
         camera.vflip = True
-        camera.resolution = (720, 680)
+        camera.resolution = (1280, 720)
         # Start a preview and let the camera warm up for 2 seconds
         camera.start_preview()
         time.sleep(2)
