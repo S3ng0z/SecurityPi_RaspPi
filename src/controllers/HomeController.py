@@ -49,9 +49,12 @@ class HomeController(Controller):
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
     """
     def handlerCAMOpenCV(self):
-        clientSocket = self.homeModel.connectSocket()
-        print(str(clientSocket))
-        exit()
+        #clientSocket = self.homeModel.connectSocket()
+        #print(str(clientSocket))
+        #exit()
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(('192.168.1.33', 8000))
+        connection = client_socket.makefile('wb')
         camera = self.homeModel.connectCamera()
 
         camera.start_preview()
@@ -71,7 +74,7 @@ class HomeController(Controller):
                 stream.seek(0)
                 stream.truncate()
 
-                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                connection.sendall(struct.pack(">L", size) + imageToEncode)
 
                 #Waits for a user input to quit the application
                 if cv2.waitKey(1) & 0xFF == ord('q'):

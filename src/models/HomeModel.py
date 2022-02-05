@@ -161,7 +161,7 @@ class HomeModel:
     def workerCAM(self, lproxy):
 
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(('192.168.228.31', 8000))
+        client_socket.connect(('192.168.1.33', 8000))
         connection = client_socket.makefile('wb')
         print('@@Test' + APP_PATH)
         pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
