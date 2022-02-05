@@ -19,7 +19,9 @@ class Connection:
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         clientSocket.connect(('192.168.1.33', 8000))
         clientSocket.makefile('wb')
-        clientSocket.send(str('some more data'))
+        # Send data to server
+        data = "Hello Server!";
+        clientSocket.send(data.encode());
 
         return clientSocket
 
