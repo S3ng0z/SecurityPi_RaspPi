@@ -7,7 +7,6 @@ import io
 import struct
 import time
 import cv2
-import socket
 import numpy as np
 import tensorflow as tf
 from threading import Thread, Event
@@ -50,15 +49,10 @@ class HomeController(Controller):
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
     """
     def handlerCAMOpenCV(self):
-        #clientSocket = self.homeModel.connectSocket()
-        #print(str(clientSocket))
-        #exit()
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(('192.168.1.33', 8000))
-        connection = client_socket.makefile('wb')
+        clientSocket = self.homeModel.connectSocket()
         camera = self.homeModel.connectCamera()
 
-        
+        camera.start_preview()
         time.sleep(2)
 
         stream = io.BytesIO()
@@ -75,8 +69,7 @@ class HomeController(Controller):
                 stream.seek(0)
                 stream.truncate()
 
-                #connection.sendall(struct.pack(">L", size) + imageToEncode)
-                client_socket.sendall(struct.pack(">L", size) + imageToEncode)
+                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
 
                 #Waits for a user input to quit the application
                 if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -181,6 +174,7 @@ class HomeController(Controller):
             '''
             reviewScreenshots = multiprocessing.Process(target=self.homeModel.workerReviewScreenshots, args=(lproxy,))
             processes.append(reviewScreenshots)
+
             sendScreenShoot = multiprocessing.Process(target=self.homeModel.workerSendScreenshots, args=(lproxy,))
             processes.append(sendScreenShoot)
             '''

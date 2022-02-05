@@ -8,7 +8,6 @@ import sys
 from models.singlemotiondetector import SingleMotionDetector
 from picamera.array import PiRGBArray
 import picamera
-from picamera import PiCamera
 from .Connection import Connection
 import cv2
 import numpy as np
@@ -112,10 +111,9 @@ class HomeModel:
         @description Method that activates the camera for the use of the application.
     """
     def connectCamera(self):
-        camera = PiCamera()
+        camera = picamera.PiCamera()
         camera.vflip = True
         camera.resolution = (720, 680)
-        camera.start_preview()
         return camera
 
     def processImage(self, image):
@@ -163,7 +161,7 @@ class HomeModel:
     def workerCAM(self, lproxy):
 
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(('192.168.1.33', 8000))
+        client_socket.connect(('192.168.228.31', 8000))
         connection = client_socket.makefile('wb')
         print('@@Test' + APP_PATH)
         pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
