@@ -75,7 +75,8 @@ class HomeController(Controller):
                 stream.seek(0)
                 stream.truncate()
 
-                connection.sendall(struct.pack(">L", size) + imageToEncode)
+                #connection.sendall(struct.pack(">L", size) + imageToEncode)
+                client_socket.sendall(struct.pack(">L", size) + imageToEncode)
 
                 #Waits for a user input to quit the application
                 if cv2.waitKey(1) & 0xFF == ord('q'):
