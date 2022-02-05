@@ -20,8 +20,8 @@ class Connection:
         clientSocket.connect((self.URL, self.PORT))
         clientSocket.makefile('wb'))
         # Send data to server
-        data = "Hello Server!";
-        clientSocket.send(data.encode());
+        data = "Hello Server!"
+        clientSocket.send(data.encode())
 
         return clientSocket
 
