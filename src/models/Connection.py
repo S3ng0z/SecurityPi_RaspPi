@@ -19,7 +19,7 @@ class Connection:
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         clientSocket.connect(('192.168.1.33', 8000))
         clientSocket.makefile('wb')
-        clientSocket.send("some more data")
+        clientSocket.send(str('some more data'))
 
         return clientSocket
 
