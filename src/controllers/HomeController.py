@@ -1,6 +1,7 @@
 # -*- encoding:utf-8 -*-
 from core.Controller import Controller
 from models.Connection import Connection
+from config import APP_PATH
 import gc
 import os
 import io
