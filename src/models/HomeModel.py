@@ -113,24 +113,21 @@ class HomeModel:
     def connectCamera(self):
         camera = picamera.PiCamera()
         camera.vflip = True
-        camera.resolution = (720, 680)
+        camera.resolution = (1280, 720)
         return camera
 
-    def processImage(self, image):
-        pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
-        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
-
+    def processImage(self, image, faceCascade):
+        
         grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         facesContainer = faceCascade.detectMultiScale(
-            grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(70, 70))
+            grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(50, 50))
 
         for(x, y, w, h) in facesContainer:
             cv2.rectangle(grayScale, (x, y), (x + w, y + h), (0, 255, 0), 2)
         
         return grayScale
     
-    def encodeImage(self, image):
-        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+    def encodeImage(self, image, encode_param):
         result, frame = cv2.imencode('.jpg', image, encode_param)
         data = pickle.dumps(frame, 0)
         return data

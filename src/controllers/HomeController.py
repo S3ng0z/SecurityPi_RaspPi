@@ -52,28 +52,33 @@ class HomeController(Controller):
         clientSocket = self.homeModel.connectSocket()
         camera = self.homeModel.connectCamera()
 
+        pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
+        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
+
         camera.start_preview()
         time.sleep(2)
 
         stream = io.BytesIO()
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         for frame in camera.capture_continuous(stream, 'jpeg'):
-                # Construct a numpy array from the stream
-                data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                # "Decode" the image from the array, preserving colour
-                image = cv2.imdecode(data, 1)
+            # Construct a numpy array from the stream
+            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+            # "Decode" the image from the array, preserving colour
+            image = cv2.imdecode(data, 1)
+            image = cv2.resize(image, (1280, 720))
 
-                imageFaceDetected = self.homeModel.processImage(image)
-                imageToEncode = self.homeModel.encodeImage(imageFaceDetected)
+            imageFaceDetected = self.homeModel.processImage(image, faceCascade)
+            imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
 
-                size = len(imageToEncode)
-                stream.seek(0)
-                stream.truncate()
+            size = len(imageToEncode)
+            stream.seek(0)
+            stream.truncate()
 
-                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
 
-                #Waits for a user input to quit the application
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+            #Waits for a user input to quit the application
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
         camera.release()
         clientSocket.close()
