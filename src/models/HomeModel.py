@@ -140,7 +140,7 @@ class HomeModel:
                     # "Decode" the image from the array, preserving colour
                     image = cv2.imdecode(data, 1)
                     # Resize image
-                    imS = cv2.resize(image, (720, 680))
+                    imS = cv2.resize(image, (1280, 720))
                     grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                     facesContainer = faceCascade.detectMultiScale(
                         grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(70, 70))
