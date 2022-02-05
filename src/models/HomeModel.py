@@ -143,7 +143,7 @@ class HomeModel:
                     imS = cv2.resize(image, (1280, 720))
                     grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                     facesContainer = faceCascade.detectMultiScale(
-                        grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(70, 70))
+                        grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(50, 50))
                     for(x, y, w, h) in facesContainer:
                         cv2.rectangle(grayScale, (x, y),
                                       (x + w, y + h), (0, 255, 0), 2)
