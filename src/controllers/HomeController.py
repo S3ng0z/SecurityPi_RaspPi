@@ -58,7 +58,7 @@ class HomeController(Controller):
         connection = client_socket.makefile('wb')
         camera = self.homeModel.connectCamera()
 
-        camera.start_preview()
+        
         time.sleep(2)
 
         stream = io.BytesIO()

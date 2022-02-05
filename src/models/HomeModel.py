@@ -8,6 +8,7 @@ import sys
 from models.singlemotiondetector import SingleMotionDetector
 from picamera.array import PiRGBArray
 import picamera
+from picamera import PiCamera
 from .Connection import Connection
 import cv2
 import numpy as np
@@ -111,9 +112,10 @@ class HomeModel:
         @description Method that activates the camera for the use of the application.
     """
     def connectCamera(self):
-        camera = picamera.PiCamera()
+        camera = PiCamera()
         camera.vflip = True
         camera.resolution = (720, 680)
+        camera.start_preview()
         return camera
 
     def processImage(self, image):
