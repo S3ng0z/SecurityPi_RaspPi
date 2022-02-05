@@ -50,7 +50,7 @@ class HomeController(Controller):
     """
     def handlerCAMOpenCV(self):
         clientSocket = self.homeModel.connectSocket()
-        print(str(clientSocket.error))
+        print(str(clientSocket))
         exit()
         camera = self.homeModel.connectCamera()
 

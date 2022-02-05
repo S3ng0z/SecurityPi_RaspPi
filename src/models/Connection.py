@@ -3,8 +3,8 @@ import socket
 
 class Connection:
 
-    #URL = '192.168.1.33'
-    #PORT = 8000
+    URL = '192.168.1.33'
+    PORT = 8000
 
     def __init__(self):
         pass
@@ -12,13 +12,13 @@ class Connection:
     """
         @description Method that establishes the communication channel with the socket.
     """
-    def connect():
+    def connect(self):
         #clientSocket = socket.socket()
         #clientSocket.connect((self.URL, self.PORT))
         #clientSocket.connect(('192.168.228.31', 8000))
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        clientSocket.connect(('192.168.1.33', 8000))
-        clientSocket.makefile('wb')
+        clientSocket.connect((self.URL, self.PORT))
+        clientSocket.makefile('wb'))
         # Send data to server
         data = "Hello Server!";
         clientSocket.send(data.encode());
@@ -28,5 +28,5 @@ class Connection:
     """
         @description Method that closes the socket communication channel.
     """
-    def closeConn(clientSocket):
+    def closeConn(self, clientSocket):
         clientSocket.close()
