@@ -3,7 +3,7 @@ import socket
 
 class Connection:
 
-    URL = '192.168.1.33'
+    URL = '192.168.0.30'
     PORT = 8000
 
     def __init__(self):
@@ -18,10 +18,7 @@ class Connection:
         #clientSocket.connect(('192.168.228.31', 8000))
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         clientSocket.connect((self.URL, self.PORT))
-        clientSocket.makefile('wb'))
-        # Send data to server
-        data = "Hello Server!"
-        clientSocket.send(data.encode())
+        clientSocket.makefile('wb')
 
         return clientSocket
 
