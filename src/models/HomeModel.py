@@ -113,7 +113,7 @@ class HomeModel:
     def connectCamera(self):
         camera = picamera.PiCamera()
         camera.vflip = True
-        camera.resolution = (1280, 720)
+        camera.resolution = (720, 600)
         return camera
 
     def processImage(self, image, faceCascade):
