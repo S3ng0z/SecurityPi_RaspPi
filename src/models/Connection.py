@@ -4,7 +4,7 @@ import socket
 class Connection:
 
     URL = '192.168.157.31'
-    PORT = 8000
+    PORT = 8080
 
     def __init__(self):
         pass
