@@ -51,6 +51,7 @@ class HomeController(Controller):
     """
     def handlerCAMOpenCV(self):
         clientSocket = self.homeModel.connectSocket()
+        print('clientSocket: ' + str(clientSocket))
         camera = self.homeModel.connectCamera()
 
         pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'

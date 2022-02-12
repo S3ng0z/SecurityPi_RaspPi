@@ -19,7 +19,7 @@ class Connection:
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         clientSocket.connect(('192.168.157.31', 8080))
         clientSocket.makefile('wb')
-
+        print('clientSocket: ' + str(clientSocket))
         return clientSocket
 
     """
