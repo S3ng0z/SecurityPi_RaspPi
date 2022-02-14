@@ -4,7 +4,7 @@ import socket
 class Connection:
 
     URL = '192.168.0.22'
-    PORT = 8080
+    PORT = 8000
 
     def __init__(self):
         pass
@@ -17,7 +17,7 @@ class Connection:
         #clientSocket.connect((self.URL, self.PORT))
         #clientSocket.connect(('192.168.228.31', 8000))
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        clientSocket.connect(('192.168.0.22', 8080))
+        clientSocket.connect(('192.168.0.22', 8000))
         clientSocket.makefile('wb')
         print('clientSocket: ' + str(clientSocket))
         return clientSocket
