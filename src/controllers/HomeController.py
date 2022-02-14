@@ -89,7 +89,7 @@ class HomeController(Controller):
             prev_frame_time = new_frame_time
         
             # converting the fps into integer
-            fps = int(fps)
+            fps = float(fps)
         
             # converting the fps to string so that we can display it on frame
             # by using putText function
