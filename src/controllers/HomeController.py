@@ -96,6 +96,7 @@ class HomeController(Controller):
         
             # putting the FPS count on the frame
             cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             if(cont % 10 == 0):
                 cont = 0
                 image = self.homeModel.processImage(image, faceCascade)
