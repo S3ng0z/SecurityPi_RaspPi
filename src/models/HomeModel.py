@@ -126,12 +126,12 @@ class HomeModel:
         
         #grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         facesContainer = faceCascade.detectMultiScale(
-            grayScale, scaleFactor=1.1, minNeighbors=15, minSize=(50, 50))
+            image, scaleFactor=1.1, minNeighbors=15, minSize=(50, 50))
 
         for(x, y, w, h) in facesContainer:
-            cv2.rectangle(grayScale, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
         
-        return grayScale
+        return image
     
     def encodeImage(self, image, encode_param):
         result, frame = cv2.imencode('.jpg', image, encode_param)
