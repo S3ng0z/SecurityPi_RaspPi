@@ -116,6 +116,12 @@ class HomeModel:
         camera.resolution = (1280, 720)
         return camera
 
+    """
+        @description Method that activates the camera for the use of the application.
+    """
+    def openVideo(self):
+        return cv2.VideoCapture('../test/test-480p.mp4')
+
     def processImage(self, image, faceCascade):
         
         grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

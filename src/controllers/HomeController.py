@@ -49,6 +49,72 @@ class HomeController(Controller):
     """
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
     """
+    def handlerVideoOpenCV(self):
+        clientSocket = self.homeModel.connectSocket()
+        print('clientSocket: ' + str(clientSocket))
+        cap = self.homeModel.openVideo()
+
+        pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
+        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
+
+        #video.start_preview()
+        time.sleep(2)
+
+        # used to record the time when we processed last frame
+        prev_frame_time = 0
+        
+        # used to record the time at which we processed current frame
+        new_frame_time = 0
+
+        # font which we will be using to display FPS
+        font = cv2.FONT_HERSHEY_SIMPLEX
+
+        stream = io.BytesIO()
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+        while(cap.isOpened()):
+            # Construct a numpy array from the stream
+            ret, image = cap.read()
+            #image = cv2.resize(frame, (1280, 720))
+            # time when we finish processing for this frame
+            new_frame_time = time.time()
+
+            # Calculating the fps
+ 
+            # fps will be number of frame processed in given time frame
+            # since their will be most of time error of 0.001 second
+            # we will be subtracting it to get more accurate result
+            fps = 1/(new_frame_time-prev_frame_time)
+            prev_frame_time = new_frame_time
+        
+            # converting the fps into integer
+            fps = float(fps)
+        
+            # converting the fps to string so that we can display it on frame
+            # by using putText function
+            fps = str(fps)
+        
+            # putting the FPS count on the frame
+            cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
+
+            imageFaceDetected = self.homeModel.processImage(image, faceCascade)
+            imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
+
+            size = len(imageToEncode)
+            stream.seek(0)
+            stream.truncate()
+
+            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+
+            #Waits for a user input to quit the application
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cap.release()
+        clientSocket.close()
+
+    """
+        @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
+    """
     def handlerCAMOpenCV(self):
         clientSocket = self.homeModel.connectSocket()
         print('clientSocket: ' + str(clientSocket))
@@ -172,7 +238,7 @@ class HomeController(Controller):
         threads = []
 
 
-        cam = Thread(target=self.handlerCAMOpenCV, args=())
+        cam = Thread(target=self.handlerVideoOpenCV, args=())
         threads.append(cam)
 
         #camTF = Thread(target=self.handlerCAMTensorFlow, args=(killAll,))
