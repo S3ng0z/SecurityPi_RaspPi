@@ -98,8 +98,8 @@ class HomeController(Controller):
             cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
             if(cont % 10 == 0):
                 cont = 0
-                imageFaceDetected = self.homeModel.processImage(image, faceCascade)
-            imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
+                image = self.homeModel.processImage(image, faceCascade)
+            imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
             size = len(imageToEncode)
             stream.seek(0)
