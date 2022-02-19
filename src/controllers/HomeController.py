@@ -164,10 +164,9 @@ class HomeController(Controller):
         
             # putting the FPS count on the frame
             cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
-            if(cont%10==0){
+            if( cont % 10 == 0):
                 imageFaceDetected = self.homeModel.processImage(image, faceCascade)
                 cont = 0
-            }
             imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
 
             size = len(imageToEncode)
