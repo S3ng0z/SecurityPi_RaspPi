@@ -71,6 +71,7 @@ class HomeController(Controller):
 
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+        cont = 0
         while(cap.isOpened()):
             # Construct a numpy array from the stream
             ret, image = cap.read()
@@ -95,8 +96,9 @@ class HomeController(Controller):
         
             # putting the FPS count on the frame
             cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
-
-            imageFaceDetected = self.homeModel.processImage(image, faceCascade)
+            if(cont % 10 == 0):
+                cont = 0
+                imageFaceDetected = self.homeModel.processImage(image, faceCascade)
             imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
 
             size = len(imageToEncode)
@@ -104,6 +106,7 @@ class HomeController(Controller):
             stream.truncate()
 
             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+            cont += 1
 
             #Waits for a user input to quit the application
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -137,7 +140,6 @@ class HomeController(Controller):
 
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-        cont = 0
         for frame in camera.capture_continuous(stream, 'jpeg'):
             # Construct a numpy array from the stream
             data = np.fromstring(stream.getvalue(), dtype=np.uint8)
@@ -164,9 +166,8 @@ class HomeController(Controller):
         
             # putting the FPS count on the frame
             cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
-            if( cont % 10 == 0):
-                imageFaceDetected = self.homeModel.processImage(image, faceCascade)
-                cont = 0
+
+            imageFaceDetected = self.homeModel.processImage(image, faceCascade)
             imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
 
             size = len(imageToEncode)
@@ -174,7 +175,7 @@ class HomeController(Controller):
             stream.truncate()
 
             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-            cont += 1
+
             #Waits for a user input to quit the application
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
