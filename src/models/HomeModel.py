@@ -134,7 +134,7 @@ class HomeModel:
         facesContainer = faceCascade.detectMultiScale(
             image, scaleFactor=1.1, minNeighbors=15, minSize=(50, 50))
 
-        if facesContainer.size:
+        if is_empty(facesContainer):
             for(x, y, w, h) in facesContainer:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
             
