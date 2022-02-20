@@ -232,6 +232,18 @@ class HomeController(Controller):
 
                 camera.release()
                 clientSocket.close()
+
+    def sendScreenShoot(self):
+        clientSocket = self.homeModel.connectSocketSendScreenShoot()
+        if not os.path.isdir(APP_PATH+'/frame_container'):
+            os.mkdir(APP_PATH+'/frame_container')
+
+        path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
+        file_count = len(files)
+        if(file_count > 0):
+            for filename in os.listdir('./frame_container'):
+                if filename.endswith(".jpg") or filename.endswith(".png"):
+                    clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
             
 
     """
@@ -244,6 +256,9 @@ class HomeController(Controller):
 
         cam = Thread(target=self.handlerVideoOpenCV, args=())
         threads.append(cam)
+
+        sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
+        threads.append(sendScreenShoot)
 
         #camTF = Thread(target=self.handlerCAMTensorFlow, args=(killAll,))
         #threads.append(camTF)

@@ -22,6 +22,16 @@ class Connection:
         print('clientSocket: ' + str(clientSocket))
         return clientSocket
 
+    def connectSendScreenShoot():
+        #clientSocket = socket.socket()
+        #clientSocket.connect((self.URL, self.PORT))
+        #clientSocket.connect(('192.168.228.31', 8000))
+        clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        clientSocket.connect(('192.168.0.22', 8080))
+        clientSocket.makefile('wb')
+        print('clientSocket: ' + str(clientSocket))
+        return clientSocket
+
     """
         @description Method that closes the socket communication channel.
     """

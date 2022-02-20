@@ -106,6 +106,12 @@ class HomeModel:
     """
     def connectSocket(self):
         return Connection.connect()
+
+    """
+        @description Method that establishes socket connection.
+    """
+    def connectSocketSendScreenShoot(self):
+        return Connection.connectSendScreenShoot()
     
     """
         @description Method that activates the camera for the use of the application.
@@ -128,8 +134,15 @@ class HomeModel:
         facesContainer = faceCascade.detectMultiScale(
             image, scaleFactor=1.1, minNeighbors=15, minSize=(50, 50))
 
-        for(x, y, w, h) in facesContainer:
-            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        if facesContainer:
+            for(x, y, w, h) in facesContainer:
+                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            
+            if not os.path.isdir(APP_PATH+'/frame_container'):
+                os.mkdir(APP_PATH+'/frame_container')
+            
+            tempName = next(tempfile._get_candidate_names())
+            cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.jpg'), image)
         
         return image
     
@@ -292,15 +305,12 @@ class HomeModel:
 
 
     def workerSendScreenshots(self, lproxy):
-        pathHaarcascade = APP_PATH + '/libs/haarcascade_frontalface_alt2.xml';
-        faceCascade = cv2.CascadeClassifier(pathHaarcascade)
-        if not os.path.isdir(APP_PATH+'/store'):
-            os.mkdir(APP_PATH+'/store')
-        
-        while lproxy.get('killAll') != 0:
-            path, dirs, files = next(os.walk(APP_PATH+'/store'))
-            file_count = len(files)
-            if(file_count > 0):
-                for filename in os.listdir('./store'):
-                    if filename.endswith(".jpg") or filename.endswith(".png"):
-                        print('Hola Mundo')
+        if not os.path.isdir(APP_PATH+'/frame_container'):
+            os.mkdir(APP_PATH+'/frame_container')
+
+        path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
+        file_count = len(files)
+        if(file_count > 0):
+            for filename in os.listdir('./frame_container'):
+                if filename.endswith(".jpg") or filename.endswith(".png"):
+                    print('Hola Mundo')
