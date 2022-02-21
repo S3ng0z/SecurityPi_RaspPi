@@ -248,6 +248,7 @@ class HomeController(Controller):
                     image = myfile.read(4096)
                     clientSocket.send(image)
                     myfile.close()
+                    print('img: ' + filename + ' send')
                     '''
                     image = image.tobytes()
                     size = len(image)
