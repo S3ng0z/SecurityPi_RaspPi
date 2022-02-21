@@ -246,7 +246,7 @@ class HomeController(Controller):
                     # open image
                     myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
                     image = myfile.read(4096)
-                    client.send(image)
+                    clientSocket.send(image)
                     myfile.close()
                     '''
                     image = image.tobytes()
