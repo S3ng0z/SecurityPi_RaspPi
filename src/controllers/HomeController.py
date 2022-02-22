@@ -238,24 +238,25 @@ class HomeController(Controller):
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
 
-        path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
-        file_count = len(files)
-        if(file_count > 0):
-            for filename in os.listdir('./frame_container'):
-                if filename.endswith(".jpg") or filename.endswith(".png"):
-                    # open image
-                    myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
-                    image = myfile.read()
-                    if not image:
-                        break
-                    clientSocket.send(image)
-                    myfile.close()
-                    print('img: ' + filename + ' send')
-                    '''
-                    image = image.tobytes()
-                    size = len(image)
-                    clientSocket.sendall(struct.pack(">L", size) + image)
-                    '''
+        while True:
+            path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
+            file_count = len(files)
+            if(file_count > 0):
+                for filename in os.listdir('./frame_container'):
+                    if filename.endswith(".jpg") or filename.endswith(".png"):
+                        # open image
+                        myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
+                        image = myfile.read()
+                        if not image:
+                            break
+                        clientSocket.send(image)
+                        myfile.close()
+                        print('img: ' + filename + ' send')
+                        '''
+                        image = image.tobytes()
+                        size = len(image)
+                        clientSocket.sendall(struct.pack(">L", size) + image)
+                        '''
         
         clientSocket.close()
             
