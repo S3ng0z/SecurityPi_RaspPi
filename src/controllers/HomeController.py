@@ -249,7 +249,7 @@ class HomeController(Controller):
                         if not image:
                             break
                         #clientSocket.send(image)
-                        imageBytes = bytearray(f)
+                        imageBytes = bytearray(image)
                         size = len(imageBytes)
                         clientSocket.sendall(struct.pack(">L", size) + imageBytes)
                         myfile.close()
