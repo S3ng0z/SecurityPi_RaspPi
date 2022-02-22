@@ -235,6 +235,7 @@ class HomeController(Controller):
 
     def sendScreenShoot(self):
         clientSocket = self.homeModel.connectSocketSendScreenShoot()
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
         while True:
@@ -249,9 +250,9 @@ class HomeController(Controller):
                         if not image:
                             break
                         #clientSocket.send(image)
-                        imageBytes = bytearray(image)
-                        size = len(imageBytes)
-                        clientSocket.sendall(struct.pack(">L", size) + imageBytes)
+                        imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                        size = len(imageToEncode)
+                        clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                         myfile.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         print('img: ' + filename + ' send')
