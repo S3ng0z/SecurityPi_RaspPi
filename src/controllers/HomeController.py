@@ -237,7 +237,6 @@ class HomeController(Controller):
         clientSocket = self.homeModel.connectSocketSendScreenShoot()
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
-
         while True:
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
@@ -247,17 +246,16 @@ class HomeController(Controller):
                         # open image
                         myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
                         image = myfile.read()
-                        if not image:
-                            break
-                        clientSocket.send(image)
+                        if image:
+                            clientSocket.send(image)
                         myfile.close()
+                        os.remove(APP_PATH + '/frame_container/' + filename)
                         print('img: ' + filename + ' send')
                         '''
                         image = image.tobytes()
                         size = len(image)
                         clientSocket.sendall(struct.pack(">L", size) + image)
                         '''
-        
         clientSocket.close()
             
 
