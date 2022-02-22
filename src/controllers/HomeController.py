@@ -244,7 +244,7 @@ class HomeController(Controller):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         # open image
-                        myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
+                        myfile = open(io.BytesIO(APP_PATH+'/frame_container/'+filename), 'rb')
                         image = myfile.read()
                         if not image:
                             break
