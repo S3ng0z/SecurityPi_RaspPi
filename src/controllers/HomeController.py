@@ -245,9 +245,10 @@ class HomeController(Controller):
                 if filename.endswith(".jpg") or filename.endswith(".png"):
                     # open image
                     myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
-                    image = myfile.read(2048)
-                    if image:
-                        clientSocket.send(image)
+                    image = myfile.read()
+                    if not image:
+                        break
+                    clientSocket.send(image)
                     myfile.close()
                     print('img: ' + filename + ' send')
                     '''
