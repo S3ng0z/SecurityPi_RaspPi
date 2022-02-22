@@ -246,8 +246,9 @@ class HomeController(Controller):
                         # open image
                         myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
                         image = myfile.read()
-                        if image:
-                            clientSocket.send(image)
+                        if not image:
+                            break
+                        clientSocket.send(image)
                         myfile.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         print('img: ' + filename + ' send')
