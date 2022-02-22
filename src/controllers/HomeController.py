@@ -248,7 +248,9 @@ class HomeController(Controller):
                         image = myfile.read()
                         if not image:
                             break
-                        clientSocket.send(image)
+                        #clientSocket.send(image)
+                        size = len(image)
+                        clientSocket.sendall(struct.pack(">L", size) + image)
                         myfile.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         print('img: ' + filename + ' send')
