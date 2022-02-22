@@ -248,8 +248,6 @@ class HomeController(Controller):
                         #myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
                         #image = myfile.read()
                         image = cv2.imread(APP_PATH+'/frame_container/'+filename)
-                        if not image:
-                            break
                         #clientSocket.send(image)
                         imageToEncode = self.homeModel.encodeImage(image, encode_param)
                         size = len(imageToEncode)
