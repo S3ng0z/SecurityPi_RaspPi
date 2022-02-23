@@ -259,7 +259,7 @@ class HomeController(Controller):
                             os.remove(APP_PATH + '/frame_container/' + filename)
                             print('img: ' + filename + ' send')
                         else:
-                            print("Unable to load image at path {}".format(image_file))
+                            print("Unable to load image at path {}".format(image))
                         #clientSocket.send(image)
                         '''
                         imageToEncode = self.homeModel.encodeImage(image, encode_param)
