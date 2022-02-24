@@ -293,8 +293,7 @@ class HomeController(Controller):
                         myfile.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         print('img: ' + filename + ' send')
-                        '''
-                        '''
+                        ---
                         image = image.tobytes()
                         size = len(image)
                         clientSocket.sendall(struct.pack(">L", size) + image)
