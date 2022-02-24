@@ -8,6 +8,8 @@ import io
 import struct
 import time
 import cv2
+import sys
+import zipfile
 import numpy as np
 import tensorflow as tf
 from threading import Thread, Event
@@ -241,6 +243,24 @@ class HomeController(Controller):
         while True:
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
+
+            zip_name = 'main.zip'
+
+            with zipfile.ZipFile(zip_name, 'w') as file:
+                for j in range(1, (k+1)):
+                    file.write('{}.jpg'.format(j))
+                    print('[+] {}.jpg is sent'.format(j))
+
+            clientSocket.send(zip_name.encode())
+
+            f = open(zip_name, 'rb')
+            l = f.read()
+            clientSocket.sendall(l)
+
+            os.remove(zip_name)
+            f.close()
+            clientSocket.close()
+            '''
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
@@ -261,7 +281,7 @@ class HomeController(Controller):
 
                         #clientSocket.send(image)
                         #image = cv2.imread(APP_PATH+'/frame_container/'+filename, cv2.IMREAD_GRAYSCALE)
-
+            '''
                         '''
                         if image is None:
                             os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
