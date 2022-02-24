@@ -255,13 +255,14 @@ class HomeController(Controller):
                         #clientSocket.send(image)
                         image = cv2.imread(APP_PATH+'/frame_container/'+filename, cv2.IMREAD_GRAYSCALE)
 
-                        if image is None:      # always check for None
+                        if image is None:
+                            os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
                             break
                         
                         imageToEncode = self.homeModel.encodeImage(image, encode_param)
                         size = len(imageToEncode)
                         clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                        myfile.close()
+                        #myfile.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         print('img: ' + filename + ' send')
                         '''
