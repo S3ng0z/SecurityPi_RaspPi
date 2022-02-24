@@ -251,7 +251,7 @@ class HomeController(Controller):
                             os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
                             break
                         #clientSocket.send(image)
-                        size = len(size)
+                        size = len(image)
                         clientSocket.sendall(struct.pack(">L", size) + image)
                         myfile.close()
                         #image = cv2.imread(APP_PATH+'/frame_container/'+filename)
