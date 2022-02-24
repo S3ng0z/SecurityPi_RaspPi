@@ -281,7 +281,7 @@ class HomeController(Controller):
 
                         #clientSocket.send(image)
                         #image = cv2.imread(APP_PATH+'/frame_container/'+filename, cv2.IMREAD_GRAYSCALE)
-            '''
+                        '''
                         '''
                         if image is None:
                             os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
