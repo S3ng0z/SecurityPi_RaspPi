@@ -250,7 +250,7 @@ class HomeController(Controller):
                         if image is None:
                             os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
                             break
-                        s.send(image)
+                        clientSocket.send(image)
                         myfile.close()
                         #image = cv2.imread(APP_PATH+'/frame_container/'+filename)
                         #image = cv2.imdecode(np.fromfile(APP_PATH+'/frame_container/'+filename, dtype=np.uint8), -1)
