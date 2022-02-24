@@ -246,11 +246,13 @@ class HomeController(Controller):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         # open image
                         myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
-                        image = myfile.read(1024)
+                        image = myfile.read()
                         if image is None:
                             os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
                             break
-                        clientSocket.send(image)
+                        #clientSocket.send(image)
+                        size = len(size)
+                        clientSocket.sendall(struct.pack(">L", size) + image)
                         myfile.close()
                         #image = cv2.imread(APP_PATH+'/frame_container/'+filename)
                         #image = cv2.imdecode(np.fromfile(APP_PATH+'/frame_container/'+filename, dtype=np.uint8), -1)
