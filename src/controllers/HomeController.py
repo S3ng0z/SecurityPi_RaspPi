@@ -246,7 +246,12 @@ class HomeController(Controller):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         # open image
                         myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
-                        image = myfile.read()
+                        image = myfile.read(1024)
+                        if image is None:
+                            os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
+                            break
+                        s.send(image)
+                        myfile.close()
                         #image = cv2.imread(APP_PATH+'/frame_container/'+filename)
                         #image = cv2.imdecode(np.fromfile(APP_PATH+'/frame_container/'+filename, dtype=np.uint8), -1)
                         
@@ -255,6 +260,7 @@ class HomeController(Controller):
                         #clientSocket.send(image)
                         #image = cv2.imread(APP_PATH+'/frame_container/'+filename, cv2.IMREAD_GRAYSCALE)
 
+                        '''
                         if image is None:
                             os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
                             break
@@ -266,6 +272,7 @@ class HomeController(Controller):
                         myfile.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         print('img: ' + filename + ' send')
+                        '''
                         '''
                         image = image.tobytes()
                         size = len(image)
