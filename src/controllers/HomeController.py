@@ -247,7 +247,7 @@ class HomeController(Controller):
             zip_name = 'main.zip'
 
             with zipfile.ZipFile(zip_name, 'w') as file:
-                for j in range(1, (k+1)):
+                for j in range(1, (1+1)):
                     file.write('{}.jpg'.format(j))
                     print('[+] {}.jpg is sent'.format(j))
 
