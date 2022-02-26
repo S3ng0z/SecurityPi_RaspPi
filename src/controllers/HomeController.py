@@ -249,7 +249,7 @@ class HomeController(Controller):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #client_socket.send(filename)
-                        file_name = open(APP_PATH + '/frame_container/' + filename ,'r')
+                        file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
                         print('./frame_container/' + filename + '.jpg')
                         #imageToEncode = self.homeModel.encodeImage(file_name, encode_param)
                         size = os.stat(APP_PATH + '/frame_container/' + filename).st_size 
