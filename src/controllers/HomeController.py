@@ -262,10 +262,11 @@ class HomeController(Controller):
             l = f.read()
             clientSocket.sendall(l)
             f.close()
+            clientSocket.close()
             '''
             os.remove(zip_name)
             
-        clientSocket.close()
+        
             '''
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
