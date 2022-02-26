@@ -243,9 +243,20 @@ class HomeController(Controller):
         while True:
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
-            zip_name = APP_PATH + '/main.zip'
+            #zip_name = APP_PATH + '/main.zip'
 
             if(file_count > 0):
+                for filename in os.listdir('./frame_container'):
+                    if filename.endswith(".jpg") or filename.endswith(".png"):
+                        client_socket.send(filename)
+                        file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
+                        while True:
+                            strng = file_name.readline(1024)
+                            if not strng:
+                                break
+                            client_socket.send(strng)
+                        file_name.close()
+                '''
                 with zipfile.ZipFile(zip_name, 'w') as file:
                     for filename in os.listdir('./frame_container'):
                         if filename.endswith(".jpg") or filename.endswith(".png"):
@@ -258,6 +269,7 @@ class HomeController(Controller):
                         clientSocket.sendall(data)
                         f.close()
                     os.remove(zip_name)
+                '''
             '''
             f = open(zip_name, 'rb')
             l = f.read()
