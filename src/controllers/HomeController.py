@@ -246,17 +246,17 @@ class HomeController(Controller):
             zip_name = APP_PATH + '/main.zip'
 
             if(file_count > 0):
-                for filename in os.listdir('./frame_container'):
-                    if filename.endswith(".jpg") or filename.endswith(".png"):
-                        with zipfile.ZipFile(zip_name, 'wb') as file:
-                            file.write(APP_PATH + '/frame_container/' + filename)
-                            os.remove(APP_PATH + '/frame_container/' + filename)
+                with zipfile.ZipFile(zip_name, 'wb') as file:
+                    for filename in os.listdir('./frame_container'):
+                        if filename.endswith(".jpg") or filename.endswith(".png"):
+                                file.write(APP_PATH + '/frame_container/' + filename)
+                                os.remove(APP_PATH + '/frame_container/' + filename)
             
-            #clientSocket.send(zip_name.encode())
-            with open(zip_name,"rb") as f:
-                data=f.read()
-                clientSocket.sendall(data)
-                f.close()
+                    #clientSocket.send(zip_name.encode())
+                    with open(zip_name,"rb") as f:
+                        data=f.read()
+                        clientSocket.sendall(data)
+                        f.close()
             '''
             f = open(zip_name, 'rb')
             l = f.read()
