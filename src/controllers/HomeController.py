@@ -243,7 +243,7 @@ class HomeController(Controller):
         while True:
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
-            zip_name = 'main.zip'
+            zip_name = APP_PATH + 'main.zip'
 
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
@@ -252,15 +252,20 @@ class HomeController(Controller):
                             file.write(APP_PATH + '/frame_container/' + filename)
                             os.remove(APP_PATH + '/frame_container/' + filename)
             
-            clientSocket.send(zip_name.encode())
-
+            #clientSocket.send(zip_name.encode())
+            with open(zip_name,"rb") as f:
+                data=f.read()
+                clientSocket.sendall(data)
+                f.close()
+            '''
             f = open(zip_name, 'rb')
             l = f.read()
             clientSocket.sendall(l)
-
-            os.remove(zip_name)
             f.close()
-            clientSocket.close()
+            '''
+            os.remove(zip_name)
+            
+        clientSocket.close()
             '''
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
