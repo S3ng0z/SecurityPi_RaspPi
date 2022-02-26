@@ -249,11 +249,14 @@ class HomeController(Controller):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #client_socket.send(filename)
-                        file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
+                        file_name = open(APP_PATH + '/frame_container/' + filename ,'r')
+                        print('./frame_container/' + filename + '.jpg')
                         while True:
                             strng = file_name.readline(1024)
                             if not strng:
+                                print('A pasado algo')
                                 break
+                            print('Enviandoo...')
                             clientSocket.send(strng)
                         file_name.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
