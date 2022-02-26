@@ -246,7 +246,7 @@ class HomeController(Controller):
             zip_name = APP_PATH + '/main.zip'
 
             if(file_count > 0):
-                with zipfile.ZipFile(zip_name, 'wb') as file:
+                with zipfile.ZipFile(zip_name, 'w') as file:
                     for filename in os.listdir('./frame_container'):
                         if filename.endswith(".jpg") or filename.endswith(".png"):
                                 file.write(APP_PATH + '/frame_container/' + filename)
