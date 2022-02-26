@@ -243,7 +243,7 @@ class HomeController(Controller):
         while True:
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
-            zip_name = APP_PATH + 'main.zip'
+            zip_name = APP_PATH + '/main.zip'
 
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
