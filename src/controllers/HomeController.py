@@ -252,7 +252,7 @@ class HomeController(Controller):
                         file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
                         print('./frame_container/' + filename + '.jpg')
                         #imageToEncode = self.homeModel.encodeImage(file_name, encode_param)
-                        image = io.BytesIO(file_name)
+                        image = io.BytesIO(file_name.read())
                         #size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
                         size = len(image)
                         clientSocket.sendall(struct.pack(">L", size) + image)
