@@ -257,14 +257,16 @@ class HomeController(Controller):
                         data=f.read()
                         clientSocket.sendall(data)
                         f.close()
+                    os.remove(zip_name)
             '''
             f = open(zip_name, 'rb')
             l = f.read()
             clientSocket.sendall(l)
             f.close()
             clientSocket.close()
-            '''
             os.remove(zip_name)
+            '''
+            
             
         
             '''
