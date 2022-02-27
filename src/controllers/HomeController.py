@@ -258,12 +258,12 @@ class HomeController(Controller):
                         data = b""
                         count = 0
                         while len(data) < image_size:
-                            data += file_name.readline(1024)
+                            data += file_name.readline(4096)
                             if not data:
                                 print('A pasado algo')
                                 break
-                            else:
-                                print('len(data): '+str(len(data))+' escribiendo...')
+                            #else:
+                                #print('len(data): '+str(len(data))+' escribiendo...')
                         if data:
                             clientSocket.send(data)
                             print('Enviandoo...')
