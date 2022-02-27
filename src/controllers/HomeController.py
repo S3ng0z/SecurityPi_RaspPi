@@ -255,7 +255,8 @@ class HomeController(Controller):
                         image_size = len(image)
                         clientSocket.sendall(struct.pack(">L", image_size))
                         data = b""
-                        while data < image_size:
+                        count = 0
+                        while len(data) < image_size:
                             data += file_name.readline(1024)
                             if not data:
                                 print('A pasado algo')
