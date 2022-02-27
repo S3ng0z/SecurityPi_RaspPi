@@ -253,6 +253,7 @@ class HomeController(Controller):
                         print('./frame_container/' + filename + '.jpg')
                         image = file_name.read()
                         image_size = len(image)
+                        print('image_size: ' + str(image_size))
                         clientSocket.sendall(struct.pack(">L", image_size))
                         data = b""
                         count = 0
@@ -261,10 +262,11 @@ class HomeController(Controller):
                             if not data:
                                 print('A pasado algo')
                                 break
-                        
+                            else:
+                                print('len(data): '+str(len(data))+' escribiendo...')
                         if data:
                             clientSocket.send(strng)
-                        print('Enviandoo...')
+                            print('Enviandoo...')
                         file_name.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
                 '''
@@ -330,6 +332,7 @@ class HomeController(Controller):
                         size = len(image)
                         clientSocket.sendall(struct.pack(">L", size) + image)
                         '''
+            break
         clientSocket.close()
             
 
