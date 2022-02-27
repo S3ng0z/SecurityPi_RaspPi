@@ -258,7 +258,7 @@ class HomeController(Controller):
                         data = b""
                         count = 0
                         while len(data) < image_size:
-                            data += file_name.readline(4096)
+                            data += file_name.readline()
                             if not data:
                                 print('A pasado algo')
                                 break
