@@ -268,7 +268,7 @@ class HomeController(Controller):
                             clientSocket.send(data)
                             print('Enviandoo...')
                         file_name.close()
-                        #os.remove(APP_PATH + '/frame_container/' + filename)
+                        os.remove(APP_PATH + '/frame_container/' + filename)
                 '''
                 with zipfile.ZipFile(zip_name, 'w') as file:
                     for filename in os.listdir('./frame_container'):
