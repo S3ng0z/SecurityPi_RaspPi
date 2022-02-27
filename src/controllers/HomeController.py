@@ -265,7 +265,7 @@ class HomeController(Controller):
                             else:
                                 print('len(data): '+str(len(data))+' escribiendo...')
                         if data:
-                            clientSocket.send(strng)
+                            clientSocket.send(data)
                             print('Enviandoo...')
                         file_name.close()
                         #os.remove(APP_PATH + '/frame_container/' + filename)
