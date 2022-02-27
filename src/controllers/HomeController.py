@@ -332,7 +332,6 @@ class HomeController(Controller):
                         size = len(image)
                         clientSocket.sendall(struct.pack(">L", size) + image)
                         '''
-            break
         clientSocket.close()
             
 
