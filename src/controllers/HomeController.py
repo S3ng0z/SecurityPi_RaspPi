@@ -262,8 +262,8 @@ class HomeController(Controller):
                             if not data:
                                 print('A pasado algo')
                                 break
-                            #else:
-                                #print('len(data): '+str(len(data))+' escribiendo...')
+                            else:
+                                print('len(data): '+str(len(data))+' escribiendo...')
                         if data:
                             clientSocket.send(data)
                             print('Enviandoo...')
