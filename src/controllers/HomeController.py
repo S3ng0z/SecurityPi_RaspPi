@@ -257,7 +257,7 @@ class HomeController(Controller):
                         #size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
                         size = len(image)
                         clientSocket.sendall(struct.pack(">L", size))
-                        clientSocket.sendall(struct.pack(image))
+                        clientSocket.sendall(image)
                         '''
                         while True:
                             strng = file_name.readline(1024)
