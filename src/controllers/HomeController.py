@@ -250,7 +250,7 @@ class HomeController(Controller):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #client_socket.send(filename)
                         file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
-                        print('./frame_container/' + filename + '.jpg')
+                        print('./frame_container/' + filename)
                         image = file_name.read()
                         image_size = len(image)
                         print('image_size: ' + str(image_size))
@@ -268,7 +268,7 @@ class HomeController(Controller):
                             clientSocket.send(strng)
                             print('Enviandoo...')
                         file_name.close()
-                        os.remove(APP_PATH + '/frame_container/' + filename)
+                        #os.remove(APP_PATH + '/frame_container/' + filename)
                 '''
                 with zipfile.ZipFile(zip_name, 'w') as file:
                     for filename in os.listdir('./frame_container'):
