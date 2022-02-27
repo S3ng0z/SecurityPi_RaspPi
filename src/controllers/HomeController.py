@@ -251,22 +251,19 @@ class HomeController(Controller):
                         #client_socket.send(filename)
                         file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
                         print('./frame_container/' + filename + '.jpg')
-                        #imageToEncode = self.homeModel.encodeImage(file_name, encode_param)
                         image = file_name.read()
-                        #imageB = io.BytesIO()
-                        #size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
-                        size = len(image)
-                        clientSocket.sendall(struct.pack(">L", size))
-                        clientSocket.sendall(image)
-                        '''
-                        while True:
-                            strng = file_name.readline(1024)
-                            if not strng:
+                        image_size = len(image)
+                        clientSocket.sendall(struct.pack(">L", image_size))
+                        data = b""
+                        while data < image_size:
+                            data += file_name.readline(1024)
+                            if not data:
                                 print('A pasado algo')
                                 break
-                            print('Enviandoo...')
+                        
+                        if data:
                             clientSocket.send(strng)
-                        '''
+                        print('Enviandoo...')
                         file_name.close()
                         os.remove(APP_PATH + '/frame_container/' + filename)
                 '''
