@@ -257,6 +257,7 @@ class HomeController(Controller):
                             print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
                             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                             print('Enviado...')
+                        os.remove(APP_PATH + '/frame_container/' + filename)
                         '''
                         #client_socket.send(filename)
                         file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
