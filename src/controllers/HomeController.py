@@ -252,7 +252,7 @@ class HomeController(Controller):
                         if not image is None:
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
-                            clientSocket.sendall(struct.pack(">H", size) + imageToEncode)
+                            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                         '''
                         #client_socket.send(filename)
                         file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
