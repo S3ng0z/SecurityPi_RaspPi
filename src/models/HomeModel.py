@@ -141,8 +141,9 @@ class HomeModel:
             if not os.path.isdir(APP_PATH+'/frame_container'):
                 os.mkdir(APP_PATH+'/frame_container')
             
-            tempName = next(tempfile._get_candidate_names())
-            cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.jpg'), image)
+            if not image is None:
+                tempName = next(tempfile._get_candidate_names())
+                cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.jpg'), image)
         
         return image
     
