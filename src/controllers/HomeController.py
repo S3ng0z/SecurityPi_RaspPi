@@ -251,11 +251,12 @@ class HomeController(Controller):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         image = cv2.imread(APP_PATH + '/frame_container/' + filename)
                         print('./frame_container/' + filename)
+                        print('len(IMAGE): '+str(len(image))+' escribiendo...')
                         if not image is None:
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
                             print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                            clientSocket.sendall(struct.pack(">H", size) + imageToEncode)
                             print('Enviado...')
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         '''
