@@ -248,6 +248,12 @@ class HomeController(Controller):
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
+                        image = cv2.imread(APP_PATH + '/frame_container/' + filename)
+                        imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                        size = len(imageToEncode)
+
+                        clientSocket.sendall(struct.pack(">H", size) + imageToEncode)
+                        '''
                         #client_socket.send(filename)
                         file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
                         print('./frame_container/' + filename)
@@ -265,10 +271,12 @@ class HomeController(Controller):
                             else:
                                 print('len(data): '+str(len(data))+' escribiendo...')
                         if data:
-                            clientSocket.send(data)
+                            #clientSocket.send(data)
+                            clientSocket.sendall(struct.pack(">I", image_size))
                             print('Enviandoo...')
                         file_name.close()
                         #os.remove(APP_PATH + '/frame_container/' + filename)
+                        '''
                 '''
                 with zipfile.ZipFile(zip_name, 'w') as file:
                     for filename in os.listdir('./frame_container'):
