@@ -240,6 +240,7 @@ class HomeController(Controller):
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
+
         while True:
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
@@ -249,10 +250,13 @@ class HomeController(Controller):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         image = cv2.imread(APP_PATH + '/frame_container/' + filename)
+                        print('./frame_container/' + filename)
                         if not image is None:
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
+                            print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
                             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                            print('Enviado...')
                         '''
                         #client_socket.send(filename)
                         file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
