@@ -249,7 +249,7 @@ class HomeController(Controller):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         image = cv2.imread(APP_PATH + '/frame_container/' + filename)
-                        if(len(image)>0)
+                        if(len(image)>0):
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
 
