@@ -251,7 +251,6 @@ class HomeController(Controller):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         image = cv2.imread(APP_PATH + '/frame_container/' + filename)
                         print('./frame_container/' + filename)
-                        print('len(IMAGE): '+str(len(image))+' escribiendo...')
                         if not image is None:
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
