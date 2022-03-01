@@ -15,6 +15,7 @@ import tensorflow as tf
 from threading import Thread, Event
 import multiprocessing
 from multiprocessing import Manager
+from PIL import Image
 
 """
     Main controller. It will be responsible for program's main screen behavior.
