@@ -248,16 +248,18 @@ class HomeController(Controller):
 
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
+                    img = None
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
-                        with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
-                            check_chars = f.read()[-2:]
-                        if check_chars != b'\xff\xd9':
-                            print('Not complete image')
-                        else:
-                            imrgb = cv2.imread(os.path.join(path, file), 1)
+                        with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
+                            buff = StringIO.StringIO()
+                            buff.write(img_bin.read())
+                            buff.seek(0)
+                            temp_img = numpy.array(PIL.Image.open(buff), dtype=numpy.uint8)
+                            img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                             print('./frame_container/' + filename)
-                            #if not image is None:
+                            
+                        if not img is None:
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
                             print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
