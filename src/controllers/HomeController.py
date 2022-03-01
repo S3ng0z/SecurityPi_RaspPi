@@ -15,6 +15,10 @@ import tensorflow as tf
 from threading import Thread, Event
 import multiprocessing
 from multiprocessing import Manager
+try:
+    from StringIO import StringIO ## for Python 2
+except ImportError:
+    from io import StringIO
 
 """
     Main controller. It will be responsible for program's main screen behavior.
@@ -258,7 +262,7 @@ class HomeController(Controller):
                             temp_img = numpy.array(PIL.Image.open(buff), dtype=numpy.uint8)
                             img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                             print('./frame_container/' + filename)
-                            
+
                         if not img is None:
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
