@@ -255,7 +255,7 @@ class HomeController(Controller):
                             buff = io.BytesIO()
                             buff.write(img_bin.read())
                             buff.seek(0)
-                            temp_img = numpy.array(PIL.Image.open(buff), dtype=numpy.uint8)
+                            temp_img = np.array(PIL.Image.open(buff), dtype=np.uint8)
                             img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                             print('./frame_container/' + filename)
 
