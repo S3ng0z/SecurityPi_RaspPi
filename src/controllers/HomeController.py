@@ -15,10 +15,6 @@ import tensorflow as tf
 from threading import Thread, Event
 import multiprocessing
 from multiprocessing import Manager
-try:
-    from StringIO import StringIO ## for Python 2
-except ImportError:
-    from io import StringIO
 
 """
     Main controller. It will be responsible for program's main screen behavior.
@@ -256,7 +252,7 @@ class HomeController(Controller):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
                         with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
-                            buff = StringIO.StringIO()
+                            buff = io.BytesIO()
                             buff.write(img_bin.read())
                             buff.seek(0)
                             temp_img = numpy.array(PIL.Image.open(buff), dtype=numpy.uint8)
