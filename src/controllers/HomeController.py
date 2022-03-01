@@ -249,13 +249,19 @@ class HomeController(Controller):
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
-                        image = cv2.imread(APP_PATH + '/frame_container/' + filename)
-                        print('./frame_container/' + filename)
-                        if not image is None:
+                        #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
+                        with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
+                            check_chars = f.read()[-2:]
+                        if check_chars != b'\xff\xd9':
+                            print('Not complete image')
+                        else:
+                            imrgb = cv2.imread(os.path.join(path, file), 1)
+                            print('./frame_container/' + filename)
+                            #if not image is None:
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
                             print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                            clientSocket.sendall(struct.pack(">H", size) + imageToEncode)
+                            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                             print('Enviado...')
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         '''
