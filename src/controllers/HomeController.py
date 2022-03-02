@@ -261,7 +261,7 @@ class HomeController(Controller):
                             '''
                             # This portion is part of my test code
                             byteImgIO = io.BytesIO()
-                            byteImg = Image.open(APP_PATH + '/frame_container/' + filename)
+                            byteImg = PIL.Image.open(APP_PATH + '/frame_container/' + filename)
                             byteImg.save(byteImgIO, "PNG")
                             byteImgIO.seek(0)
                             byteImg = byteImgIO.read()
