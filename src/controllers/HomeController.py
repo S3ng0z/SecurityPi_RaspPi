@@ -254,10 +254,22 @@ class HomeController(Controller):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
                         with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
+                            '''
                             buff = io.BytesIO()
                             buff.write(img_bin.read())
                             buff.seek(0)
-                            temp_img = np.array(PIL.Image.open(buff), dtype=np.uint8)
+                            '''
+                            # This portion is part of my test code
+                            byteImgIO = io.BytesIO()
+                            byteImg = Image.open(APP_PATH + '/frame_container/' + filename)
+                            byteImg.save(byteImgIO, "PNG")
+                            byteImgIO.seek(0)
+                            byteImg = byteImgIO.read()
+
+                            # Non test code
+                            dataBytesIO = io.BytesIO(byteImg)
+                            
+                            temp_img = np.array(PIL.Image.open(dataBytesIO), dtype=np.uint8)
                             img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                             print('./frame_container/' + filename)
 
