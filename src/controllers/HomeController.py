@@ -270,10 +270,10 @@ class HomeController(Controller):
                             dataBytesIO = io.BytesIO(byteImg)
                             
                             temp_img = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename), dtype=np.uint8)
-                            img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
+                            #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                             print('./frame_container/' + filename)
 
-                        if not img is None:
+                        if not temp_img is None:
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
                             print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
