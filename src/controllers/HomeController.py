@@ -269,7 +269,7 @@ class HomeController(Controller):
                             # Non test code
                             dataBytesIO = io.BytesIO(byteImg)
                             
-                            temp_img = np.array(img_bin, dtype=np.uint8)
+                            temp_img = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename), dtype=np.uint8)
                             img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                             print('./frame_container/' + filename)
 
