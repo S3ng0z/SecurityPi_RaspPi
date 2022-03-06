@@ -253,11 +253,12 @@ class HomeController(Controller):
                     img = None
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
-                        with open(APP_PATH + '/frame_container/' + filename, 'r') as img_bin:
+                        with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
                             '''
                             buff = io.BytesIO()
                             buff.write(img_bin.read())
                             buff.seek(0)
+                            '''
                             '''
                             # This portion is part of my test code
                             byteImgIO = io.BytesIO()
@@ -272,13 +273,14 @@ class HomeController(Controller):
                             temp_img = np.array(img_bin, dtype=np.uint8)
                             #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                             print('./frame_container/' + filename)
+                            '''
 
-                        if not temp_img is None:
-                            imageToEncode = self.homeModel.encodeImage(image, encode_param)
-                            size = len(imageToEncode)
-                            print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                            print('Enviado...')
+                            if not temp_img is None:
+                                imageToEncode = self.homeModel.encodeImage(img_bin, encode_param)
+                                size = len(imageToEncode)
+                                print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
+                                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                                print('Enviado...')
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         '''
                         #client_socket.send(filename)
