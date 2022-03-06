@@ -275,7 +275,7 @@ class HomeController(Controller):
                             print('./frame_container/' + filename)
                             '''
 
-                            if not temp_img is None:
+                            if not img_bin is None:
                                 imageToEncode = self.homeModel.encodeImage(img_bin, encode_param)
                                 size = len(imageToEncode)
                                 print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
