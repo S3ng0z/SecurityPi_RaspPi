@@ -253,7 +253,7 @@ class HomeController(Controller):
                     img = None
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
-                        with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
+                        #with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
                             '''
                             buff = io.BytesIO()
                             buff.write(img_bin.read())
@@ -274,13 +274,13 @@ class HomeController(Controller):
                             #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                             print('./frame_container/' + filename)
                             '''
-
-                            if not img_bin is None:
-                                imageToEncode = self.homeModel.encodeImage(img_bin, encode_param)
-                                size = len(imageToEncode)
-                                print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                                print('Enviado...')
+                        images = np.array(Image.open(APP_PATH + '/frame_container/' + filename))
+                        if not images is None:
+                            imageToEncode = self.homeModel.encodeImage(images, encode_param)
+                            size = len(imageToEncode)
+                            print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
+                            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                            print('Enviado...')
                         os.remove(APP_PATH + '/frame_container/' + filename)
                         '''
                         #client_socket.send(filename)
