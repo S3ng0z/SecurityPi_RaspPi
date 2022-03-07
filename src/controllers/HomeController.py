@@ -18,6 +18,7 @@ from multiprocessing import Manager
 from PIL import Image
 import PIL
 from PIL import UnidentifiedImageError
+from PIL import ImageFile
 
 """
     Main controller. It will be responsible for program's main screen behavior.
@@ -248,7 +249,7 @@ class HomeController(Controller):
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
             #zip_name = APP_PATH + '/main.zip'
-
+            ImageFile.LOAD_TRUNCATED_IMAGES = True
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
                     img = None
