@@ -283,7 +283,31 @@ class HomeController(Controller):
                             print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
                             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                             print('Enviado...')
-            192.168.1.33
+                    os.remove(APP_PATH + '/frame_container/' + filename)
+                    '''
+                    #client_socket.send(filename)
+                    file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
+                    print('./frame_container/' + filename)
+                    #image = file_name.read()
+                    image_size = os.path.getsize(APP_PATH + '/frame_container/' + filename)
+                    print('image_size: ' + str(image_size))
+                    clientSocket.sendall(struct.pack(">L", image_size))
+                    data = b""
+                    count = 0
+                    while len(data) < image_size:
+                        data += file_name.readline()
+                        if not data:
+                            print('A pasado algo')
+                            break
+                        else:
+                            print('len(data): '+str(len(data))+' escribiendo...')
+                    if data:
+                        #clientSocket.send(data)
+                        clientSocket.sendall(struct.pack(">I", image_size))
+                        print('Enviandoo...')
+                    file_name.close()
+                    #os.remove(APP_PATH + '/frame_container/' + filename)
+                    '''
                 '''
                 with zipfile.ZipFile(zip_name, 'w') as file:
                     for filename in os.listdir('./frame_container'):
