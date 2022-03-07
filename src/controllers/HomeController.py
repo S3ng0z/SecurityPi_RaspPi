@@ -15,7 +15,7 @@ import tensorflow as tf
 from threading import Thread, Event
 import multiprocessing
 from multiprocessing import Manager
-from PIL import Image. ImageFile
+from PIL import Image, ImageFile
 import PIL
 from PIL import UnidentifiedImageError
 
