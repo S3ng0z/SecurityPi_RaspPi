@@ -275,15 +275,19 @@ class HomeController(Controller):
                         #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                         print('./frame_container/' + filename)
                         '''
+                        try:
+                            images = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename))
+                            if not images is None:
+                                imageToEncode = self.homeModel.encodeImage(images, encode_param)
+                                size = len(imageToEncode)
+                                print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
+                                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                                print('Enviado...')
+                        except PIL.UnidentifiedImageError:
+                            print('IMAGEN no enviada: ' + filename)
                         
-                        images = np.array(Image.open(APP_PATH + '/frame_container/' + filename))
-                        if not images is None:
-                            imageToEncode = self.homeModel.encodeImage(images, encode_param)
-                            size = len(imageToEncode)
-                            print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                            print('Enviado...')
                     os.remove(APP_PATH + '/frame_container/' + filename)
+
                     '''
                     #client_socket.send(filename)
                     file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
