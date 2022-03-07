@@ -18,7 +18,6 @@ from multiprocessing import Manager
 from PIL import Image
 import PIL
 from PIL import UnidentifiedImageError
-from PIL import ImageFile
 
 """
     Main controller. It will be responsible for program's main screen behavior.
@@ -249,7 +248,7 @@ class HomeController(Controller):
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
             #zip_name = APP_PATH + '/main.zip'
-            ImageFile.LOAD_TRUNCATED_IMAGES = True
+
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
                     img = None
@@ -276,42 +275,39 @@ class HomeController(Controller):
                         #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                         print('./frame_container/' + filename)
                         '''
-                        try:
-                            images = np.array(Image.open(APP_PATH + '/frame_container/' + filename))
-                            if not images is None:
-                                imageToEncode = self.homeModel.encodeImage(images, encode_param)
-                                size = len(imageToEncode)
-                                print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                                print('Enviado...')
-                        except PIL.UnidentifiedImageError:
-                            print('ERROR: ' + str(APP_PATH + '/frame_container/' + filename))
                         
-                        os.remove(APP_PATH + '/frame_container/' + filename)
-                        '''
-                        #client_socket.send(filename)
-                        file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
-                        print('./frame_container/' + filename)
-                        #image = file_name.read()
-                        image_size = os.path.getsize(APP_PATH + '/frame_container/' + filename)
-                        print('image_size: ' + str(image_size))
-                        clientSocket.sendall(struct.pack(">L", image_size))
-                        data = b""
-                        count = 0
-                        while len(data) < image_size:
-                            data += file_name.readline()
-                            if not data:
-                                print('A pasado algo')
-                                break
-                            else:
-                                print('len(data): '+str(len(data))+' escribiendo...')
-                        if data:
-                            #clientSocket.send(data)
-                            clientSocket.sendall(struct.pack(">I", image_size))
-                            print('Enviandoo...')
-                        file_name.close()
-                        #os.remove(APP_PATH + '/frame_container/' + filename)
-                        '''
+                        images = np.array(Image.open(APP_PATH + '/frame_container/' + filename))
+                        if not images is None:
+                            imageToEncode = self.homeModel.encodeImage(images, encode_param)
+                            size = len(imageToEncode)
+                            print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
+                            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                            print('Enviado...')
+                    os.remove(APP_PATH + '/frame_container/' + filename)
+                    '''
+                    #client_socket.send(filename)
+                    file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
+                    print('./frame_container/' + filename)
+                    #image = file_name.read()
+                    image_size = os.path.getsize(APP_PATH + '/frame_container/' + filename)
+                    print('image_size: ' + str(image_size))
+                    clientSocket.sendall(struct.pack(">L", image_size))
+                    data = b""
+                    count = 0
+                    while len(data) < image_size:
+                        data += file_name.readline()
+                        if not data:
+                            print('A pasado algo')
+                            break
+                        else:
+                            print('len(data): '+str(len(data))+' escribiendo...')
+                    if data:
+                        #clientSocket.send(data)
+                        clientSocket.sendall(struct.pack(">I", image_size))
+                        print('Enviandoo...')
+                    file_name.close()
+                    #os.remove(APP_PATH + '/frame_container/' + filename)
+                    '''
                 '''
                 with zipfile.ZipFile(zip_name, 'w') as file:
                     for filename in os.listdir('./frame_container'):
