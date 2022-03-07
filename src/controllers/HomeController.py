@@ -15,7 +15,7 @@ import tensorflow as tf
 from threading import Thread, Event
 import multiprocessing
 from multiprocessing import Manager
-from PIL import Image
+from PIL import Image. ImageFile
 import PIL
 from PIL import UnidentifiedImageError
 
@@ -276,6 +276,7 @@ class HomeController(Controller):
                         print('./frame_container/' + filename)
                         '''
                         try:
+                            ImageFile.LOAD_TRUNCATED_IMAGES = True
                             images = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename))
                             if not images is None:
                                 imageToEncode = self.homeModel.encodeImage(images, encode_param)
