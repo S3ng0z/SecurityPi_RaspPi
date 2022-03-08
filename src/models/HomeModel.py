@@ -143,12 +143,12 @@ class HomeModel:
             
             if not image is None:
                 tempName = next(tempfile._get_candidate_names())
-                cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.jpg'), image)
+                cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.png'), image)
         
         return image
     
     def encodeImage(self, image, encode_param):
-        result, frame = cv2.imencode('.jpg', image, encode_param)
+        result, frame = cv2.imencode('.png', image, encode_param)
         data = pickle.dumps(frame, 0)
         return data
 
@@ -258,7 +258,7 @@ class HomeModel:
                     total += 1
                     '''
                     result, frame = cv2.imencode(
-                        '.jpg', grayScale, encode_param)
+                        '.png', grayScale, encode_param)
                     #data = zlib.compress(pickle.dumps(frame, 0))
                     data = pickle.dumps(frame, 0)
                     size = len(data)
@@ -285,7 +285,7 @@ class HomeModel:
             file_count = len(files)
             if(file_count > 0):
                 for filename in os.listdir('./store'):
-                    if filename.endswith(".jpg") or filename.endswith(".png"):
+                    if filename.endswith(".png") or filename.endswith(".png"):
                         image = cv2.imread(os.path.join('./store', filename))
                         grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                         facesContainer = faceCascade.detectMultiScale(grayScale, scaleFactor = 1.1, minNeighbors = 15, minSize = (70, 70))
@@ -300,8 +300,8 @@ class HomeModel:
                             
                             #self.homeModel.log('[INFO] ' + tempName + ' only GB: ' + str(img) + ' GB+LP: ' + str(self.varianceLaplacian(img)) + ' LP: ' + str(self.varianceLaplacian(roiColor)))
                             print('[INFO] ' + tempName + ' LP: ' + str(self.varianceLaplacian(img)) + ' LP: ' + str(self.varianceLaplacian(roiColor)))
-                            cv2.imwrite((APP_PATH+'/store/facesContainer/'+str(tempName)+'.jpg'), roiColor)
-                    cv2.imwrite((APP_PATH+'/sender/'+str(filename)+'.jpg'), image)
+                            cv2.imwrite((APP_PATH+'/store/facesContainer/'+str(tempName)+'.png'), roiColor)
+                    cv2.imwrite((APP_PATH+'/sender/'+str(filename)+'.png'), image)
                     os.remove(os.path.join('./store', filename))
 
 
@@ -313,5 +313,5 @@ class HomeModel:
         file_count = len(files)
         if(file_count > 0):
             for filename in os.listdir('./frame_container'):
-                if filename.endswith(".jpg") or filename.endswith(".png"):
+                if filename.endswith(".png") or filename.endswith(".png"):
                     print('Hola Mundo')

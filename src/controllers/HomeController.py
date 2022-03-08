@@ -283,7 +283,7 @@ class HomeController(Controller):
                             '''
                             if not images is None:
                                 imageToEncode = self.homeModel.encodeImage(images, encode_param)
-                                size = len(images)
+                                size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
                                 print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
                                 clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                                 print('Enviado...')
