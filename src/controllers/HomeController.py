@@ -253,7 +253,7 @@ class HomeController(Controller):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
-                        #with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
+                        with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
                         '''
                         buff = io.BytesIO()
                         buff.write(img_bin.read())
@@ -275,25 +275,25 @@ class HomeController(Controller):
                         print('./frame_container/' + filename)
                         '''
                         
-                        try:
-                            size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
-                            print('Path: ' + str(APP_PATH + '/frame_container/' + filename) + ' size: ' + str(size))
-                            images = cv2.imread(APP_PATH + '/frame_container/' + filename,0)
-                            '''
-                            ImageFile.LOAD_TRUNCATED_IMAGES = True
-                            images = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename))
-                            '''
-                            if not images is None:
-                                imageToEncode = self.homeModel.encodeImage(images, encode_param)
-                                
-                                print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                                print('Enviado...')
-                            else:
-                                print('Images: ' + str(images) + '\n')
-                        except Exception as e:
-                            print('IMAGEN no enviada: ' + filename + ' error: ' + str(e))
-                        
+                            try:
+                                size = len(img_bin.read())
+                                print('Path: ' + str(APP_PATH + '/frame_container/' + filename) + ' size: ' + str(size))
+                                images = cv2.imread(APP_PATH + '/frame_container/' + filename,0)
+                                '''
+                                ImageFile.LOAD_TRUNCATED_IMAGES = True
+                                images = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename))
+                                '''
+                                if not images is None:
+                                    imageToEncode = self.homeModel.encodeImage(images, encode_param)
+                                    size = len(imageToEncode)
+                                    print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
+                                    clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                                    print('Enviado...')
+                                else:
+                                    print('Images: ' + str(images) + '\n')
+                            except Exception as e:
+                                print('IMAGEN no enviada: ' + filename + ' error: ' + str(e))
+                            
                     os.remove(APP_PATH + '/frame_container/' + filename)
 
                     '''
