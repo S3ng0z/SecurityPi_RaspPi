@@ -254,26 +254,26 @@ class HomeController(Controller):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
                         with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
-                        '''
-                        buff = io.BytesIO()
-                        buff.write(img_bin.read())
-                        buff.seek(0)
-                        '''
-                        '''
-                        # This portion is part of my test code
-                        byteImgIO = io.BytesIO()
-                        byteImg = img_bin
-                        #byteImg.save(byteImgIO, "JPG")
-                        byteImgIO.seek(0)
-                        byteImg = byteImgIO.read()
+                            '''
+                            buff = io.BytesIO()
+                            buff.write(img_bin.read())
+                            buff.seek(0)
+                            '''
+                            '''
+                            # This portion is part of my test code
+                            byteImgIO = io.BytesIO()
+                            byteImg = img_bin
+                            #byteImg.save(byteImgIO, "JPG")
+                            byteImgIO.seek(0)
+                            byteImg = byteImgIO.read()
 
-                        # Non test code
-                        dataBytesIO = io.BytesIO(byteImg)
-                        
-                        temp_img = np.array(img_bin, dtype=np.uint8)
-                        #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
-                        print('./frame_container/' + filename)
-                        '''
+                            # Non test code
+                            dataBytesIO = io.BytesIO(byteImg)
+                            
+                            temp_img = np.array(img_bin, dtype=np.uint8)
+                            #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
+                            print('./frame_container/' + filename)
+                            '''
                         
                             try:
                                 size = len(img_bin.read())
