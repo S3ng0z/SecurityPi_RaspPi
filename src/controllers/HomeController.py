@@ -287,6 +287,8 @@ class HomeController(Controller):
                                 print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
                                 clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                                 print('Enviado...')
+                            else:
+                                print('Images: ' + str(images) + '\n')
                         except Exception as e:
                             print('IMAGEN no enviada: ' + filename + ' error: ' + str(e))
                         
