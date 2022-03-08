@@ -251,7 +251,6 @@ class HomeController(Controller):
 
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
-                    img = None
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
                         #with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
@@ -275,17 +274,21 @@ class HomeController(Controller):
                         #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
                         print('./frame_container/' + filename)
                         '''
+                        
                         try:
+                            images = cv2.imread(APP_PATH + '/frame_container/' + filename,0)
+                            '''
                             ImageFile.LOAD_TRUNCATED_IMAGES = True
                             images = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename))
+                            '''
                             if not images is None:
                                 imageToEncode = self.homeModel.encodeImage(images, encode_param)
                                 size = len(imageToEncode)
                                 print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
                                 clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                                 print('Enviado...')
-                        except PIL.UnidentifiedImageError:
-                            print('IMAGEN no enviada: ' + filename)
+                        except Exception as e:
+                            print('IMAGEN no enviada: ' + filename + ' error: ' + str(e))
                         
                     os.remove(APP_PATH + '/frame_container/' + filename)
 
