@@ -276,6 +276,8 @@ class HomeController(Controller):
                         '''
                         
                         try:
+                            size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
+                            print('Path: ' + str(APP_PATH + '/frame_container/' + filename) + ' size: ' + str(size))
                             images = cv2.imread(APP_PATH + '/frame_container/' + filename,0)
                             '''
                             ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -283,7 +285,7 @@ class HomeController(Controller):
                             '''
                             if not images is None:
                                 imageToEncode = self.homeModel.encodeImage(images, encode_param)
-                                size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
+                                
                                 print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
                                 clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                                 print('Enviado...')
