@@ -397,8 +397,8 @@ class HomeController(Controller):
         cam = Thread(target=self.handlerVideoOpenCV, args=())
         threads.append(cam)
 
-        sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
-        threads.append(sendScreenShoot)
+        #sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
+        #threads.append(sendScreenShoot)
 
         #camTF = Thread(target=self.handlerCAMTensorFlow, args=(killAll,))
         #threads.append(camTF)
