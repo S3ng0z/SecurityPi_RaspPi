@@ -56,7 +56,7 @@ class HomeController(Controller):
     """
     def handlerVideoOpenCV(self):
         clientSocket = self.homeModel.connectSocket()
-        '''
+        
         print('clientSocket: ' + str(clientSocket))
         cap = self.homeModel.openVideo()
 
@@ -121,7 +121,6 @@ class HomeController(Controller):
 
         cap.release()
         clientSocket.close()
-        '''
 
     """
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
