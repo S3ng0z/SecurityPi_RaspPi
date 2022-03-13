@@ -73,8 +73,7 @@ class HomeController(Controller):
         new_frame_time = 0
 
         # font which we will be using to display FPS
-        #font = cv2.FONT_HERSHEY_SIMPLEX
-        font = {'family' : 'normal', 'weight' : 'bold', 'size'   : 15}
+        font = cv2.FONT_HERSHEY_SIMPLEX
 
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
@@ -108,7 +107,7 @@ class HomeController(Controller):
             avg_fps =  str(avg_fps)
         
             # putting the FPS count on the frame
-            cv2.putText(image, avg_fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
+            cv2.putText(image, avg_fps, (7, 70), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             if(cont % 5 == 0):
                 cont = 0
