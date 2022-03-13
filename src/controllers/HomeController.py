@@ -252,8 +252,8 @@ class HomeController(Controller):
             #zip_name = APP_PATH + '/main.zip'
 
             if(file_count > 0):
+                time.sleep(5)
                 for filename in os.listdir('./frame_container'):
-                    time.sleep(2)
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         if os.path.exists(APP_PATH + '/frame_container/' + filename):
                             timestamp = time.time()
