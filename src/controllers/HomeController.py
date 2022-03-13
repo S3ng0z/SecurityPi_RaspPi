@@ -107,7 +107,7 @@ class HomeController(Controller):
             avg_fps =  str(avg_fps)
         
             # putting the FPS count on the frame
-            cv2.putText(image, avg_fps, (10, 10), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
+            cv2.putText(image, avg_fps, (10, 30), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             if(cont % 5 == 0):
                 cont = 0
