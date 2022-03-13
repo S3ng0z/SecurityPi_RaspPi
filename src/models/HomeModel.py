@@ -126,7 +126,8 @@ class HomeModel:
         @description Method that activates the camera for the use of the application.
     """
     def openVideo(self):
-        return cv2.VideoCapture('../test/test-480p.mp4')
+        #return cv2.VideoCapture('../test/test-480p.mp4')
+        return cv2.VideoCapture('../test/test-720p.mp4')
 
     def processImage(self, image, faceCascade):
         
