@@ -241,6 +241,7 @@ class HomeController(Controller):
     def sendScreenShoot(self):
         clientSocket = self.homeModel.connectSocketSendScreenShoot()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+        file_head_size = struct.calcsize('24si')
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
 
@@ -252,47 +253,80 @@ class HomeController(Controller):
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
                     if filename.endswith(".jpg") or filename.endswith(".png"):
+                        if os.path.exists(APP_PATH + '/frame_container/' + filename):
+                            timestamp = time.time()
+                            '''
+                                File head:
+                                Head size: '24si' (s means bytes in python or char[] in C,24s is 24 bytes;
+                                                    i means int, 4 bytes;
+                                                    total 28 bytes)
+                                Head content: timestamp, file size
+                            '''
+                            file_head = struct.pack('24si', bytes(str(timestamp), encoding='utf-8'), os.stat(APP_PATH + '/frame_container/' + filename).st_size)
+                            clientSocket.send(file_head)
+                            # Read image and send it
+                            with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
+                                while True:
+                                    data = f.read(1024)
+                                    if not data:
+                                        # print('{} send over !'.format(image_path))
+                                        break
+                                    clientSocket.send(data)
+                        else:
+                            raise ValueError('index error')
+                        '''
+                        timestamp = time.time()
+                        file_head = struct.pack('24si', bytes(str(timestamp), encoding='utf-8'), os.stat(APP_PATH + '/frame_container/' + filename).st_size)
+                        clientSocket.send(file_head)
                         #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
                         with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
-                            '''
-                            buff = io.BytesIO()
-                            buff.write(img_bin.read())
-                            buff.seek(0)
-                            '''
-                            '''
-                            # This portion is part of my test code
-                            byteImgIO = io.BytesIO()
-                            byteImg = img_bin
-                            #byteImg.save(byteImgIO, "JPG")
-                            byteImgIO.seek(0)
-                            byteImg = byteImgIO.read()
+                            while True:
+                                data = img_bin.read(1024)
+                                if not data:
+                                    # print('{} send over !'.format(image_path))
+                                    break
+                                clientSocket.send(data)
+                        '''
+                        '''
+                        buff = io.BytesIO()
+                        buff.write(img_bin.read())
+                        buff.seek(0)
+                        '''
+                        '''
+                        # This portion is part of my test code
+                        byteImgIO = io.BytesIO()
+                        byteImg = img_bin
+                        #byteImg.save(byteImgIO, "JPG")
+                        byteImgIO.seek(0)
+                        byteImg = byteImgIO.read()
 
-                            # Non test code
-                            dataBytesIO = io.BytesIO(byteImg)
-                            
-                            temp_img = np.array(img_bin, dtype=np.uint8)
-                            #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
-                            print('./frame_container/' + filename)
-                            '''
+                        # Non test code
+                        dataBytesIO = io.BytesIO(byteImg)
                         
-                            try:
-                                size = len(img_bin.read())
-                                print('Path: ' + str(APP_PATH + '/frame_container/' + filename) + ' size: ' + str(size))
-                                images = cv2.imread(APP_PATH + '/frame_container/' + filename,0)
-                                '''
-                                ImageFile.LOAD_TRUNCATED_IMAGES = True
-                                images = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename))
-                                '''
-                                if not images is None:
-                                    imageToEncode = self.homeModel.encodeImage(images, encode_param)
-                                    size = len(imageToEncode)
-                                    print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                                    clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                                    print('Enviado...')
-                                else:
-                                    print('Images: ' + str(images) + '\n')
-                            except Exception as e:
-                                print('IMAGEN no enviada: ' + filename + ' error: ' + str(e))
+                        temp_img = np.array(img_bin, dtype=np.uint8)
+                        #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
+                        print('./frame_container/' + filename)
+                        
+                    
+                        try:
+                            size = len(img_bin.read())
+                            print('Path: ' + str(APP_PATH + '/frame_container/' + filename) + ' size: ' + str(size))
+                            images = cv2.imread(APP_PATH + '/frame_container/' + filename,0)
+                            
+                            #ImageFile.LOAD_TRUNCATED_IMAGES = True
+                            #images = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename))
+                            
+                            if not images is None:
+                                imageToEncode = self.homeModel.encodeImage(images, encode_param)
+                                size = len(imageToEncode)
+                                print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
+                                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                                print('Enviado...')
+                            else:
+                                print('Images: ' + str(images) + '\n')
+                        except Exception as e:
+                            print('IMAGEN no enviada: ' + filename + ' error: ' + str(e))
+                        '''
                             
                     os.remove(APP_PATH + '/frame_container/' + filename)
 
@@ -397,8 +431,8 @@ class HomeController(Controller):
         cam = Thread(target=self.handlerVideoOpenCV, args=())
         threads.append(cam)
 
-        #sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
-        #threads.append(sendScreenShoot)
+        sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
+        threads.append(sendScreenShoot)
 
         #camTF = Thread(target=self.handlerCAMTensorFlow, args=(killAll,))
         #threads.append(camTF)
