@@ -73,7 +73,8 @@ class HomeController(Controller):
         new_frame_time = 0
 
         # font which we will be using to display FPS
-        font = cv2.FONT_HERSHEY_SIMPLEX
+        #font = cv2.FONT_HERSHEY_SIMPLEX
+        font = {'family' : 'normal', 'weight' : 'bold', 'size'   : 15}
 
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
