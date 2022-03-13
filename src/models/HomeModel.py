@@ -142,6 +142,7 @@ class HomeModel:
                 os.mkdir(APP_PATH+'/frame_container')
             
             tempName = next(tempfile._get_candidate_names())
+            image = cv2.resize(image, (640, 480))
             cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.jpg'), image)
         
         return image
