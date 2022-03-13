@@ -127,7 +127,8 @@ class HomeModel:
     """
     def openVideo(self):
         #return cv2.VideoCapture('../test/test-480p.mp4')
-        return cv2.VideoCapture('../test/test-720p.mp4')
+        #return cv2.VideoCapture('../test/test-720p.mp4')
+        return cv2.VideoCapture('../test/test-1080p.mp4')
 
     def processImage(self, image, faceCascade):
         
