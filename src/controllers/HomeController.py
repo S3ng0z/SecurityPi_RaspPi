@@ -78,6 +78,9 @@ class HomeController(Controller):
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         cont = 0
+        cont_fps = 1
+        total_fps = 0
+        avg_fps = 0;
         while(cap.isOpened()):
             # Construct a numpy array from the stream
             ret, image = cap.read()
@@ -95,13 +98,16 @@ class HomeController(Controller):
         
             # converting the fps into integer
             fps = float(fps)
-        
+            total_fps += fps
+            avg_fps =  total_fps / cont_fps
+            cont_fps += 1
             # converting the fps to string so that we can display it on frame
             # by using putText function
-            fps = str(fps)
+            #fps = str(fps)
+            avg_fps =  str(avg_fps)
         
             # putting the FPS count on the frame
-            cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
+            cv2.putText(image, avg_fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             if(cont % 5 == 0):
                 cont = 0
