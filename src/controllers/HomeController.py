@@ -12,12 +12,14 @@ import sys
 import zipfile
 import numpy as np
 import tensorflow as tf
+import shutil
 from threading import Thread, Event
 import multiprocessing
 from multiprocessing import Manager
 from PIL import Image, ImageFile
 import PIL
 from PIL import UnidentifiedImageError
+
 
 """
     Main controller. It will be responsible for program's main screen behavior.
@@ -265,6 +267,8 @@ class HomeController(Controller):
         file_head_size = struct.calcsize('24si')
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
+            os.mkdir(APP_PATH+'/frame_container_copy')
+            
 
         while True:
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
@@ -296,7 +300,9 @@ class HomeController(Controller):
                         else:
                             raise ValueError('index error') 
 
+                    shutil.copyfile(APP_PATH + '/frame_container/' + filename, APP_PATH + '/frame_container_copy/' + filename)
                     os.remove(APP_PATH + '/frame_container/' + filename)
+                    
         clientSocket.close()
             
 
