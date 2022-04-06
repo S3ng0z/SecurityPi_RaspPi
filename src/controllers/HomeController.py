@@ -294,7 +294,7 @@ class HomeController(Controller):
                                 while True:
                                     data = f.read(1024)
                                     if not data:
-                                        # print('{} send over !'.format(image_path))
+                                        print('{} send over !'.format(image_path))
                                         break
                                     clientSocket.send(data)
                         else:
