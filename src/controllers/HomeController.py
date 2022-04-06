@@ -255,7 +255,6 @@ class HomeController(Controller):
         while True:
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
-            #zip_name = APP_PATH + '/main.zip'
 
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
@@ -281,150 +280,9 @@ class HomeController(Controller):
                                         break
                                     clientSocket.send(data)
                         else:
-                            raise ValueError('index error')
-                        '''
-                        timestamp = time.time()
-                        file_head = struct.pack('24si', bytes(str(timestamp), encoding='utf-8'), os.stat(APP_PATH + '/frame_container/' + filename).st_size)
-                        clientSocket.send(file_head)
-                        #image = cv2.imread(APP_PATH + '/frame_container/' + filename)
-                        with open(APP_PATH + '/frame_container/' + filename, 'rb') as img_bin:
-                            while True:
-                                data = img_bin.read(1024)
-                                if not data:
-                                    # print('{} send over !'.format(image_path))
-                                    break
-                                clientSocket.send(data)
-                        '''
-                        '''
-                        buff = io.BytesIO()
-                        buff.write(img_bin.read())
-                        buff.seek(0)
-                        '''
-                        '''
-                        # This portion is part of my test code
-                        byteImgIO = io.BytesIO()
-                        byteImg = img_bin
-                        #byteImg.save(byteImgIO, "JPG")
-                        byteImgIO.seek(0)
-                        byteImg = byteImgIO.read()
+                            raise ValueError('index error') 
 
-                        # Non test code
-                        dataBytesIO = io.BytesIO(byteImg)
-                        
-                        temp_img = np.array(img_bin, dtype=np.uint8)
-                        #img = cv2.cvtColor(temp_img, cv2.COLOR_BGR2GRAY)
-                        print('./frame_container/' + filename)
-                        
-                    
-                        try:
-                            size = len(img_bin.read())
-                            print('Path: ' + str(APP_PATH + '/frame_container/' + filename) + ' size: ' + str(size))
-                            images = cv2.imread(APP_PATH + '/frame_container/' + filename,0)
-                            
-                            #ImageFile.LOAD_TRUNCATED_IMAGES = True
-                            #images = np.array(PIL.Image.open(APP_PATH + '/frame_container/' + filename))
-                            
-                            if not images is None:
-                                imageToEncode = self.homeModel.encodeImage(images, encode_param)
-                                size = len(imageToEncode)
-                                print('len(imageToEncode): '+str(len(imageToEncode))+' escribiendo...')
-                                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                                print('Enviado...')
-                            else:
-                                print('Images: ' + str(images) + '\n')
-                        except Exception as e:
-                            print('IMAGEN no enviada: ' + filename + ' error: ' + str(e))
-                        '''
-                            
                     os.remove(APP_PATH + '/frame_container/' + filename)
-
-                    '''
-                    #client_socket.send(filename)
-                    file_name = open(APP_PATH + '/frame_container/' + filename ,'rb')
-                    print('./frame_container/' + filename)
-                    #image = file_name.read()
-                    image_size = os.path.getsize(APP_PATH + '/frame_container/' + filename)
-                    print('image_size: ' + str(image_size))
-                    clientSocket.sendall(struct.pack(">L", image_size))
-                    data = b""
-                    count = 0
-                    while len(data) < image_size:
-                        data += file_name.readline()
-                        if not data:
-                            print('A pasado algo')
-                            break
-                        else:
-                            print('len(data): '+str(len(data))+' escribiendo...')
-                    if data:
-                        #clientSocket.send(data)
-                        clientSocket.sendall(struct.pack(">I", image_size))
-                        print('Enviandoo...')
-                    file_name.close()
-                    #os.remove(APP_PATH + '/frame_container/' + filename)
-                    '''
-                '''
-                with zipfile.ZipFile(zip_name, 'w') as file:
-                    for filename in os.listdir('./frame_container'):
-                        if filename.endswith(".jpg") or filename.endswith(".png"):
-                                file.write(APP_PATH + '/frame_container/' + filename)
-                                os.remove(APP_PATH + '/frame_container/' + filename)
-            
-                    #clientSocket.send(zip_name.encode())
-                    with open(zip_name,"rb") as f:
-                        data=f.read()
-                        clientSocket.sendall(data)
-                        f.close()
-                    os.remove(zip_name)
-                '''
-            '''
-            f = open(zip_name, 'rb')
-            l = f.read()
-            clientSocket.sendall(l)
-            f.close()
-            clientSocket.close()
-            os.remove(zip_name)
-            '''
-            
-            
-        
-            '''
-            if(file_count > 0):
-                for filename in os.listdir('./frame_container'):
-                    if filename.endswith(".jpg") or filename.endswith(".png"):
-                        # open image
-                        myfile = open(APP_PATH+'/frame_container/'+filename, 'rb')
-                        image = myfile.read()
-                        if image is None:
-                            os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
-                            break
-                        #clientSocket.send(image)
-                        size = len(image)
-                        clientSocket.sendall(struct.pack(">L", size) + image)
-                        myfile.close()
-                        #image = cv2.imread(APP_PATH+'/frame_container/'+filename)
-                        #image = cv2.imdecode(np.fromfile(APP_PATH+'/frame_container/'+filename, dtype=np.uint8), -1)
-                        
-                        #image = cv2.imread(APP_PATH+'/frame_container/'+filename, cv2.IMREAD_COLOR)
-
-                        #clientSocket.send(image)
-                        #image = cv2.imread(APP_PATH+'/frame_container/'+filename, cv2.IMREAD_GRAYSCALE)
-                        ---
-                        if image is None:
-                            os.remove(APP_PATH + '/frame_container/' + filename)     # always check for None
-                            break
-                        
-                        print(APP_PATH+'/frame_container/'+filename)
-                        imageToEncode = self.homeModel.encodeImage(image, encode_param)
-                        size = len(imageToEncode)
-                        clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                        myfile.close()
-                        os.remove(APP_PATH + '/frame_container/' + filename)
-                        print('img: ' + filename + ' send')
-                        ---
-                        image = image.tobytes()
-                        size = len(image)
-                        clientSocket.sendall(struct.pack(">L", size) + image)
-                        '''
         clientSocket.close()
             
 
@@ -435,15 +293,11 @@ class HomeController(Controller):
 
         threads = []
 
-
-        cam = Thread(target=self.handlerVideoOpenCV, args=())
+        cam = Thread(target=self.handlerCAMOpenCV, args=())
         threads.append(cam)
 
         sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
         threads.append(sendScreenShoot)
-
-        #camTF = Thread(target=self.handlerCAMTensorFlow, args=(killAll,))
-        #threads.append(camTF)
 
          # starting processes
         for thd in threads:
@@ -454,46 +308,3 @@ class HomeController(Controller):
             thd.join()
         
         gc.collect()
- 
-
-    """
-        @description Method that will allow the user to interact with the system
-        @author Andrés Gómez
-    """
-    def loop2(self):
-        processes = []
-        gc.collect()
-        with Manager() as manager:
-            # creating a list in server process memory
-            #parameters = manager.list([('killAll', 1)])
-            #lproxy = manager.list()
-            #lproxy.append({'killAll':0})
-            lproxy = manager.dict()
-            lproxy['killAll'] = 1
-
-            # printing main program process id
-            print("ID of main process: {}".format(os.getpid()))
-            # creating processes
-            '''
-            reviewScreenshots = multiprocessing.Process(target=self.homeModel.workerReviewScreenshots, args=(lproxy,))
-            processes.append(reviewScreenshots)
-
-            sendScreenShoot = multiprocessing.Process(target=self.homeModel.workerSendScreenshots, args=(lproxy,))
-            processes.append(sendScreenShoot)
-            '''
-            cam = multiprocessing.Process(target=self.homeModel.workerCAM, args=(lproxy,))
-            processes.append(cam)
-
-            
-
-            # starting processes
-            for process in processes:
-                process.start()
-        
-            # wait until processes are finished
-            for process in processes:
-                process.join()
-
-            print(lproxy)
-            
-            gc.collect()
