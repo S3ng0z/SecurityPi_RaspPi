@@ -290,9 +290,12 @@ class HomeController(Controller):
                             file_head = struct.pack('24si', bytes(str(timestamp), encoding='utf-8'), os.stat(APP_PATH + '/frame_container/' + filename).st_size)
                             clientSocket.send(file_head)
                             # Read image and send it
+                            
                             with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
+                                data = b""
                                 while True:
                                     data = f.read(1024)
+                                    print('@@JAGS data: ' + data)
                                     if not data:
                                         print('{} send over !'.format(APP_PATH + '/frame_container/' + filename))
                                         break
