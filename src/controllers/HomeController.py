@@ -295,7 +295,7 @@ class HomeController(Controller):
                                 data = b""
                                 while True:
                                     data = f.read(1024)
-                                    print('@@JAGS data: ' + data)
+                                    print('@@JAGS data1: ' + data)
                                     if not data:
                                         print('{} send over !'.format(APP_PATH + '/frame_container/' + filename))
                                         break
