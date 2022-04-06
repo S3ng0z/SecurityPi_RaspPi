@@ -118,8 +118,8 @@ class HomeModel:
     """
     def connectCamera(self):
         camera = picamera.PiCamera()
-        camera.vflip = True
-        camera.resolution = (1280, 720)
+        #camera.vflip = True
+        camera.resolution = (854, 480)
         return camera
 
     """
@@ -132,9 +132,9 @@ class HomeModel:
 
     def processImage(self, image, faceCascade):
         
-        #grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         facesContainer = faceCascade.detectMultiScale(
-            image, scaleFactor=1.1, minNeighbors=15, minSize=(50, 50))
+            image, scaleFactor=1.1, minNeighbors=7, minSize=(50, 50))
 
         if len(facesContainer) != 0:
             for(x, y, w, h) in facesContainer:

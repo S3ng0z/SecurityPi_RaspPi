@@ -158,6 +158,7 @@ class HomeController(Controller):
         total_fps = 0
         avg_fps = 0;
         for frame in camera.capture_continuous(stream, 'jpeg'):
+            
             if(cont % 5 == 0):
                 cont = 0
                 # Construct a numpy array from the stream
