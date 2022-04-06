@@ -165,7 +165,7 @@ class HomeController(Controller):
                 data = np.fromstring(stream.getvalue(), dtype=np.uint8)
                 # "Decode" the image from the array, preserving colour
                 image = cv2.imdecode(data, 1)
-                image = cv2.resize(image, (1280, 720))
+                image = cv2.resize(image, (854, 480))
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 # time when we finish processing for this frame
                 new_frame_time = time.time()
