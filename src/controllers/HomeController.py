@@ -153,41 +153,53 @@ class HomeController(Controller):
 
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+        cont = 0
+        cont_fps = 1
+        total_fps = 0
+        avg_fps = 0;
         for frame in camera.capture_continuous(stream, 'jpeg'):
-            # Construct a numpy array from the stream
-            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-            # "Decode" the image from the array, preserving colour
-            image = cv2.imdecode(data, 1)
-            image = cv2.resize(image, (1280, 720))
-            # time when we finish processing for this frame
-            new_frame_time = time.time()
+            if(cont % 5 == 0):
+                cont = 0
+                # Construct a numpy array from the stream
+                data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                # "Decode" the image from the array, preserving colour
+                image = cv2.imdecode(data, 1)
+                image = cv2.resize(image, (1280, 720))
+                # time when we finish processing for this frame
+                new_frame_time = time.time()
 
-            # Calculating the fps
- 
-            # fps will be number of frame processed in given time frame
-            # since their will be most of time error of 0.001 second
-            # we will be subtracting it to get more accurate result
-            fps = 1/(new_frame_time-prev_frame_time)
-            prev_frame_time = new_frame_time
-        
-            # converting the fps into integer
-            fps = float(fps)
-        
-            # converting the fps to string so that we can display it on frame
-            # by using putText function
-            fps = str(fps)
-        
-            # putting the FPS count on the frame
-            cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
+                # Calculating the fps
+    
+                # fps will be number of frame processed in given time frame
+                # since their will be most of time error of 0.001 second
+                # we will be subtracting it to get more accurate result
+                fps = 1/(new_frame_time-prev_frame_time)
+                prev_frame_time = new_frame_time
+            
+                # converting the fps into integer
+                fps = float(fps)
+                total_fps += fps
+                avg_fps =  total_fps / cont_fps
+                cont_fps += 1
+            
+                # converting the fps to string so that we can display it on frame
+                # by using putText function
+                #fps = str(fps)
+                avg_fps =  str(avg_fps)
+            
+                # putting the FPS count on the frame
+                cv2.putText(image, avg_fps, (10, 30), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
 
-            imageFaceDetected = self.homeModel.processImage(image, faceCascade)
-            imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
 
-            size = len(imageToEncode)
-            stream.seek(0)
-            stream.truncate()
+                imageFaceDetected = self.homeModel.processImage(image, faceCascade)
+                imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
 
-            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                size = len(imageToEncode)
+                stream.seek(0)
+                stream.truncate()
+
+                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+            cont += 1
 
             #Waits for a user input to quit the application
             if cv2.waitKey(1) & 0xFF == ord('q'):
