@@ -132,7 +132,6 @@ class HomeModel:
 
     def processImage(self, image, faceCascade):
         
-        grayScale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         facesContainer = faceCascade.detectMultiScale(
             image, scaleFactor=1.1, minNeighbors=7, minSize=(50, 50))
 

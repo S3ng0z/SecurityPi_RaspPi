@@ -158,7 +158,7 @@ class HomeController(Controller):
         total_fps = 0
         avg_fps = 0;
         for frame in camera.capture_continuous(stream, 'jpeg'):
-            
+
             if(cont % 5 == 0):
                 cont = 0
                 # Construct a numpy array from the stream
@@ -166,6 +166,7 @@ class HomeController(Controller):
                 # "Decode" the image from the array, preserving colour
                 image = cv2.imdecode(data, 1)
                 image = cv2.resize(image, (1280, 720))
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 # time when we finish processing for this frame
                 new_frame_time = time.time()
 
