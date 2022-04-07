@@ -288,7 +288,7 @@ class HomeController(Controller):
                                 Head content: timestamp, file size
                             '''
                             file_head = struct.pack('24si', bytes(str(timestamp), encoding='utf-8'), os.stat(APP_PATH + '/frame_container/' + filename).st_size)
-                            print('@@JAGS ' + str(APP_PATH + '/frame_container/' + filename ) + ' size:' str(os.stat(APP_PATH + '/frame_container/' + filename).st_size))
+                            print('@@JAGS ' + str(APP_PATH + '/frame_container/' + filename ) + ' size:' + str(os.stat(APP_PATH + '/frame_container/' + filename).st_size))
                             clientSocket.send(file_head)
                             # Read image and send it
                             
