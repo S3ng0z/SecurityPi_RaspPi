@@ -303,8 +303,8 @@ class HomeController(Controller):
                                         data = f.read(1024)
                                         sended_size += 1024
                                     else:
-                                        print('Last package: ' + str(file_size - received_size))
-                                        data = f.read(file_size - received_size)
+                                        print('Last package: ' + str(file_size - sended_size))
+                                        data = f.read(file_size - sended_size)
                                         sended_size = file_size
                                     '''
                                     if not data:
