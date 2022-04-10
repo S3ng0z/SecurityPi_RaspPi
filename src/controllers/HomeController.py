@@ -276,7 +276,7 @@ class HomeController(Controller):
 
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
-                    time.sleep(2)
+                    time.sleep(1.5)
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         if os.path.exists(APP_PATH + '/frame_container/' + filename):
                             timestamp = time.time()
@@ -287,13 +287,21 @@ class HomeController(Controller):
                                                     total 28 bytes)
                                 Head content: timestamp, file size
                             '''
-                            file_head = struct.pack('24si', 0, os.stat(APP_PATH + '/frame_container/' + filename).st_size)
+                            '''
+                            file_head = struct.pack('24si', bytes(str(0), encoding='utf-8'), os.stat(APP_PATH + '/frame_container/' + filename).st_size)
                             print('@@JAGS ' + str(APP_PATH + '/frame_container/' + filename ) + ' size:' + str(os.stat(APP_PATH + '/frame_container/' + filename).st_size))
                             clientSocket.send(file_head)
+                            '''
                             # Read image and send it
-                            
+                            path = APP_PATH + '/frame_container/' + filename
+                            image = cv2.imread(path, 0)
+                            imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                            clientSocket.sendall(struct.pack(">L", os.stat(path).st_size) + imageToEncode)
+                            '''
                             with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
                                 data = b""
+                                
+                                
                                 file_size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
                                 sended_size = 0;
                                 while not sended_size == file_size:
@@ -306,12 +314,13 @@ class HomeController(Controller):
                                         print('Last package: ' + str(file_size - sended_size))
                                         data = f.read(file_size - sended_size)
                                         sended_size = file_size
-                                    '''
+                                    ---
                                     if not data:
                                         print('{} send over !'.format(APP_PATH + '/frame_container/' + filename))
                                         break
-                                    '''
+                                    
                                     clientSocket.send(data)
+                                '''
                         else:
                             raise ValueError('index error') 
 
