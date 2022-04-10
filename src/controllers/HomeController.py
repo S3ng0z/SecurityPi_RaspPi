@@ -264,7 +264,7 @@ class HomeController(Controller):
     def sendScreenShoot(self):
         clientSocket = self.homeModel.connectSocketSendScreenShoot()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-        file_head_size = struct.calcsize('24si')
+        file_head_size = struct.calcsize('>L')
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
             os.mkdir(APP_PATH+'/frame_container_copy')
@@ -287,7 +287,7 @@ class HomeController(Controller):
                                                     total 28 bytes)
                                 Head content: timestamp, file size
                             '''
-                            file_head = struct.pack('24si', os.stat(APP_PATH + '/frame_container/' + filename).st_size)
+                            file_head = struct.pack('>L', os.stat(APP_PATH + '/frame_container/' + filename).st_size)
                             print('@@JAGS ' + str(APP_PATH + '/frame_container/' + filename ) + ' size:' + str(os.stat(APP_PATH + '/frame_container/' + filename).st_size))
                             clientSocket.send(file_head)
                             # Read image and send it
