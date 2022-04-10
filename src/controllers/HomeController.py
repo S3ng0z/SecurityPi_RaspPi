@@ -276,7 +276,7 @@ class HomeController(Controller):
 
             if(file_count > 0):
                 for filename in os.listdir('./frame_container'):
-                    time.sleep(1.5)
+                    time.sleep(2)
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         if os.path.exists(APP_PATH + '/frame_container/' + filename):
                             timestamp = time.time()
