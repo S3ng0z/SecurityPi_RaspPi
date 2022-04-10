@@ -300,7 +300,7 @@ class HomeController(Controller):
                                     
                                     print('@@JAGS '+str(APP_PATH + '/frame_container/' + filename)+' len: ' + str(len(data)))
                                     
-                                    if file_size - received_size > 1024:
+                                    if file_size - sended_size > 1024:
                                         data = f.read(1024)
                                         sended_size += 1024
                                     else:
