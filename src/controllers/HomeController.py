@@ -294,7 +294,7 @@ class HomeController(Controller):
                             
                             with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
                                 data = b""
-                                file_size = os.stat(APP_PATH + '/frame_container/' + filename).st_size)
+                                file_size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
                                 sended_size = 0;
                                 while not sended_size == file_size:
                                     
@@ -302,11 +302,11 @@ class HomeController(Controller):
                                     
                                     if file_size - received_size > 1024:
                                         data = f.read(1024)
-                                        received_size += 1024
+                                        sended_size += 1024
                                     else:
                                         print('Last package: ' + str(result))
                                         data = f.read(file_size - received_size)
-                                        received_size = file_size
+                                        sended_size = file_size
                                     '''
                                     if not data:
                                         print('{} send over !'.format(APP_PATH + '/frame_container/' + filename))
