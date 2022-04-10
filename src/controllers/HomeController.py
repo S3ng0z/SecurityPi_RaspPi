@@ -294,9 +294,11 @@ class HomeController(Controller):
                             '''
                             # Read image and send it
                             path = APP_PATH + '/frame_container/' + filename
+                            print('@@JAGS path: ' + str(APP_PATH + '/frame_container/' + filename))
                             image = cv2.imread(path, 0)
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             clientSocket.sendall(struct.pack(">L", os.stat(path).st_size) + imageToEncode)
+                            print('@@JAGS enviado')
                             '''
                             with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
                                 data = b""
