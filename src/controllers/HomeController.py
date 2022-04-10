@@ -294,7 +294,7 @@ class HomeController(Controller):
                             
                             with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
                                 data = b""
-                                file_size = os.stat(APP_PATH + '/frame_container/' + filename).st_size)
+                                file_size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
                                 sended_size = 0;
                                 while not sended_size == file_size:
                                     print('@@JAGS '+str(APP_PATH + '/frame_container/' + filename)+' len: ' + str(len(data)))
