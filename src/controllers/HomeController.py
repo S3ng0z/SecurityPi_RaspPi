@@ -297,15 +297,15 @@ class HomeController(Controller):
                                 file_size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
                                 sended_size = 0;
                                 while not sended_size == file_size:
-                                    result = file_size - sended_size
+                                    
                                     print('@@JAGS '+str(APP_PATH + '/frame_container/' + filename)+' len: ' + str(len(data)))
                                     
-                                    if result > 1024:
+                                    if file_size - sended_size > 1024:
                                         data = f.read(1024)
                                         sended_size += 1024
                                     else:
-                                        print('Last package: ' + str(result))
-                                        data = f.read(result)
+                                        print('Last package: ' + str(file_size - received_size))
+                                        data = f.read(file_size - received_size)
                                         sended_size = file_size
                                     '''
                                     if not data:
