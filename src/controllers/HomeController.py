@@ -114,13 +114,14 @@ class HomeController(Controller):
             if(cont % 5 == 0):
                 cont = 0
                 image = self.homeModel.processImage(image, faceCascade)
-                imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                
+            imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
-                size = len(imageToEncode)
-                stream.seek(0)
-                stream.truncate()
+            size = len(imageToEncode)
+            stream.seek(0)
+            stream.truncate()
 
-                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
             cont += 1
 
             #Waits for a user input to quit the application
