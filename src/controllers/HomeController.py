@@ -299,7 +299,7 @@ class HomeController(Controller):
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             print('@@JAGS os.stat(path).st_size: ' + str(os.stat(path).st_size))
                             clientSocket.sendall(struct.pack(">L", os.stat(path).st_size) + imageToEncode)
-                            clientSocket.send("")
+                            clientSocket.send(b"")
                             print('@@JAGS enviado')
                             '''
                             with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
