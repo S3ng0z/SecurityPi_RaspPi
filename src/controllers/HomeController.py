@@ -160,49 +160,49 @@ class HomeController(Controller):
         total_fps = 0
         avg_fps = 0;
         for frame in camera.capture_continuous(stream, 'jpeg'):
+            # Construct a numpy array from the stream
+            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+            # "Decode" the image from the array, preserving colour
+            image = cv2.imdecode(data, 1)
+            image = cv2.resize(image, (854, 480))
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            # time when we finish processing for this frame
+            new_frame_time = time.time()
+
+            # Calculating the fps
+
+            # fps will be number of frame processed in given time frame
+            # since their will be most of time error of 0.001 second
+            # we will be subtracting it to get more accurate result
+            fps = 1/(new_frame_time-prev_frame_time)
+            prev_frame_time = new_frame_time
+        
+            # converting the fps into integer
+            fps = float(fps)
+            total_fps += fps
+            avg_fps =  total_fps / cont_fps
+            avg_fps =  str(avg_fps)
+            cont_fps += 1
+        
+            # converting the fps to string so that we can display it on frame
+            # by using putText function
+            #fps = str(fps)
+            
+        
+            # putting the FPS count on the frame
+            cv2.putText(image, avg_fps, (10, 30), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
 
             if(cont % 5 == 0):
                 cont = 0
-                # Construct a numpy array from the stream
-                data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-                # "Decode" the image from the array, preserving colour
-                image = cv2.imdecode(data, 1)
-                image = cv2.resize(image, (854, 480))
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                # time when we finish processing for this frame
-                new_frame_time = time.time()
+                image = self.homeModel.processImage(image, faceCascade)
 
-                # Calculating the fps
-    
-                # fps will be number of frame processed in given time frame
-                # since their will be most of time error of 0.001 second
-                # we will be subtracting it to get more accurate result
-                fps = 1/(new_frame_time-prev_frame_time)
-                prev_frame_time = new_frame_time
-            
-                # converting the fps into integer
-                fps = float(fps)
-                total_fps += fps
-                avg_fps =  total_fps / cont_fps
-                cont_fps += 1
-            
-                # converting the fps to string so that we can display it on frame
-                # by using putText function
-                #fps = str(fps)
-                avg_fps =  str(avg_fps)
-            
-                # putting the FPS count on the frame
-                cv2.putText(image, avg_fps, (10, 30), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
+            imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
+            size = len(imageToEncode)
+            stream.seek(0)
+            stream.truncate()
 
-                imageFaceDetected = self.homeModel.processImage(image, faceCascade)
-                imageToEncode = self.homeModel.encodeImage(imageFaceDetected, encode_param)
-
-                size = len(imageToEncode)
-                stream.seek(0)
-                stream.truncate()
-
-                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
             cont += 1
 
             #Waits for a user input to quit the application
@@ -279,52 +279,12 @@ class HomeController(Controller):
                     time.sleep(1.5)
                     if filename.endswith(".jpg") or filename.endswith(".png"):
                         if os.path.exists(APP_PATH + '/frame_container/' + filename):
-                            timestamp = time.time()
-                            '''
-                                File head:
-                                Head size: '24si' (s means bytes in python or char[] in C,24s is 24 bytes;
-                                                    i means int, 4 bytes;
-                                                    total 28 bytes)
-                                Head content: timestamp, file size
-                            '''
-                            '''
-                            file_head = struct.pack('24si', bytes(str(0), encoding='utf-8'), os.stat(APP_PATH + '/frame_container/' + filename).st_size)
-                            print('@@JAGS ' + str(APP_PATH + '/frame_container/' + filename ) + ' size:' + str(os.stat(APP_PATH + '/frame_container/' + filename).st_size))
-                            clientSocket.send(file_head)
-                            '''
-                            # Read image and send it
                             path = APP_PATH + '/frame_container/' + filename
-                            print('@@JAGS path: ' + str(APP_PATH + '/frame_container/' + filename))
                             image = cv2.imread(path, 0)
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
-                            print('@@JAGS os.stat(path).st_size: ' + str(size))
                             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                            print('@@JAGS enviado')
-                            '''
-                            with open(APP_PATH + '/frame_container/' + filename, 'rb') as f:
-                                data = b""
-                                
-                                
-                                file_size = os.stat(APP_PATH + '/frame_container/' + filename).st_size
-                                sended_size = 0;
-                                while not sended_size == file_size:
-                                    print('@@JAGS '+str(APP_PATH + '/frame_container/' + filename)+' len: ' + str(len(data)))
-                                    
-                                    if file_size - sended_size > 1024:
-                                        data = f.read(1024)
-                                        sended_size += 1024
-                                    else:
-                                        print('Last package: ' + str(file_size - sended_size))
-                                        data = f.read(file_size - sended_size)
-                                        sended_size = file_size
-                                    ---
-                                    if not data:
-                                        print('{} send over !'.format(APP_PATH + '/frame_container/' + filename))
-                                        break
-                                    
-                                    clientSocket.send(data)
-                                '''
+                            
                         else:
                             raise ValueError('index error') 
 
