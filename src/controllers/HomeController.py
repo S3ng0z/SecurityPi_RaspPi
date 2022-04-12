@@ -264,10 +264,8 @@ class HomeController(Controller):
     def sendScreenShoot(self):
         clientSocket = self.homeModel.connectSocketSendScreenShoot()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-        file_head_size = struct.calcsize('24si')
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
-            os.mkdir(APP_PATH+'/frame_container_copy')
             
 
         while True:
