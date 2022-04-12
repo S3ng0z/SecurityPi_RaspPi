@@ -114,7 +114,7 @@ class HomeController(Controller):
             if(cont % 5 == 0):
                 cont = 0
                 image = self.homeModel.processImage(image, faceCascade)
-                
+
             imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
             size = len(imageToEncode)
@@ -287,7 +287,6 @@ class HomeController(Controller):
                         else:
                             raise ValueError('index error') 
 
-                    shutil.copyfile(APP_PATH + '/frame_container/' + filename, APP_PATH + '/frame_container_copy/' + filename)
                     os.remove(APP_PATH + '/frame_container/' + filename)
                     
         clientSocket.close()
