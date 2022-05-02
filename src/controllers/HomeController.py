@@ -182,7 +182,8 @@ class HomeController(Controller):
             fps = float(fps)
             total_fps += fps
             avg_fps =  total_fps / cont_fps
-            avg_fps =  str(avg_fps)
+            transmissionDate = datetime.now()
+            avg_fps =  f'Average FPS: {avg_fps:.2f} \n FPS Real: {fps:.2f} \n Transmission Date: {transmissionDate}'
             cont_fps += 1
         
             # converting the fps to string so that we can display it on frame
@@ -191,7 +192,7 @@ class HomeController(Controller):
             
         
             # putting the FPS count on the frame
-            cv2.putText(image, avg_fps, (10, 30), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
+            cv2.putText(image, avg_fps, (10, 30), font, 0.7, (0, 0, 0), 3, cv2.LINE_AA)
 
             if(cont % 5 == 0):
                 cont = 0
