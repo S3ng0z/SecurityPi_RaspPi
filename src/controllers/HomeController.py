@@ -139,7 +139,7 @@ class HomeController(Controller):
         print('clientSocket: ' + str(clientSocket))
         camera = self.homeModel.connectCamera()
 
-        pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
+        pathHaarcascade = APP_PATH + '/lib/haarcascade_lowerbody.xml'
         faceCascade = cv2.CascadeClassifier(pathHaarcascade)
 
         camera.start_preview()
