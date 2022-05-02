@@ -119,7 +119,7 @@ class HomeModel:
     def connectCamera(self):
         camera = picamera.PiCamera()
         #camera.vflip = True
-        camera.resolution = (854, 480)
+        camera.resolution = (1280, 720)
         return camera
 
     """
@@ -133,7 +133,7 @@ class HomeModel:
     def processImage(self, image, faceCascade):
         
         facesContainer = faceCascade.detectMultiScale(
-            image, scaleFactor=1.1, minNeighbors=7, minSize = (50,50), flags = cv2.CASCADE_SCALE_IMAGE)
+            image, scaleFactor=1.1, minNeighbors=7, minSize = (50,50))
 
         if len(facesContainer) != 0:
             for(x, y, w, h) in facesContainer:
@@ -143,7 +143,7 @@ class HomeModel:
                 os.mkdir(APP_PATH+'/frame_container')
             
             tempName = next(tempfile._get_candidate_names())
-            image = cv2.resize(image, (640, 480))
+            image = cv2.resize(image, (1280, 720))
             cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.jpg'), image)
         
         return image
