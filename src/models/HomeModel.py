@@ -133,7 +133,7 @@ class HomeModel:
     def processImage(self, image, faceCascade):
         
         facesContainer = faceCascade.detectMultiScale(
-            image, scaleFactor=1.1, minNeighbors=7, minSize=(50, 50))
+            image, scaleFactor=1.1, minNeighbors=7, minSize = (50,50), flags = cv2.CASCADE_SCALE_IMAGE)
 
         if len(facesContainer) != 0:
             for(x, y, w, h) in facesContainer:
