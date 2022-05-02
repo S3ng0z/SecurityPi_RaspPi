@@ -30,7 +30,7 @@ class Connection:
         #clientSocket.connect(('192.168.228.31', 8000))
         clientSocket = socket.socket()
         #clientSocket.connect(('192.168.1.33', 8080)) #RPi 4
-        clientSocket.connect(('192.168.1.33', 9090)) #RPi 3
+        clientSocket.connect(('192.168.1.33', 9090)) #RPi 32
         clientSocket.makefile('wb')
         print('clientSocket: ' + str(clientSocket))
         return clientSocket
