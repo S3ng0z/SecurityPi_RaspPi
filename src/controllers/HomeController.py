@@ -190,10 +190,14 @@ class HomeController(Controller):
             # converting the fps to string so that we can display it on frame
             # by using putText function
             #fps = str(fps)
+            y0, dy = 50, 4
+            for i, line in enumerate(avg_fps.split('\n')):
+                y = y0 + i*dy
+                cv2.putText(image, line, (50, y ), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
             
         
             # putting the FPS count on the frame
-            cv2.putText(image, avg_fps, (10, 30), font, 0.7, (255, 255, 255), 3, cv2.LINE_AA)
+            #cv2.putText(image, avg_fps, (10, 30), font, 0.7, (255, 255, 255), 3, cv2.LINE_AA)
 
             if(cont % 5 == 0):
                 cont = 0
