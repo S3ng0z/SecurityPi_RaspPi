@@ -20,6 +20,7 @@ from PIL import Image, ImageFile
 import PIL
 from PIL import UnidentifiedImageError
 from datetime import datetime
+from datetime import timedelta
 
 
 """
@@ -183,7 +184,7 @@ class HomeController(Controller):
             fps = float(fps)
             total_fps += fps
             avg_fps =  total_fps / cont_fps
-            transmissionDate = datetime.now()
+            transmissionDate = datetime.now() + timedelta(hours=1)
             avg_fps =  f'Average FPS: {avg_fps:.2f}\nFPS Real: {fps:.2f}\nTransmission Date: {transmissionDate}'
             cont_fps += 1
         
