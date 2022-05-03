@@ -19,7 +19,7 @@ from multiprocessing import Manager
 from PIL import Image, ImageFile
 import PIL
 from PIL import UnidentifiedImageError
-import datetime
+from datetime import datetime
 
 
 """
