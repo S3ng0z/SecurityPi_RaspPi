@@ -193,7 +193,7 @@ class HomeController(Controller):
             
         
             # putting the FPS count on the frame
-            cv2.putText(image, avg_fps, (10, 30), font, 0.7, (0, 0, 0), 3, cv2.LINE_AA)
+            cv2.putText(image, avg_fps, (10, 30), font, 0.7, (255, 255, 255), 3, cv2.LINE_AA)
 
             if(cont % 5 == 0):
                 cont = 0
