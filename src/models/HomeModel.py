@@ -136,7 +136,7 @@ class HomeModel:
             image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
 
         if len(facesContainer) != 0:
-            print('JAGS len(facesContainer): ' + len(facesContainer))
+            print('JAGS len(facesContainer): ' + str(len(facesContainer)))
             for(x, y, w, h) in facesContainer:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
             
