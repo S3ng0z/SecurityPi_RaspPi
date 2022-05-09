@@ -13,353 +13,152 @@ import tempfile
 import os
 import zipfile
 import socketserver
+import time
+from datetime import datetime
 
-HOST = '192.168.0.75'  # Standard loopback interface address (localhost)
-#HOST = '192.168.0.75'
-PORT = 8000        # Port to listen on (non-privileged ports are > 1023)
-PORT2 = 8080
 
-class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
+class RecieveScreenShotHandler(socketserver.BaseRequestHandler):
 
     def setup(self):
         print('Accept connection from {}'.format(self.client_address))
 
     def handle(self):
-        if not os.path.isdir('./frame_container'):
-            os.mkdir('./frame_container')
+        payload_size = struct.calcsize(">L")
+        
+        img = None
+        
+        if not os.path.isdir('./frame_container2'):
+            os.mkdir('./frame_container2')
 
         while True:
             try:
-                # Head size ('24si' = 28 bytes)
-                file_head_size = struct.calcsize('24si')
-                # Receive file head
-                buf = self.request.recv(file_head_size)
-                if buf:
-                    # Unpack head and get timestamp and file size
-                    timestamp, file_size = struct.unpack('24si', buf)
-                    timestamp = timestamp.decode('utf-8').strip('\x00')
-                    received_size = 0  # Already received file size
-                    data = b''
-                    '''
-                        If file size minus received size greater than 1024,
-                            receive 1024 bytes once time,
-                        else:
-                            receive file size minus received size.
-                            (Attention: receive 1024 will stick package.)
-                    '''
-                    while not received_size == file_size:
-                        if file_size - received_size > 1024:
-                            data += self.request.recv(1024)
-                            received_size += 1024
-                        else:
-                            data += self.request.recv(file_size - received_size)
-                            received_size = file_size
-                    # BytesIO: Read bytes data from memory
-                    # Then open it with PIL
-                    data = BytesIO(data)
-                    try:
-                        ImageFile.LOAD_TRUNCATED_IMAGES = True
-                        with Image.open(data) as f:
-                            tempName = next(tempfile._get_candidate_names())
-                            frame = f.convert('RGB')
-                            print('./frame_container/'+str(tempName)+'.jpg')
-                            f.save('./frame_container/'+str(tempName)+'.jpg')
-                            #cv2.imwrite('./frame_container/'+str(tempName)+'.jpg', frame)
-                            print('Recibido...')
-                    except UnidentifiedImageError as uerr:
-                        print('Erroraco UnidentifiedImageError: ' + str(uerr))
-            except Exception as e:
-                a = str(e)
-                #print('Exception'+ str(e))
+                data = b""
+                while len(data) < payload_size:
+                    data += self.request.recv(4096)
 
-def handlerCam(conn, data, payload_size, img):
-    while True:
-        while len(data) < payload_size:
-            data += conn.recv(4096)
+                packed_msg_size = data[:payload_size]
+                data = data[payload_size:]
+                msg_size = struct.unpack(">L", packed_msg_size)[0]
 
-        #print("Done Recv: {}".format(len(data)))
-        packed_msg_size = data[:payload_size]
-        data = data[payload_size:]
-        msg_size = struct.unpack(">L", packed_msg_size)[0]
-        #print("msg_size: {}".format(msg_size))
+                while len(data) < msg_size:
+                    data += self.request.recv(4096)
 
-        while len(data) < msg_size:
-            data += conn.recv(4096)
-
-        frame_data = data[:msg_size]
-        data = data[msg_size:]
-
-        frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
-        frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
-
-        if img is None:
-            img = pl.imshow(frame)
-        else:
-            img.set_data(frame)
-        
-        pl.pause(0.25)
-        #pl.draw()
-
-def recieveScreenShoot(conn, data, payload_size, img):
-    
-    while True:
-        data = b''
-        if not os.path.isdir('./frame_container'):
-            os.mkdir('./frame_container')
-        
-        file_head_size = struct.calcsize('24si')
-
-        buf = conn.recv(file_head_size)
-        if buf:
-            # Unpack head and get timestamp and file size
-            timestamp, file_size = struct.unpack('24si', buf)
-            timestamp = timestamp.decode('utf-8').strip('\x00')
-            received_size = 0  # Already received file size
-            data = b''
-            while not received_size == file_size:
-                if file_size - received_size > 1024:
-                    data += conn.recv(1024)
-                    received_size += 1024
-                else:
-                    data += conn.recv(file_size - received_size)
-                    received_size = file_size
-            # BytesIO: Read bytes data from memory
-            # Then open it with PIL
-            data = BytesIO(data)
-            try:
-                ImageFile.LOAD_TRUNCATED_IMAGES = True
-                with Image.open(data) as f:
-                    tempName = next(tempfile._get_candidate_names())
-                    frame = f.convert('RGB')
-                    print('./frame_container/'+str(tempName)+'.jpg')
-                    f.save('./frame_container/'+str(tempName)+'.jpg')
-                    #cv2.imwrite('./frame_container/'+str(tempName)+'.jpg', frame)
-                    print('Recibido...')
-            except UnidentifiedImageError:
-                print('Erroraco')
-            
-        
-        '''
-
-        while len(data) < payload_size:
-            data += conn.recv(4096)
-
-        #print("Done Recv: {}".format(len(data)))
-        packed_msg_size = data[:payload_size]
-        data = data[payload_size:]
-        msg_size = struct.unpack(">L", packed_msg_size)[0]
-        #print("msg_size: {}".format(msg_size))
-        print('msg_size: ' + str(msg_size) + ' escribiendo...')
-        while len(data) < msg_size:
-            data += conn.recv(4096)
-
-        frame_data = data[:msg_size]
-        data = data[msg_size:]
-
-        frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
-        frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
-
-        if not frame is None: 
-            tempName = next(tempfile._get_candidate_names())
-            print('./frame_container/'+str(tempName)+'.jpg')
-            cv2.imwrite('./frame_container/'+str(tempName)+'.jpg', frame)
-            print('Recibido...')
-        '''
-        '''
-        dataRecieve = conn.recv(4)
-        image_size = int(struct.unpack('>L', dataRecieve)[0])
-        print('image_size: ' + str(image_size))
-        if image_size != 0:
-            tempName = next(tempfile._get_candidate_names())
-            file = open('./frame_container/'+str(tempName)+'.jpg', "wb")
-            print('./frame_container/'+str(tempName)+'.jpg')
-            print('dataRecieve: ' + str(dataRecieve))
-    
-            data = b""
-            while len(data) < image_size:
-                data += conn.recv(4096)
-                if not data:
-                    print('A pasado algo')
-                    break
-                else:
-                    print('len(data): '+str(len(data))+'recibiendo... ')
-
-            if data:
-                file.write(data)
-                print ("Data Received successfully")
+                frame_data = data[:msg_size]
+                data = data[msg_size:]
                 
-            file.close()
-        '''
-        '''
-        fileZip = open('./frame_container/'+str(tempName)+'.zip', "wb")
-        nextStep = False
+                frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
+                frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
+
+                tempName = next(tempfile._get_candidate_names())
+                cv2.resize(frame, (1280, 720))
+
+                receptionDate = datetime.now()
+                textImage = f'\n\n\nReception Date: {receptionDate}'
+
+                y, y0, dy = 10, 80, 20
+                for i, line in enumerate(textImage.split('\n')):
+                    cv2.putText(frame, line, (10, y ), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
+                    y = y0 + i*dy
+                    
+                cv2.imwrite('./frame_container2/'+str(tempName)+'.jpg', frame)
+                
+                time.sleep(0.25)
+                
+            except Exception as e:
+                print('General Exception RecieveScreenShotHandler: ' + str(e))
+
+class DisplayFramestHandler(socketserver.BaseRequestHandler):
+
+    def setup(self):
+        print('Accept connection from {}'.format(self.client_address))
+    
+    def handle(self):
+        
+        payload_size = struct.calcsize(">L")
+        data = b""
+        img = None
+
         while True:
-            # get file bytes
-            data = conn.recv(4096)
-            if not data:
-                break
-            nextStep = True
-            # write bytes on file
-            fileZip.write(data)
-        if nextStep:
-            zip = zipfile.ZipFile('./frame_container/'+str(tempName)+'.zip', "r")
-            zip.extractall('./frame_container')
-        fileZip.close()
-        '''
-        '''
-        filename = conn.recv(1024).decode()
+            try:
+                while len(data) < payload_size:
+                    data += self.request.recv(4096)
 
-        f = open(filename, 'wb')
-        l = conn.recv(1024)
-        while(l):
-            f.write(l)
-            l = conn.recv(1024)
-        f.close()
-        print('[+] Received file ' + filename)
+                packed_msg_size = data[:payload_size]
+                data = data[payload_size:]
+                msg_size = struct.unpack(">L", packed_msg_size)[0]
 
-        with zipfile.ZipFile(filename, 'rb') as file:
-            print('[+] Extracting files...')
-            file.extractall()
-            print('[+] Done')
+                while len(data) < msg_size:
+                    data += self.request.recv(4096)
 
-        os.remove(filename)
-        con.close()
-        ss.close()
-        '''
-        '''
-        while len(data) < payload_size:
-            data += conn.recv(4096)
-        
-        packed_msg_size = data[:payload_size]
-        data = data[payload_size:]
-        msg_size = struct.unpack(">L", packed_msg_size)[0]
+                frame_data = data[:msg_size]
+                data = data[msg_size:]
 
-        while len(data) < msg_size:
-            data += conn.recv(4096)
+                frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
+                frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
+                frame = cv2.resize(frame, (1280, 720))
+                receptionDate = datetime.now()
+                textImage = f'\n\n\nReception Date: {receptionDate}'
 
-        if not data:
-            break
-        file.write(data)
-        file.close()
-    conn.close()
-    '''
-    '''
-    data = conn.recv(4096)  # stream-based protocol
-    while len(data) < payload_size:
-        data += conn.recv(4096)
-    
-    packed_msg_size = data[:payload_size]
-    data = data[payload_size:]
-    msg_size = struct.unpack(">L", packed_msg_size)[0]
+                y, y0, dy = 10, 80, 20
+                for i, line in enumerate(textImage.split('\n')):
+                    cv2.putText(frame, line, (10, y ), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
+                    y = y0 + i*dy
 
-    while len(data) < msg_size:
-        data += conn.recv(4096)
+                #cv2.putText(frame, f'Reception Date: {receptionDate}', (500, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 3, cv2.LINE_AA)
 
-    if not data:
-        break
-    
-    frame_data = data[:msg_size]
-    data = data[msg_size:]
-
-    frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
-    frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
-
-    file.write(frame)
-    file.close()
-
-    print('img: ' + (str(tempName)+'.jpg') + ' received');
-    ---
-    while len(data) < payload_size:
-        data += conn.recv(4096)
-    print("Done Recv: {}".format(len(data)))
-    packed_msg_size = data[:payload_size]
-    data = data[payload_size:]
-    msg_size = struct.unpack(">L", packed_msg_size)[0]
-    print("msg_size: {}".format(msg_size))
-
-    while len(data) < msg_size:
-        data += conn.recv(4096)
-
-    frame_data = data[:msg_size]
-    data = data[msg_size:]
-
-    frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
-    frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
-    
-    if not os.path.isdir('/frame_container'):
-        os.mkdir('/frame_container')
-    
-    tempName = next(tempfile._get_candidate_names())
-    cv2.imwrite(('/frame_container/'+str(tempName)+'.jpg'), frame)
-    '''
+                if img is None:
+                    img = pl.imshow(frame)
+                else:
+                    img.set_data(frame)
+                
+                pl.pause(0.25)
+                
+            except Exception as e:
+                print('General Exception DisplayFramestHandler: ' + str(e))
 
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    data = b""
-    payload_size = struct.calcsize(">L")
-    img = None
+"""
+Clase principal que inicia los hilos de la aplicación servidor
+"""
+class Main:
 
-    #with socket.socket() as sst:
-    #sst.bind((HOST, PORT2))
-    #sst.listen()
-    #connSST, addrSST = sst.accept()
-    print('Connected by', addr)
-    #print('Connected2 by', addrSST)
-    #dataSST = b""
-    #payload_sizeSST = struct.calcsize(">L")
-    #imgSST = None
-    
-    threads = []
+    @staticmethod
+    def run():
+        #HOST = '192.168.1.33'
+        HOST = '192.168.1.33'
+        PORT_DISPLAY_FRAMES = 8000 #RPi 4
+        PORT_RECEIVE_SCREENSHOT = 8080 #RPI 4
+        #PORT_DISPLAY_FRAMES = 9000 #RPi 3
+        #PORT_RECEIVE_SCREENSHOT = 9090 #RPI 3
+        try:
+            threads = []
+            socketserver.TCPServer.allow_reuse_address = True
 
-    cam = Thread(target=handlerCam, args=(conn, data, payload_size, img))
-    threads.append(cam)
+            displayFramesServer = socketserver.ThreadingTCPServer((HOST, PORT_DISPLAY_FRAMES), DisplayFramestHandler)
+            displayFrames = Thread(target=displayFramesServer.serve_forever)
+            displayFrames.demon = False
 
-    #recieveScreenShoot = Thread(target=recieveScreenShoot, args=(connSST, dataSST, payload_sizeSST, imgSST))
-    #threads.append(recieveScreenShoot)
-    socketserver.TCPServer.allow_reuse_address = True
-    server = socketserver.ThreadingTCPServer((HOST, PORT2), ThreadedTCPRequestHandler)
-    recieveScreenShoot = Thread(target=server.serve_forever)
-    recieveScreenShoot.demon = True
-    threads.append(recieveScreenShoot)
+            threads.append(displayFrames)
 
-    #camTF = Thread(target=self.handlerCAMTensorFlow, args=(killAll,))
-    #threads.append(camTF)
+            recieveScreenShotServer = socketserver.ThreadingTCPServer((HOST, PORT_RECEIVE_SCREENSHOT), RecieveScreenShotHandler)
+            recieveScreenShot = Thread(target=recieveScreenShotServer.serve_forever)
+            recieveScreenShot.demon = True
 
-    # starting processes
-    for thd in threads:
-        thd.start()
+            threads.append(recieveScreenShot)
 
-    # wait until processes are finished
-    for thd in threads:#
-        thd.join()
-    
-    gc.collect()
-    '''
-        while len(data) < payload_size:
-            data += conn.recv(4096)
+            # starting processes
+            for thd in threads:
+                thd.start()
 
-        print("Done Recv: {}".format(len(data)))
-        packed_msg_size = data[:payload_size]
-        data = data[payload_size:]
-        msg_size = struct.unpack(">L", packed_msg_size)[0]
-        print("msg_size: {}".format(msg_size))
-        while len(data) < msg_size:
-            data += conn.recv(4096)
-        frame_data = data[:msg_size]
-        data = data[msg_size:]
+            # wait until processes are finished
+            for thd in threads:#
+                thd.join()
+            
+            gc.collect()
 
-        frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
-        frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
-        
-        if img is None:
-            img = pl.imshow(frame)
-        else:
-            img.set_data(frame)
-        
+        except Exception as e:
+            print(str(e))
 
-        pl.pause(0.25)
-        pl.draw()
-    '''
+
+if __name__ == '__main__':
+    Main.run()

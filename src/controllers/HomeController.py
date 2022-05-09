@@ -138,30 +138,25 @@ class HomeController(Controller):
     """
     def handlerCAMOpenCV(self):
         clientSocket = self.homeModel.connectSocket()
-        print('clientSocket: ' + str(clientSocket))
-        camera = self.homeModel.connectCamera()
 
         pathHaarcascade = APP_PATH + '/lib/haarcascade_frontalface_default.xml'
         faceCascade = cv2.CascadeClassifier(pathHaarcascade)
 
+        camera = self.homeModel.connectCamera()
         camera.start_preview()
         time.sleep(2)
 
         # used to record the time when we processed last frame
-        prev_frame_time = 0
-        
         # used to record the time at which we processed current frame
-        new_frame_time = 0
-
+        prev_frame_time, new_frame_time = 0, 0
+        
         # font which we will be using to display FPS
         font = cv2.FONT_HERSHEY_SIMPLEX
 
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-        cont = 0
-        cont_fps = 1
-        total_fps = 0
-        avg_fps = 0;
+        cont, cont_fps, total_fps, avg_fps = 0, 1, 0, 0
+
         for frame in camera.capture_continuous(stream, 'jpeg'):
             # Construct a numpy array from the stream
             data = np.fromstring(stream.getvalue(), dtype=np.uint8)
@@ -173,7 +168,6 @@ class HomeController(Controller):
             new_frame_time = time.time()
 
             # Calculating the fps
-
             # fps will be number of frame processed in given time frame
             # since their will be most of time error of 0.001 second
             # we will be subtracting it to get more accurate result
@@ -196,10 +190,6 @@ class HomeController(Controller):
                 cv2.putText(image, line, (10, y ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
                 y = y0 + i*dy
                 
-            
-        
-            # putting the FPS count on the frame
-            #cv2.putText(image, avg_fps, (10, 30), font, 0.7, (255, 255, 255), 3, cv2.LINE_AA)
 
             if(cont % 5 == 0):
                 cont = 0
