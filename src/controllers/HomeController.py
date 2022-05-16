@@ -117,7 +117,7 @@ class HomeController(Controller):
                 y = y0 + i*dy
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            if(cont % 30 == 0):
+            if(cont % 40 == 0):
                 cont = 0
                 image = self.homeModel.processImage(image, faceCascade)
 
