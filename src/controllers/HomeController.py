@@ -113,11 +113,11 @@ class HomeController(Controller):
             #fps = str(fps)
             y, y0, dy = 20, 40, 20
             for i, line in enumerate(avg_fps.split('\n')):
-                cv2.putText(image, line, (10, y ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                cv2.putText(image, line, (10, y ), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
                 y = y0 + i*dy
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            if(cont % 10 == 0):
+            if(cont % 60 == 0):
                 cont = 0
                 image = self.homeModel.processImage(image, faceCascade)
 
