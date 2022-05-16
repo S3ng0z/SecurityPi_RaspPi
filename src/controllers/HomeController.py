@@ -90,10 +90,10 @@ class HomeController(Controller):
             ret, image = cap.read()
             #image = cv2.resize(frame, (1280, 720))
             # time when we finish processing for this frame
+            # time when we finish processing for this frame
             new_frame_time = time.time()
 
             # Calculating the fps
- 
             # fps will be number of frame processed in given time frame
             # since their will be most of time error of 0.001 second
             # we will be subtracting it to get more accurate result
@@ -104,16 +104,20 @@ class HomeController(Controller):
             fps = float(fps)
             total_fps += fps
             avg_fps =  total_fps / cont_fps
+            transmissionDate = datetime.now() + timedelta(hours=1)
+            avg_fps =  f'Average FPS: {avg_fps:.2f}\nFPS Real: {fps:.2f}\nTransmission Date: {transmissionDate}'
             cont_fps += 1
+        
             # converting the fps to string so that we can display it on frame
             # by using putText function
             #fps = str(fps)
-            avg_fps =  str(avg_fps)
-        
-            # putting the FPS count on the frame
-            cv2.putText(image, avg_fps, (10, 30), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
+            y, y0, dy = 20, 40, 20
+            for i, line in enumerate(avg_fps.split('\n')):
+                cv2.putText(image, line, (10, y ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                y = y0 + i*dy
+
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            if(cont % 5 == 0):
+            if(cont % 10 == 0):
                 cont = 0
                 image = self.homeModel.processImage(image, faceCascade)
 
