@@ -119,7 +119,7 @@ class HomeController(Controller):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             if(cont % 40 == 0):
                 cont = 0
-                image = self.homeModel.processImage(image, faceCascade)
+            image = self.homeModel.processImage(image, faceCascade)
 
             imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
