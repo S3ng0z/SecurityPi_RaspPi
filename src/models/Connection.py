@@ -13,8 +13,8 @@ class Connection:
     """
     def connect():
         URL = '192.168.1.33'
-        PORT = 8000
-        #PORT = 9000
+        #PORT = 8000
+        PORT = 9000
         #clientSocket = socket.socket()
         #clientSocket.connect((self.URL, self.PORT))
         #clientSocket.connect(('192.168.228.31', 8000))
@@ -28,8 +28,8 @@ class Connection:
 
     def connectSendScreenShoot():
         URL = '192.168.1.33'
-        PORT = 8080
-        #PORT = 9090
+        #PORT = 8080
+        PORT = 9090
         #clientSocket = socket.socket()
         #clientSocket.connect((self.URL, self.PORT))
         #clientSocket.connect(('192.168.228.31', 8000))
