@@ -88,7 +88,7 @@ class HomeController(Controller):
         while(cap.isOpened()):
             # Construct a numpy array from the stream
             ret, image = cap.read()
-            #image = cv2.resize(frame, (1280, 720))
+            image = cv2.resize(image, (1280, 720))
             # time when we finish processing for this frame
             # time when we finish processing for this frame
             new_frame_time = time.time()
@@ -117,7 +117,7 @@ class HomeController(Controller):
                 y = y0 + i*dy
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            if(cont % 60 == 0):
+            if(cont % 30 == 0):
                 cont = 0
                 image = self.homeModel.processImage(image, faceCascade)
 
