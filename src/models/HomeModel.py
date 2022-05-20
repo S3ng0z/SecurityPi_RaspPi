@@ -139,7 +139,7 @@ class HomeModel:
 
         cv2.putText(image, str_facesContainer, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-        if facesContainer != 0 and len(facesContainer) != 0:
+        if processImage and len(facesContainer) != 0:
             for(x, y, w, h) in facesContainer:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
             
@@ -148,7 +148,7 @@ class HomeModel:
         str_endProcess =  f'End Process: {endProcess}'
         cv2.putText(image, str_endProcess, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         
-        if facesContainer != 0 and len(facesContainer) != 0:
+        if processImage and len(facesContainer) != 0:
             self.saveImagen(image)
 
         
