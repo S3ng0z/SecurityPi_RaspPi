@@ -132,11 +132,11 @@ class HomeModel:
         
         if(processImage):
             facesContainer = faceCascade.detectMultiScale( image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
-            str_facesContainer =  f'Number of faces: {str(len(facesContainer))}'
+            str_facesContainer =  f'Number of faces detected: {str(len(facesContainer))}'
         else:
             facesContainer = 0
-            str_facesContainer =  f'Number of faces: 0'
-            
+            str_facesContainer =  f'Number of faces detected: 0'
+
         cv2.putText(image, str_facesContainer, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
         if facesContainer != 0 and len(facesContainer) != 0:
