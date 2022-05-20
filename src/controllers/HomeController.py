@@ -121,14 +121,6 @@ class HomeController(Controller):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             image = self.homeModel.processImage(image, faceCascade)
 
-            endProcess = datetime.now() + timedelta(hours=1)
-            endProcess = endProcess.strftime('%H:%M:%S.%f')[:-2]
-
-            str_endProcess =  f'End Process: {endProcess}'
-            cv2.putText(image, str_endProcess, (10, 80), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-            
-            self.homeModel.saveImagen(image)
-
             imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
             size = len(imageToEncode)
@@ -293,7 +285,7 @@ class HomeController(Controller):
                             initTransmission = datetime.now() + timedelta(hours=1)
                             initTransmission = initTransmission.strftime('%H:%M:%S.%f')[:-2]
 
-                            str_initTransmission =  f'Init Transmission: {initTransmission}'
+                            str_initTransmission =  f'Transmission: {initTransmission}'
                             cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
                             
                             self.homeModel.saveImagen(image)

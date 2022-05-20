@@ -138,6 +138,14 @@ class HomeModel:
         if len(facesContainer) != 0:
             for(x, y, w, h) in facesContainer:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            
+            endProcess = datetime.now() + timedelta(hours=1)
+            endProcess = endProcess.strftime('%H:%M:%S.%f')[:-2]
+
+            str_endProcess =  f'End Process: {endProcess}'
+            cv2.putText(image, str_endProcess, (10, 80), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            
+            self.saveImagen(image)
 
         cv2.putText(image, str_facesContainer, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         
