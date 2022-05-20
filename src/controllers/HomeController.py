@@ -86,55 +86,60 @@ class HomeController(Controller):
         avg_fps = 0;
         while(cap.isOpened()):
 
-            initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
-            str_initProcess = f'Init Process: {initProcess}'
-            cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-
             # Construct a numpy array from the stream
             ret, image = cap.read()
-            image = cv2.resize(image, (1280, 720))
-            # time when we finish processing for this frame
-            # time when we finish processing for this frame
-            new_frame_time = time.time()
+            
+            if ret == True:
 
-            # Calculating the fps
-            # fps will be number of frame processed in given time frame
-            # since their will be most of time error of 0.001 second
-            # we will be subtracting it to get more accurate result
-            fps = 1/(new_frame_time-prev_frame_time)
+                initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                str_initProcess = f'Init Process: {initProcess}'
+                cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                
+                image = cv2.resize(image, (1280, 720))
+                # time when we finish processing for this frame
+                # time when we finish processing for this frame
+                new_frame_time = time.time()
 
-            str_fps = f'FPS Real: {fps:.2f}'
-            cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                # Calculating the fps
+                # fps will be number of frame processed in given time frame
+                # since their will be most of time error of 0.001 second
+                # we will be subtracting it to get more accurate result
+                fps = 1/(new_frame_time-prev_frame_time)
 
-            prev_frame_time = new_frame_time
-        
-            # converting the fps into integer
-            fps = float(fps)
-            total_fps += fps
-            avg_fps =  total_fps / cont_fps
-            cont_fps += 1
-            str_avg_fps = f'Average FPS: {avg_fps:.2f}'
-            cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                str_fps = f'FPS Real: {fps:.2f}'
+                cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            image = self.homeModel.processImage(image, faceCascade)
+                prev_frame_time = new_frame_time
+            
+                # converting the fps into integer
+                fps = float(fps)
+                total_fps += fps
+                avg_fps =  total_fps / cont_fps
+                cont_fps += 1
+                str_avg_fps = f'Average FPS: {avg_fps:.2f}'
+                cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-            imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                image = self.homeModel.processImage(image, faceCascade)
 
-            size = len(imageToEncode)
-            stream.seek(0)
-            stream.truncate()
+                imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
-            initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                size = len(imageToEncode)
+                stream.seek(0)
+                stream.truncate()
 
-            str_initTransmission =  f'Transmission: {initTransmission}'
-            cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
-            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-            cont += 1
+                str_initTransmission =  f'Transmission: {initTransmission}'
+                cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-            #Waits for a user input to quit the application
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                cont += 1
+
+                #Waits for a user input to quit the application
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+            else:
                 break
 
         cap.release()
