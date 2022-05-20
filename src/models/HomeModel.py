@@ -136,8 +136,7 @@ class HomeModel:
         else:
             facesContainer = 0
             str_facesContainer =  f'Number of faces: 0'
-
-        str_facesContainer =  f'Number of faces: {str(len(facesContainer))}'
+            
         cv2.putText(image, str_facesContainer, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
         if facesContainer != 0 and len(facesContainer) != 0:
