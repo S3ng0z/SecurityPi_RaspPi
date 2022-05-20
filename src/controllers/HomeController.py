@@ -58,6 +58,8 @@ class HomeController(Controller):
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
     """
     def handlerVideoOpenCV(self):
+        global exitApp
+
         clientSocket = self.homeModel.connectSocket()
         
         print('clientSocket: ' + str(clientSocket))
@@ -90,12 +92,12 @@ class HomeController(Controller):
             ret, image = cap.read()
             
             if ret == True:
-
                 initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
                 str_initProcess = f'Init Process: {initProcess}'
-                cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-                
+
                 image = cv2.resize(image, (1280, 720))
+
+                cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
                 # time when we finish processing for this frame
                 # time when we finish processing for this frame
                 new_frame_time = time.time()
@@ -140,6 +142,7 @@ class HomeController(Controller):
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
             else:
+                exitApp = True
                 break
 
         cap.release()
@@ -273,13 +276,15 @@ class HomeController(Controller):
                 clientSocket.close()
 
     def sendScreenShoot(self):
+        global exitApp
+
         clientSocket = self.homeModel.connectSocketSendScreenShoot()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
             
 
-        while True:
+        while (exitApp==False) :
             path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
             file_count = len(files)
 
@@ -314,7 +319,8 @@ class HomeController(Controller):
 
         threads = []
 
-        #cam = Thread(target=self.handlerCAMOpenCV, args=())
+        exitApp = False
+
         cam = Thread(target=self.handlerVideoOpenCV, args=())
         threads.append(cam)
 
