@@ -19,8 +19,7 @@ from multiprocessing import Manager
 from PIL import Image, ImageFile
 import PIL
 from PIL import UnidentifiedImageError
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 
 """
