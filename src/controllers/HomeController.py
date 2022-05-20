@@ -98,25 +98,25 @@ class HomeController(Controller):
             # since their will be most of time error of 0.001 second
             # we will be subtracting it to get more accurate result
             fps = 1/(new_frame_time-prev_frame_time)
+
+            str_fps = f'FPS Real: {fps:.2f}'
+            cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+
             prev_frame_time = new_frame_time
         
             # converting the fps into integer
             fps = float(fps)
             total_fps += fps
             avg_fps =  total_fps / cont_fps
-            #transmissionDate = datetime.now() + timedelta(hours=1)
+            cont_fps += 1
+            str_avg_fps = f'Average FPS: {avg_fps:.2f}'
+            cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+
             initProcess = datetime.now() + timedelta(hours=1)
             initProcess = initProcess.strftime('%H:%M:%S.%f')[:-2]
-            avg_fps =  f'Average FPS: {avg_fps:.2f}\nFPS Real: {fps:.2f}\nInit Process: {initProcess}'
-            cont_fps += 1
-        
-            # converting the fps to string so that we can display it on frame
-            # by using putText function
-            #fps = str(fps)
-            y, y0, dy = 20, 20, 40
-            for i, line in enumerate(avg_fps.split('\n')):
-                cv2.putText(image, line, (10, y ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-                y = y0 + i*dy
+
+            str_initProcess = f'Init Process: {initProcess}'
+            cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             image = self.homeModel.processImage(image, faceCascade)
@@ -124,8 +124,8 @@ class HomeController(Controller):
             endProcess = datetime.now() + timedelta(hours=1)
             endProcess = endProcess.strftime('%H:%M:%S.%f')[:-2]
 
-            str_parameters =  f'End Process: {endProcess}'
-            cv2.putText(image, str_parameters, (10, 140), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            str_endProcess =  f'End Process: {endProcess}'
+            cv2.putText(image, str_endProcess, (10, 80), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             
             self.homeModel.saveImagen(image)
 
@@ -293,8 +293,8 @@ class HomeController(Controller):
                             initTransmission = datetime.now() + timedelta(hours=1)
                             initTransmission = initTransmission.strftime('%H:%M:%S.%f')[:-2]
 
-                            str_parameters =  f'Init Transmission: {initTransmission}'
-                            cv2.putText(image, str_parameters, (10, 220), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                            str_initTransmission =  f'Init Transmission: {initTransmission}'
+                            cv2.putText(image, str_initTransmission, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
                             
                             self.homeModel.saveImagen(image)
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
