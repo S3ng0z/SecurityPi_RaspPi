@@ -130,24 +130,24 @@ class HomeModel:
 
     def processImage(self, image, faceCascade):
         
-        facesContainer = faceCascade.detectMultiScale(
-            image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
+        facesContainer = faceCascade.detectMultiScale( image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
 
-        str_facesContainer =  f'Nº Faces: {str(len(facesContainer))}'
+        str_facesContainer =  f'Number of faces: {str(len(facesContainer))}'
+        cv2.putText(image, str_facesContainer, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
         if len(facesContainer) != 0:
             for(x, y, w, h) in facesContainer:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
             
-            endProcess = datetime.now() + timedelta(hours=1)
-            endProcess = endProcess.strftime('%H:%M:%S.%f')[:-2]
+        endProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
-            str_endProcess =  f'End Process: {endProcess}'
-            cv2.putText(image, str_endProcess, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-            
+        str_endProcess =  f'End Process: {endProcess}'
+        cv2.putText(image, str_endProcess, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+        
+        if len(facesContainer) != 0:
             self.saveImagen(image)
 
-        cv2.putText(image, str_facesContainer, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+        
         
         return image
     

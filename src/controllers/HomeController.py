@@ -85,6 +85,11 @@ class HomeController(Controller):
         total_fps = 0
         avg_fps = 0;
         while(cap.isOpened()):
+
+            initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+            str_initProcess = f'Init Process: {initProcess}'
+            cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+
             # Construct a numpy array from the stream
             ret, image = cap.read()
             image = cv2.resize(image, (1280, 720))
@@ -111,12 +116,6 @@ class HomeController(Controller):
             str_avg_fps = f'Average FPS: {avg_fps:.2f}'
             cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-            initProcess = datetime.now() + timedelta(hours=1)
-            initProcess = initProcess.strftime('%H:%M:%S.%f')[:-2]
-
-            str_initProcess = f'Init Process: {initProcess}'
-            cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             image = self.homeModel.processImage(image, faceCascade)
 
@@ -125,6 +124,11 @@ class HomeController(Controller):
             size = len(imageToEncode)
             stream.seek(0)
             stream.truncate()
+
+            initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+
+            str_initTransmission =  f'Transmission: {initTransmission}'
+            cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
             cont += 1
@@ -281,13 +285,11 @@ class HomeController(Controller):
                         if os.path.exists(APP_PATH + '/frame_container/' + filename):
                             path = APP_PATH + '/frame_container/' + filename
                             image = cv2.imread(path, 0)
-                            initTransmission = datetime.now() + timedelta(hours=1)
-                            initTransmission = initTransmission.strftime('%H:%M:%S.%f')[:-2]
+                            initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
                             str_initTransmission =  f'Transmission: {initTransmission}'
                             cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-                            
-                            self.homeModel.saveImagen(image)
+
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
                             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
