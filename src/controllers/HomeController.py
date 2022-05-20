@@ -34,6 +34,7 @@ class HomeController(Controller):
         self.homeView = self.loadView("Home")
         self.homeModel = self.loadModel("Home")
         self.homeModel.openLogging()
+        exitApp = False
     
     
     #-----------------------------------------------------------------------
@@ -57,9 +58,8 @@ class HomeController(Controller):
     """
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
     """
-    def handlerVideoOpenCV(self):
-        global exitApp
-
+    def handlerVideoOpenCV(self, exitApp):
+        
         clientSocket = self.homeModel.connectSocket()
         
         print('clientSocket: ' + str(clientSocket))
@@ -82,71 +82,71 @@ class HomeController(Controller):
 
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-        cont = 0
-        cont_fps = 1
-        total_fps = 0
-        avg_fps = 0;
-        while(cap.isOpened()):
 
-            # Construct a numpy array from the stream
-            ret, image = cap.read()
-            
-            if ret == True:
-                initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
-                str_initProcess = f'Init Process: {initProcess}'
+        cont, cont_fps, total_fps, avg_fps = 0, 1, 0, 0
 
-                image = cv2.resize(image, (1280, 720))
+        with lock:
+            while(cap.isOpened()):
 
-                cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-                # time when we finish processing for this frame
-                # time when we finish processing for this frame
-                new_frame_time = time.time()
+                # Construct a numpy array from the stream
+                ret, image = cap.read()
+                
+                if ret == True:
+                    initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                    str_initProcess = f'Init Process: {initProcess}'
 
-                # Calculating the fps
-                # fps will be number of frame processed in given time frame
-                # since their will be most of time error of 0.001 second
-                # we will be subtracting it to get more accurate result
-                fps = 1/(new_frame_time-prev_frame_time)
+                    image = cv2.resize(image, (1280, 720))
 
-                str_fps = f'FPS Real: {fps:.2f}'
-                cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    # time when we finish processing for this frame
+                    # time when we finish processing for this frame
+                    new_frame_time = time.time()
 
-                prev_frame_time = new_frame_time
-            
-                # converting the fps into integer
-                fps = float(fps)
-                total_fps += fps
-                avg_fps =  total_fps / cont_fps
-                cont_fps += 1
-                str_avg_fps = f'Average FPS: {avg_fps:.2f}'
-                cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    # Calculating the fps
+                    # fps will be number of frame processed in given time frame
+                    # since their will be most of time error of 0.001 second
+                    # we will be subtracting it to get more accurate result
+                    fps = 1/(new_frame_time-prev_frame_time)
 
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                image = self.homeModel.processImage(image, faceCascade)
+                    str_fps = f'FPS Real: {fps:.2f}'
+                    cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-                imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                    prev_frame_time = new_frame_time
+                
+                    # converting the fps into integer
+                    fps = float(fps)
+                    total_fps += fps
+                    avg_fps =  total_fps / cont_fps
+                    cont_fps += 1
+                    str_avg_fps = f'Average FPS: {avg_fps:.2f}'
+                    cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-                size = len(imageToEncode)
-                stream.seek(0)
-                stream.truncate()
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    image = self.homeModel.processImage(image, faceCascade)
 
-                initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                    imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
-                str_initTransmission =  f'Transmission: {initTransmission}'
-                cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    size = len(imageToEncode)
+                    stream.seek(0)
+                    stream.truncate()
 
-                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                cont += 1
+                    initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
-                #Waits for a user input to quit the application
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    str_initTransmission =  f'Transmission: {initTransmission}'
+                    cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+
+                    clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                    cont += 1
+
+                    #Waits for a user input to quit the application
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
+                else:
+                    exitApp = True
                     break
-            else:
-                exitApp = True
-                break
 
-        cap.release()
-        clientSocket.close()
+            cap.release()
+            clientSocket.close()
 
     """
         @description Handler that is called by the thread so that the application uses the OpenCV library for face detection.
@@ -275,41 +275,40 @@ class HomeController(Controller):
                 camera.release()
                 clientSocket.close()
 
-    def sendScreenShoot(self):
-        global exitApp
+    def sendScreenShoot(self, exitApp):
 
         clientSocket = self.homeModel.connectSocketSendScreenShoot()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         if not os.path.isdir(APP_PATH+'/frame_container'):
             os.mkdir(APP_PATH+'/frame_container')
             
+        with lock:
+            while (exitApp==False) :
+                path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
+                file_count = len(files)
 
-        while (exitApp==False) :
-            path, dirs, files = next(os.walk(APP_PATH+'/frame_container'))
-            file_count = len(files)
+                if(file_count > 0):
+                    for filename in os.listdir('./frame_container'):
+                        time.sleep(1.5)
+                        if filename.endswith(".jpg") or filename.endswith(".png"):
+                            if os.path.exists(APP_PATH + '/frame_container/' + filename):
+                                path = APP_PATH + '/frame_container/' + filename
+                                image = cv2.imread(path, 0)
+                                initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
-            if(file_count > 0):
-                for filename in os.listdir('./frame_container'):
-                    time.sleep(1.5)
-                    if filename.endswith(".jpg") or filename.endswith(".png"):
-                        if os.path.exists(APP_PATH + '/frame_container/' + filename):
-                            path = APP_PATH + '/frame_container/' + filename
-                            image = cv2.imread(path, 0)
-                            initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                                str_initTransmission =  f'Transmission: {initTransmission}'
+                                cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-                            str_initTransmission =  f'Transmission: {initTransmission}'
-                            cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                                imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                                size = len(imageToEncode)
+                                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                                
+                            else:
+                                raise ValueError('index error') 
 
-                            imageToEncode = self.homeModel.encodeImage(image, encode_param)
-                            size = len(imageToEncode)
-                            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
-                            
-                        else:
-                            raise ValueError('index error') 
-
-                    os.remove(APP_PATH + '/frame_container/' + filename)
-                    
-        clientSocket.close()
+                        os.remove(APP_PATH + '/frame_container/' + filename)
+                        
+            clientSocket.close()
             
 
     """
@@ -320,11 +319,12 @@ class HomeController(Controller):
         threads = []
 
         exitApp = False
+        lock = threading.Lock()
 
-        cam = Thread(target=self.handlerVideoOpenCV, args=())
+        cam = Thread(target=self.handlerVideoOpenCV, args=(exitApp, ))
         threads.append(cam)
 
-        sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
+        sendScreenShoot = Thread(target=self.sendScreenShoot, args=(exitApp, ))
         threads.append(sendScreenShoot)
 
          # starting processes
