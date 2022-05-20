@@ -120,7 +120,10 @@ class HomeController(Controller):
                 cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                image = self.homeModel.processImage(image, faceCascade)
+
+                if(cont % 10 == 0):
+                    cont = 0
+                    image = self.homeModel.processImage(image, faceCascade)
 
                 initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
@@ -132,7 +135,7 @@ class HomeController(Controller):
                 size = len(imageToEncode)
                 stream.seek(0)
                 stream.truncate()
-                
+
                 clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
                 cont += 1
 
