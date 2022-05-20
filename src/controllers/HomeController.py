@@ -13,7 +13,7 @@ import zipfile
 import numpy as np
 import tensorflow as tf
 import shutil
-from threading import Thread, Event
+from threading import Thread, Event, Lock
 import multiprocessing
 from multiprocessing import Manager
 from PIL import Image, ImageFile
@@ -319,7 +319,7 @@ class HomeController(Controller):
         threads = []
 
         exitApp = False
-        lock = threading.Lock()
+        lock = Lock()
 
         cam = Thread(target=self.handlerVideoOpenCV, args=(exitApp, ))
         threads.append(cam)
