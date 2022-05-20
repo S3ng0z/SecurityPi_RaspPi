@@ -143,7 +143,7 @@ class HomeModel:
             endProcess = endProcess.strftime('%H:%M:%S.%f')[:-2]
 
             str_endProcess =  f'End Process: {endProcess}'
-            cv2.putText(image, str_endProcess, (10, 80), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            cv2.putText(image, str_endProcess, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             
             self.saveImagen(image)
 
