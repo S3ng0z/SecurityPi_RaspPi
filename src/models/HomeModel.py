@@ -133,11 +133,13 @@ class HomeModel:
         facesContainer = faceCascade.detectMultiScale(
             image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
 
+        str_facesContainer =  f'Nº Faces: {str(len(facesContainer))}'
+
         if len(facesContainer) != 0:
-            str_facesContainer =  f'Nº Faces: {str(len(facesContainer))}'
-            cv2.putText(image, str_facesContainer, (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             for(x, y, w, h) in facesContainer:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        cv2.putText(image, str_facesContainer, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         
         return image
     

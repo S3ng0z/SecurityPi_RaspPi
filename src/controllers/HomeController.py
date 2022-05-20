@@ -294,7 +294,7 @@ class HomeController(Controller):
                             initTransmission = initTransmission.strftime('%H:%M:%S.%f')[:-2]
 
                             str_initTransmission =  f'Init Transmission: {initTransmission}'
-                            cv2.putText(image, str_initTransmission, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                            cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
                             
                             self.homeModel.saveImagen(image)
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
