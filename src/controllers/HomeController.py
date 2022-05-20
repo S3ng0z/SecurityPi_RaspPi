@@ -80,10 +80,10 @@ class HomeController(Controller):
 
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-        cont = 0
-        cont_fps = 1
-        total_fps = 0
-        avg_fps = 0;
+
+        cont, cont_fps, total_fps, avg_fps  = 0, 1, 0, 0
+        processImage = False
+
         while(cap.isOpened()):
 
             # Construct a numpy array from the stream
@@ -123,7 +123,11 @@ class HomeController(Controller):
 
                 if(cont % 10 == 0):
                     cont = 0
-                    image = self.homeModel.processImage(image, faceCascade)
+                    processImage = True
+                else:
+                    processImage = False
+
+                image = self.homeModel.processImage(image, faceCascade, processImage)
 
                 initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 

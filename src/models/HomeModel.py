@@ -128,14 +128,19 @@ class HomeModel:
     def openVideo(self):
         return cv2.VideoCapture('../test/four_persons_1.mp4')
 
-    def processImage(self, image, faceCascade):
+    def processImage(self, image, faceCascade, processImage):
         
-        facesContainer = faceCascade.detectMultiScale( image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
+        if(processImage):
+            facesContainer = faceCascade.detectMultiScale( image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
+            str_facesContainer =  f'Number of faces: {str(len(facesContainer))}'
+        else:
+            facesContainer = 0
+            str_facesContainer =  f'Number of faces: 0'
 
         str_facesContainer =  f'Number of faces: {str(len(facesContainer))}'
         cv2.putText(image, str_facesContainer, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-        if len(facesContainer) != 0:
+        if facesContainer != 0 and len(facesContainer) != 0:
             for(x, y, w, h) in facesContainer:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
             
@@ -144,7 +149,7 @@ class HomeModel:
         str_endProcess =  f'End Process: {endProcess}'
         cv2.putText(image, str_endProcess, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         
-        if len(facesContainer) != 0:
+        if facesContainer != 0 and len(facesContainer) != 0:
             self.saveImagen(image)
 
         
