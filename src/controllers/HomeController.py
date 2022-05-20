@@ -105,7 +105,7 @@ class HomeController(Controller):
             total_fps += fps
             avg_fps =  total_fps / cont_fps
             #transmissionDate = datetime.now() + timedelta(hours=1)
-            initProcess = datetime.datetime.now() + datetime.timedelta(hours=1)
+            initProcess = datetime.now() + timedelta(hours=1)
             initProcess = initProcess.strftime('%H:%M:%S.%f')[:-2]
             avg_fps =  f'Average FPS: {avg_fps:.2f}\nFPS Real: {fps:.2f}\nInit Process: {initProcess}'
             cont_fps += 1
@@ -121,7 +121,7 @@ class HomeController(Controller):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             image = self.homeModel.processImage(image, faceCascade)
 
-            endProcess = datetime.datetime.now() + datetime.timedelta(hours=1)
+            endProcess = datetime.now() + timedelta(hours=1)
             endProcess = endProcess.strftime('%H:%M:%S.%f')[:-2]
 
             str_parameters =  f'End Process: {endProcess}'
@@ -290,7 +290,7 @@ class HomeController(Controller):
                         if os.path.exists(APP_PATH + '/frame_container/' + filename):
                             path = APP_PATH + '/frame_container/' + filename
                             image = cv2.imread(path, 0)
-                            initTransmission = datetime.datetime.now() + datetime.timedelta(hours=1)
+                            initTransmission = datetime.now() + timedelta(hours=1)
                             initTransmission = initTransmission.strftime('%H:%M:%S.%f')[:-2]
 
                             str_parameters =  f'Init Transmission: {initTransmission}'
