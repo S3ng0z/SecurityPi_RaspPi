@@ -104,22 +104,30 @@ class HomeController(Controller):
             fps = float(fps)
             total_fps += fps
             avg_fps =  total_fps / cont_fps
-            transmissionDate = datetime.now() + timedelta(hours=1)
-            avg_fps =  f'Average FPS: {avg_fps:.2f}\nFPS Real: {fps:.2f}\nTransmission Date: {transmissionDate}'
+            #transmissionDate = datetime.now() + timedelta(hours=1)
+            initProcess = datetime.datetime.now() + datetime.timedelta(hours=1)
+            initProcess = initProcess.strftime('%H:%M:%S.%f')[:-2]
+            avg_fps =  f'Average FPS: {avg_fps:.2f}\nFPS Real: {fps:.2f}\nInit Process: {initProcess}'
             cont_fps += 1
         
             # converting the fps to string so that we can display it on frame
             # by using putText function
             #fps = str(fps)
-            y, y0, dy = 30, 55, 40
+            y, y0, dy = 20, 20, 40
             for i, line in enumerate(avg_fps.split('\n')):
-                cv2.putText(image, line, (10, y ), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                cv2.putText(image, line, (10, y ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
                 y = y0 + i*dy
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            if(cont % 40 == 0):
-                cont = 0
             image = self.homeModel.processImage(image, faceCascade)
+
+            endProcess = datetime.datetime.now() + datetime.timedelta(hours=1)
+            endProcess = endProcess.strftime('%H:%M:%S.%f')[:-2]
+
+            str_parameters =  f'End Process: {endProcess}'
+            cv2.putText(image, str_parameters, (10, 140), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            
+            self.homeModel.saveImagen(image)
 
             imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
@@ -282,6 +290,13 @@ class HomeController(Controller):
                         if os.path.exists(APP_PATH + '/frame_container/' + filename):
                             path = APP_PATH + '/frame_container/' + filename
                             image = cv2.imread(path, 0)
+                            initTransmission = datetime.datetime.now() + datetime.timedelta(hours=1)
+                            initTransmission = initTransmission.strftime('%H:%M:%S.%f')[:-2]
+
+                            str_parameters =  f'Init Transmission: {initTransmission}'
+                            cv2.putText(image, str_parameters, (10, 220), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                            
+                            self.homeModel.saveImagen(image)
                             imageToEncode = self.homeModel.encodeImage(image, encode_param)
                             size = len(imageToEncode)
                             clientSocket.sendall(struct.pack(">L", size) + imageToEncode)

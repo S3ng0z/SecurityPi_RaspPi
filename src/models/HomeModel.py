@@ -134,18 +134,21 @@ class HomeModel:
             image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
 
         if len(facesContainer) != 0:
-            print('JAGS len(facesContainer): ' + str(len(facesContainer)))
+            str_facesContainer =  f'Nº Faces: {str(len(facesContainer))}'
+            cv2.putText(image, str_facesContainer, (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             for(x, y, w, h) in facesContainer:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            
-            if not os.path.isdir(APP_PATH+'/frame_container'):
-                os.mkdir(APP_PATH+'/frame_container')
-            
-            tempName = next(tempfile._get_candidate_names())
-            image = cv2.resize(image, (1280, 720))
-            cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.jpg'), image)
         
         return image
+    
+    def saveImagen(self, image):
+        if not os.path.isdir(APP_PATH+'/frame_container'):
+            os.mkdir(APP_PATH+'/frame_container')
+            
+        tempName = next(tempfile._get_candidate_names())
+        image = cv2.resize(image, (1280, 720))
+        cv2.imwrite((APP_PATH+'/frame_container/'+str(tempName)+'.jpg'), image)
+
     
     def encodeImage(self, image, encode_param):
         result, frame = cv2.imencode('.jpg', image, encode_param)
