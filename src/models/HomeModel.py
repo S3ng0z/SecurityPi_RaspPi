@@ -131,7 +131,7 @@ class HomeModel:
     def processImage(self, image, faceCascade, processImage):
         
         if(processImage):
-            facesContainer = faceCascade.detectMultiScale( image, scaleFactor=1.3, minNeighbors=7, minSize = (50,50))
+            facesContainer = faceCascade.detectMultiScale( image, scaleFactor=1.2, minNeighbors=8, minSize = (30,30))
             str_facesContainer =  f'Number of faces detected: {str(len(facesContainer))}'
         else:
             facesContainer = 0
