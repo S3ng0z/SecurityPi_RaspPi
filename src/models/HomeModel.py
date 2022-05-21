@@ -126,12 +126,12 @@ class HomeModel:
         @description Method that activates the camera for the use of the application.
     """
     def openVideo(self):
-        return cv2.VideoCapture('../test/example_four_persons.mp4')
+        return cv2.VideoCapture('../test/example_one_person.mp4')
 
     def processImage(self, image, faceCascade, processImage):
         
         if(processImage):
-            facesContainer = faceCascade.detectMultiScale( image, scaleFactor=1.05, minNeighbors=8, minSize = (30,30))
+            facesContainer = faceCascade.detectMultiScale( image, scaleFactor=1.2, minNeighbors=8, minSize = (30,30))
             str_facesContainer =  f'Number of faces detected: {str(len(facesContainer))}'
         else:
             facesContainer = 0
