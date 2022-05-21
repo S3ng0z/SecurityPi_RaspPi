@@ -175,14 +175,21 @@ class HomeController(Controller):
         stream = io.BytesIO()
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         cont, cont_fps, total_fps, avg_fps = 0, 1, 0, 0
+        processImage = False
 
         for frame in camera.capture_continuous(stream, 'jpeg'):
+
+            initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+            str_initProcess = f'Init Process: {initProcess}'
+
             # Construct a numpy array from the stream
             data = np.fromstring(stream.getvalue(), dtype=np.uint8)
             # "Decode" the image from the array, preserving colour
             image = cv2.imdecode(data, 1)
-            image = cv2.resize(image, (854, 480))
+            image = cv2.resize(image, (1280, 720))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+            cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             # time when we finish processing for this frame
             new_frame_time = time.time()
 
@@ -191,28 +198,33 @@ class HomeController(Controller):
             # since their will be most of time error of 0.001 second
             # we will be subtracting it to get more accurate result
             fps = 1/(new_frame_time-prev_frame_time)
+
+            str_fps = f'FPS Real: {fps:.2f}'
+            cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+
             prev_frame_time = new_frame_time
         
             # converting the fps into integer
             fps = float(fps)
             total_fps += fps
             avg_fps =  total_fps / cont_fps
-            transmissionDate = datetime.now() + timedelta(hours=1)
-            avg_fps =  f'Average FPS: {avg_fps:.2f}\nFPS Real: {fps:.2f}\nTransmission Date: {transmissionDate}'
             cont_fps += 1
+            
+            str_avg_fps = f'Average FPS: {avg_fps:.2f}'
+            cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         
-            # converting the fps to string so that we can display it on frame
-            # by using putText function
-            #fps = str(fps)
-            y, y0, dy = 20, 40, 20
-            for i, line in enumerate(avg_fps.split('\n')):
-                cv2.putText(image, line, (10, y ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-                y = y0 + i*dy
-                
-
-            if(cont % 5 == 0):
+            if(cont % 10 == 0):
                 cont = 0
-                image = self.homeModel.processImage(image, faceCascade)
+                processImage = True
+            else:
+                processImage = False
+
+            image = self.homeModel.processImage(image, faceCascade, processImage)
+            
+            initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+
+            str_initTransmission =  f'Transmission: {initTransmission}'
+            cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
             imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
