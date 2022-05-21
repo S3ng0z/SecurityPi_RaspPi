@@ -333,8 +333,8 @@ class HomeController(Controller):
 
         threads = []
 
-        #cam = Thread(target=self.handlerCAMOpenCV, args=())
-        cam = Thread(target=self.handlerVideoOpenCV, args=())
+        cam = Thread(target=self.handlerCAMOpenCV, args=())
+        #cam = Thread(target=self.handlerVideoOpenCV, args=())
         threads.append(cam)
 
         sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
