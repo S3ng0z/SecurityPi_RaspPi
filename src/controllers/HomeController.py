@@ -70,7 +70,9 @@ class HomeController(Controller):
         time.sleep(2)
         
         # used to record the time at which we processed current frame
-        start_frame_time = 0
+        prev_frame_time = 0
+  
+        new_frame_time = 0
 
         # font which we will be using to display FPS
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -87,7 +89,7 @@ class HomeController(Controller):
             ret, image = cap.read()
             
             if ret == True:
-                start_frame_time = time.time()
+                new_frame_time = time.time()
 
                 initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
                 str_initProcess = f'Init Process: {initProcess}'
@@ -112,7 +114,8 @@ class HomeController(Controller):
                 # fps will be number of frame processed in given time frame
                 # since their will be most of time error of 0.001 second
                 # we will be subtracting it to get more accurate result
-                fps = 1/(time.time() - start_frame_time)
+                fps = 1/(new_frame_time - start_frame_time)
+                prev_frame_time = new_frame_time 
 
                 str_fps = f'FPS Real: {fps:.2f}'
                 cv2.putText(image, str_fps, (10, 20), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
@@ -162,7 +165,8 @@ class HomeController(Controller):
         time.sleep(2)
 
         # used to record the time at which we processed current frame
-        start_frame_time = 0
+        prev_frame_time = 0
+        new_frame_time = 0
         
         # font which we will be using to display FPS
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -175,7 +179,7 @@ class HomeController(Controller):
         for frame in camera.capture_continuous(stream, 'jpeg'):
 
             # time when we finish processing for this frame
-            start_frame_time = time.time()
+            new_frame_time = time.time()
 
             initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
             str_initProcess = f'Init Process: {initProcess}'
@@ -201,7 +205,8 @@ class HomeController(Controller):
             # fps will be number of frame processed in given time frame
             # since their will be most of time error of 0.001 second
             # we will be subtracting it to get more accurate result
-            fps = 1/(time.time() - start_frame_time)
+            fps = 1/(new_frame_time - prev_frame_time )
+            prev_frame_time = new_frame_time 
 
             str_fps = f'FPS Real: {fps:.2f}'
             cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
