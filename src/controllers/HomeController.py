@@ -222,6 +222,9 @@ class HomeController(Controller):
             
             str_avg_fps = f'Average FPS: {avg_fps:.2f}'
             cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+
+            if processImage:
+                self.homeModel.saveImagen(image)
             
             initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
@@ -335,8 +338,8 @@ class HomeController(Controller):
 
         threads = []
 
-        #cam = Thread(target=self.handlerCAMOpenCV, args=())
-        cam = Thread(target=self.handlerVideoOpenCV, args=())
+        cam = Thread(target=self.handlerCAMOpenCV, args=())
+        #cam = Thread(target=self.handlerVideoOpenCV, args=())
         threads.append(cam)
 
         sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
