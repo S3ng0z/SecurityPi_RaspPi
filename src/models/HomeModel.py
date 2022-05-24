@@ -147,12 +147,7 @@ class HomeModel:
 
         str_endProcess =  f'End Process: {endProcess}'
         cv2.putText(image, str_endProcess, (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-        
-        if processImage and len(facesContainer) != 0:
-            self.saveImagen(image)
 
-        
-        
         return image
     
     def saveImagen(self, image):

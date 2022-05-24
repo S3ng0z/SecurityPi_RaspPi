@@ -133,6 +133,9 @@ class HomeController(Controller):
                 str_initTransmission =  f'Transmission: {initTransmission}'
                 cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
+                if processImage:
+                    self.homeModel.saveImagen(image)
+
                 imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
                 size = len(imageToEncode)
