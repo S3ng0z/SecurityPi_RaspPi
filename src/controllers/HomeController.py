@@ -68,12 +68,9 @@ class HomeController(Controller):
 
         #video.start_preview()
         time.sleep(2)
-
-        # used to record the time when we processed last frame
-        prev_frame_time = 0
         
         # used to record the time at which we processed current frame
-        new_frame_time = 0
+        start_frame_time = 0
 
         # font which we will be using to display FPS
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -90,6 +87,8 @@ class HomeController(Controller):
             ret, image = cap.read()
             
             if ret == True:
+                start_frame_time = time.time()
+
                 initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
                 str_initProcess = f'Init Process: {initProcess}'
 
@@ -98,27 +97,7 @@ class HomeController(Controller):
                 cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
                 # time when we finish processing for this frame
                 # time when we finish processing for this frame
-                new_frame_time = time.time()
-
-                # Calculating the fps
-                # fps will be number of frame processed in given time frame
-                # since their will be most of time error of 0.001 second
-                # we will be subtracting it to get more accurate result
-                fps = 1/(new_frame_time-prev_frame_time)
-
-                str_fps = f'FPS Real: {fps:.2f}'
-                cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-
-                prev_frame_time = new_frame_time
-            
-                # converting the fps into integer
-                fps = float(fps)
-                total_fps += fps
-                avg_fps =  total_fps / cont_fps
-                cont_fps += 1
-                str_avg_fps = f'Average FPS: {avg_fps:.2f}'
-                cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-
+                
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
                 if(cont % 10 == 0):
@@ -128,6 +107,23 @@ class HomeController(Controller):
                     processImage = False
 
                 image = self.homeModel.processImage(image, faceCascade, processImage)
+
+                # Calculating the fps
+                # fps will be number of frame processed in given time frame
+                # since their will be most of time error of 0.001 second
+                # we will be subtracting it to get more accurate result
+                fps = 1/(time.time() - start_frame_time)
+
+                str_fps = f'FPS Real: {fps:.2f}'
+                cv2.putText(image, str_fps, (10, 20), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+            
+                # converting the fps into integer
+                fps = float(fps)
+                total_fps += fps
+                avg_fps =  total_fps / cont_fps
+                cont_fps += 1
+                str_avg_fps = f'Average FPS: {avg_fps:.2f}'
+                cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
                 initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
@@ -165,9 +161,8 @@ class HomeController(Controller):
         camera.start_preview()
         time.sleep(2)
 
-        # used to record the time when we processed last frame
         # used to record the time at which we processed current frame
-        prev_frame_time, new_frame_time = 0, 0
+        start_frame_time = 0
         
         # font which we will be using to display FPS
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -179,6 +174,9 @@ class HomeController(Controller):
 
         for frame in camera.capture_continuous(stream, 'jpeg'):
 
+            # time when we finish processing for this frame
+            start_frame_time = time.time()
+
             initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
             str_initProcess = f'Init Process: {initProcess}'
 
@@ -189,20 +187,24 @@ class HomeController(Controller):
             image = cv2.resize(image, (1280, 720))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-            cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-            # time when we finish processing for this frame
-            new_frame_time = time.time()
+            cv2.putText(image, str_initProcess, (10, 60), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+        
+            if(cont % 10 == 0):
+                cont = 0
+                processImage = True
+            else:
+                processImage = False
+
+            image = self.homeModel.processImage(image, faceCascade, processImage)
 
             # Calculating the fps
             # fps will be number of frame processed in given time frame
             # since their will be most of time error of 0.001 second
             # we will be subtracting it to get more accurate result
-            fps = 1/(new_frame_time-prev_frame_time)
+            fps = 1/(time.time() - start_frame_time)
 
             str_fps = f'FPS Real: {fps:.2f}'
             cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-
-            prev_frame_time = new_frame_time
         
             # converting the fps into integer
             fps = float(fps)
@@ -212,14 +214,6 @@ class HomeController(Controller):
             
             str_avg_fps = f'Average FPS: {avg_fps:.2f}'
             cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-        
-            if(cont % 10 == 0):
-                cont = 0
-                processImage = True
-            else:
-                processImage = False
-
-            image = self.homeModel.processImage(image, faceCascade, processImage)
             
             initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
