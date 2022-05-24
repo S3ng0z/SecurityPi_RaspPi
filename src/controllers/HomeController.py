@@ -114,7 +114,7 @@ class HomeController(Controller):
                 # fps will be number of frame processed in given time frame
                 # since their will be most of time error of 0.001 second
                 # we will be subtracting it to get more accurate result
-                fps = 1/(new_frame_time - start_frame_time)
+                fps = 1/(new_frame_time - prev_frame_time)
                 prev_frame_time = new_frame_time 
 
                 str_fps = f'FPS Real: {fps:.2f}'
