@@ -89,60 +89,58 @@ class HomeController(Controller):
             ret, image = cap.read()
             
             if ret == True:
-                new_frame_time = time.time()
-
-                initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
-                str_initProcess = f'Init Process: {initProcess}'
-
-                image = cv2.resize(image, (1280, 720))
-
-                cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-                # time when we finish processing for this frame
-                # time when we finish processing for this frame
-                
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
                 if(cont % 10 == 0):
                     cont = 0
                     processImage = True
-                else:
-                    processImage = False
+                    new_frame_time = time.time()
 
-                image = self.homeModel.processImage(image, faceCascade, processImage)
+                    initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                    str_initProcess = f'Init Process: {initProcess}'
 
-                # Calculating the fps
-                # fps will be number of frame processed in given time frame
-                # since their will be most of time error of 0.001 second
-                # we will be subtracting it to get more accurate result
-                fps = 1/(new_frame_time - prev_frame_time)
-                prev_frame_time = new_frame_time 
+                    image = cv2.resize(image, (1280, 720))
 
-                str_fps = f'FPS Real: {fps:.2f}'
-                cv2.putText(image, str_fps, (10, 20), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-            
-                # converting the fps into integer
-                fps = float(fps)
-                total_fps += fps
-                avg_fps =  total_fps / cont_fps
-                cont_fps += 1
-                str_avg_fps = f'Average FPS: {avg_fps:.2f}'
-                cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    cv2.putText(image, str_initProcess, (10, 60 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    # time when we finish processing for this frame
+                    # time when we finish processing for this frame
+                    
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-                if processImage:
-                    self.homeModel.saveImagen(image)
+                    image = self.homeModel.processImage(image, faceCascade, processImage)
 
-                initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                    # Calculating the fps
+                    # fps will be number of frame processed in given time frame
+                    # since their will be most of time error of 0.001 second
+                    # we will be subtracting it to get more accurate result
+                    fps = 1/(new_frame_time - prev_frame_time)
+                    prev_frame_time = new_frame_time 
 
-                str_initTransmission =  f'Transmission: {initTransmission}'
-                cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    str_fps = f'FPS Real: {fps:.2f}'
+                    cv2.putText(image, str_fps, (10, 20), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                
+                    # converting the fps into integer
+                    fps = float(fps)
+                    total_fps += fps
+                    avg_fps =  total_fps / cont_fps
+                    cont_fps += 1
+                    str_avg_fps = f'Average FPS: {avg_fps:.2f}'
+                    cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-                imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                    if processImage:
+                        self.homeModel.saveImagen(image)
 
-                size = len(imageToEncode)
-                stream.seek(0)
-                stream.truncate()
+                    initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
-                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                    str_initTransmission =  f'Transmission: {initTransmission}'
+                    cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+
+                    imageToEncode = self.homeModel.encodeImage(image, encode_param)
+
+                    size = len(imageToEncode)
+                    stream.seek(0)
+                    stream.truncate()
+
+                    clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+
                 cont += 1
 
                 #Waits for a user input to quit the application
@@ -181,63 +179,64 @@ class HomeController(Controller):
 
         for frame in camera.capture_continuous(stream, 'jpeg'):
 
-            # time when we finish processing for this frame
-            new_frame_time = time.time()
-
-            initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
-            str_initProcess = f'Init Process: {initProcess}'
-
-            # Construct a numpy array from the stream
-            data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-            # "Decode" the image from the array, preserving colour
-            image = cv2.imdecode(data, 1)
-            image = cv2.resize(image, (1280, 720))
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-            cv2.putText(image, str_initProcess, (10, 60), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-        
             if(cont % 10 == 0):
                 cont = 0
                 processImage = True
-            else:
-                processImage = False
 
-            image = self.homeModel.processImage(image, faceCascade, processImage)
+                # time when we finish processing for this frame
+                new_frame_time = time.time()
 
-            # Calculating the fps
-            # fps will be number of frame processed in given time frame
-            # since their will be most of time error of 0.001 second
-            # we will be subtracting it to get more accurate result
-            fps = 1/(new_frame_time - prev_frame_time )
-            prev_frame_time = new_frame_time 
+                initProcess = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                str_initProcess = f'Init Process: {initProcess}'
 
-            str_fps = f'FPS Real: {fps:.2f}'
-            cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-        
-            # converting the fps into integer
-            fps = float(fps)
-            total_fps += fps
-            avg_fps =  total_fps / cont_fps
-            cont_fps += 1
+                # Construct a numpy array from the stream
+                data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+                # "Decode" the image from the array, preserving colour
+                image = cv2.imdecode(data, 1)
+                image = cv2.resize(image, (1280, 720))
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+                cv2.putText(image, str_initProcess, (10, 60), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             
-            str_avg_fps = f'Average FPS: {avg_fps:.2f}'
-            cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                
 
-            if processImage:
-                self.homeModel.saveImagen(image)
+                image = self.homeModel.processImage(image, faceCascade, processImage)
+
+                # Calculating the fps
+                # fps will be number of frame processed in given time frame
+                # since their will be most of time error of 0.001 second
+                # we will be subtracting it to get more accurate result
+                fps = 1/(new_frame_time - prev_frame_time )
+                prev_frame_time = new_frame_time 
+
+                str_fps = f'FPS Real: {fps:.2f}'
+                cv2.putText(image, str_fps, (10, 20 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
             
-            initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
+                # converting the fps into integer
+                fps = float(fps)
+                total_fps += fps
+                avg_fps =  total_fps / cont_fps
+                cont_fps += 1
+                
+                str_avg_fps = f'Average FPS: {avg_fps:.2f}'
+                cv2.putText(image, str_avg_fps, (10, 40 ), font, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-            str_initTransmission =  f'Transmission: {initTransmission}'
-            cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                if processImage:
+                    self.homeModel.saveImagen(image)
+                
+                initTransmission = datetime.now().strftime('%H:%M:%S.%f')[:-2]
 
-            imageToEncode = self.homeModel.encodeImage(image, encode_param)
+                str_initTransmission =  f'Transmission: {initTransmission}'
+                cv2.putText(image, str_initTransmission, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
-            size = len(imageToEncode)
-            stream.seek(0)
-            stream.truncate()
+                imageToEncode = self.homeModel.encodeImage(image, encode_param)
 
-            clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+                size = len(imageToEncode)
+                stream.seek(0)
+                stream.truncate()
+
+                clientSocket.sendall(struct.pack(">L", size) + imageToEncode)
+
             cont += 1
 
             #Waits for a user input to quit the application
@@ -338,8 +337,8 @@ class HomeController(Controller):
 
         threads = []
 
-        cam = Thread(target=self.handlerCAMOpenCV, args=())
-        #cam = Thread(target=self.handlerVideoOpenCV, args=())
+        #cam = Thread(target=self.handlerCAMOpenCV, args=())
+        cam = Thread(target=self.handlerVideoOpenCV, args=())
         threads.append(cam)
 
         sendScreenShoot = Thread(target=self.sendScreenShoot, args=())
