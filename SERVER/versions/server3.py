@@ -14,7 +14,7 @@ import os
 import zipfile
 import socketserver
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class RecieveScreenShotHandler(socketserver.BaseRequestHandler):
@@ -27,8 +27,8 @@ class RecieveScreenShotHandler(socketserver.BaseRequestHandler):
         
         img = None
         
-        if not os.path.isdir('./frame_container_one_persons_rpi3'):
-            os.mkdir('./frame_container_one_persons_rpi3')
+        if not os.path.isdir('./frame_container2'):
+            os.mkdir('./frame_container2')
 
         while True:
             try:
@@ -52,14 +52,15 @@ class RecieveScreenShotHandler(socketserver.BaseRequestHandler):
                 tempName = next(tempfile._get_candidate_names())
                 cv2.resize(frame, (1280, 720))
 
-                #reception = datetime.now() + timedelta(hours=(1/3220))
-                reception = datetime.now() + timedelta(hours=(1/9500))
-                reception = reception.strftime('%H:%M:%S.%f')[:-2]
+                receptionDate = datetime.now()
+                textImage = f'\n\n\nReception Date: {receptionDate}'
 
-                str_parameters =  f'Reception: {reception}'
-                cv2.putText(frame, str_parameters, (10, 140), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                y, y0, dy = 10, 80, 20
+                for i, line in enumerate(textImage.split('\n')):
+                    cv2.putText(frame, line, (10, y ), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
+                    y = y0 + i*dy
                     
-                cv2.imwrite('./frame_container_one_persons_rpi3/'+str(tempName)+'.jpg', frame)
+                cv2.imwrite('./frame_container2/'+str(tempName)+'.jpg', frame)
                 
                 time.sleep(0.25)
                 
@@ -95,13 +96,15 @@ class DisplayFramestHandler(socketserver.BaseRequestHandler):
                 frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
                 frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
                 frame = cv2.resize(frame, (1280, 720))
-                
-                #reception = datetime.now() + timedelta(hours=(1/3220))
-                reception = datetime.now() + timedelta(hours=(1/9500))
-                reception = reception.strftime('%H:%M:%S.%f')[:-2]
+                receptionDate = datetime.now()
+                textImage = f'\n\n\nReception Date: {receptionDate}'
 
-                str_reception =  f'Reception: {reception}'
-                cv2.putText(frame, str_reception, (10, 140), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                y, y0, dy = 10, 80, 20
+                for i, line in enumerate(textImage.split('\n')):
+                    cv2.putText(frame, line, (10, y ), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
+                    y = y0 + i*dy
+
+                #cv2.putText(frame, f'Reception Date: {receptionDate}', (500, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 3, cv2.LINE_AA)
 
                 if img is None:
                     img = pl.imshow(frame)
