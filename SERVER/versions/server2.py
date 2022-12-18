@@ -201,7 +201,7 @@ class Main:
 
     @staticmethod
     def run():
-        HOST = '192.168.1.41'
+        HOST = '192.168.1.96'
         PORT_DISPLAY_FRAMES = 8000
         PORT_RECEIVE_SCREENSHOT = 8080
         try:

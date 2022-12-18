@@ -124,8 +124,8 @@ class Main:
 
     @staticmethod
     def run():
-        #HOST = '192.168.1.41'
-        HOST = '192.168.1.41'
+        #HOST = '192.168.1.96'
+        HOST = '192.168.1.96'
         PORT_DISPLAY_FRAMES = 8000 #RPi 4
         PORT_RECEIVE_SCREENSHOT = 8080 #RPI 4
         #PORT_DISPLAY_FRAMES = 9000 #RPi 3
